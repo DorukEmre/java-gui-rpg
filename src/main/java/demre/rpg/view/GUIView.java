@@ -1,19 +1,26 @@
 package demre.rpg.view;
 
-public class GUIView {
-  public void displayMessage(String message) {
-    System.out.println("GUI Message: " + message);
+import demre.rpg.model.GameEngine;
+
+public class GUIView extends GameView {
+
+  public GUIView(GameEngine gameEngine) {
+    super(gameEngine);
+    System.out.println("GUIView initialised with engine: " + gameEngine);
+    initialiseGUIComponents();
   }
 
-  public void displayError(String error) {
-    System.err.println("GUI Error: " + error);
+  private void initialiseGUIComponents() {
+    // Logic to Initialise GUI components
+    System.out.println("GUIView > Initialising GUI components...");
+    // e.g., create windows, buttons, labels, etc.
   }
 
-  public void displayGameStart() {
-    System.out.println("Welcome to the RPG Game in GUI mode!");
+  @Override
+  public void updateView() {
+    // Logic to update the GUI view based on game state
+    System.out.println("GUIView > Updating GUI view...");
+    // e.g., refresh hero stats, display messages, etc.
   }
 
-  public void displayGameEnd() {
-    System.out.println("Thank you for playing in GUI mode!");
-  }
 }
