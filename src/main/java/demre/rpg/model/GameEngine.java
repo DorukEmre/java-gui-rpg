@@ -1,12 +1,16 @@
 package demre.rpg.model;
 
+import demre.rpg.controller.GameController.Direction;
+import demre.rpg.controller.GameController.Action;
 import demre.rpg.model.characters.Hero;
+import demre.rpg.view.GameView;
 
 public class GameEngine {
   private Hero hero;
+  private Hero[] heroes;
 
   public GameEngine() {
-    // Initialize the game engine, load resources, etc.
+    // Initialise the game engine, load resources, etc.
     loadGameDataFromFile();
     System.out.println("GameEngine initialised.");
   }
@@ -14,8 +18,30 @@ public class GameEngine {
   private void loadGameDataFromFile() {
     // Logic to load game data from a file
     System.out.println("GameEngine > Loading game data from file...");
-    // For example, you might read hero data, map data, etc.
-    // This is a placeholder for actual file reading logic
+
+    // Load existing heroes from file
   }
 
+  public void startGame(GameView gameView) {
+
+    System.out.println("GameEngine > Starting game...");
+
+    // Create a hero
+    // Select a previously created hero.
+
+    // player can see the hero stats
+    gameView.updateView();
+  }
+
+  public void movePlayer(Direction direction) {
+    // Logic to move the player in the specified direction
+    System.out.println("GameEngine > Moving player in direction: " + direction.name());
+    // e.g., update hero's position based on direction
+  }
+
+  public void doPlayerAction(Action action) {
+    // Logic to perform an action with the player
+    System.out.println("GameEngine > Performing action: " + action.name());
+    // e.g., handle fight, run, keep, or drop actions
+  }
 }
