@@ -1,12 +1,13 @@
 package demre.rpg.view;
 
+import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
 
 public class GUIView extends GameView {
 
-  public GUIView(GameEngine gameEngine) {
-    super(gameEngine);
-    System.out.println("GUIView initialised with engine: " + gameEngine);
+  public GUIView(GameEngine gameEngine, GameController controller) {
+    super(gameEngine, controller);
+    System.out.println("GUIView initialised with engine: " + gameEngine + " and controller: " + controller);
     initialiseGUIComponents();
   }
 
@@ -21,7 +22,7 @@ public class GUIView extends GameView {
   }
 
   @Override
-  public void selectHero() {
+  public void selectHero(GameEngine.Step step) {
   }
 
   @Override

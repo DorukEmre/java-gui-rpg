@@ -22,11 +22,11 @@ public class Main {
     if (gameMode.equals("gui")) {
       System.out.println("Starting GUI mode...");
       // Initialise GUI components here
-      gameView = new GUIView(gameEngine);
+      gameView = new GUIView(gameEngine, gameController);
     } else {
       System.out.println("Starting Console mode...");
       // Initialise console components here
-      gameView = new ConsoleView(gameEngine);
+      gameView = new ConsoleView(gameEngine, gameController);
     }
 
     gameEngine.startGame(gameView);
