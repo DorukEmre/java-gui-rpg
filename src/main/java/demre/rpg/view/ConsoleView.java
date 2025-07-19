@@ -1,15 +1,17 @@
 package demre.rpg.view;
 
 import java.util.Scanner;
+
+import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
 import demre.rpg.view.AsciiArt;
 
 public class ConsoleView extends GameView {
   private final Scanner scanner = new Scanner(System.in);
 
-  public ConsoleView(GameEngine gameEngine) {
-    super(gameEngine);
-    System.out.println("ConsoleView initialised with engine: " + gameEngine);
+  public ConsoleView(GameEngine gameEngine, GameController controller) {
+    super(gameEngine, controller);
+    System.out.println("ConsoleView initialised with engine: " + gameEngine + " and controller: " + controller);
     initialiseConsoleComponents();
   }
 
@@ -26,21 +28,26 @@ public class ConsoleView extends GameView {
       clearConsole();
       System.out.println(AsciiArt.SPLASH);
       scanner.nextLine();
+      controller.onSplashScreenContinue();
     } catch (Exception e) {
       System.err.println("Error during splash screen: " + e.getMessage());
     }
   }
 
   @Override
-  public void selectHero() {
+  public void selectHero(GameEngine.Step step) {
     System.out.println("ConsoleView > Selecting hero...");
     try {
       clearConsole();
-      System.out.println("Please select your hero from the list:");
+      if (step == GameEngine.Step.INVALID_HERO_SELECTION) {
+        System.out.println("Invalid hero selection. Please try again.");
+      }
+      System.out
+          .println("Please select your hero from the list (enter the number), or type 'new' to create a new hero:");
       // Display hero options
-      // e.g., Hero1, Hero2, etc.
-      System.out.println("Press Enter to continue...");
-      scanner.nextLine();
+
+      String heroSelection = scanner.nextLine();
+      controller.onSelectHeroContinue(heroSelection);
     } catch (Exception e) {
       System.err.println("Error during select hero: " + e.getMessage());
     }
