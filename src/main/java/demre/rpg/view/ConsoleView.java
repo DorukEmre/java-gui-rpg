@@ -2,8 +2,11 @@ package demre.rpg.view;
 
 import java.util.Scanner;
 import demre.rpg.model.GameEngine;
+import demre.rpg.view.AsciiArt;
 
 public class ConsoleView extends GameView {
+  private final Scanner scanner = new Scanner(System.in);
+
   public ConsoleView(GameEngine gameEngine) {
     super(gameEngine);
     System.out.println("ConsoleView initialised with engine: " + gameEngine);
@@ -17,13 +20,54 @@ public class ConsoleView extends GameView {
   }
 
   @Override
+  public void splashScreen() {
+    System.out.println("ConsoleView > Displaying splash screen...");
+    try {
+      clearConsole();
+      System.out.println(AsciiArt.SPLASH);
+      scanner.nextLine();
+    } catch (Exception e) {
+      System.err.println("Error during splash screen: " + e.getMessage());
+    }
+  }
+
+  @Override
+  public void selectHero() {
+    System.out.println("ConsoleView > Selecting hero...");
+    try {
+      clearConsole();
+      System.out.println("Please select your hero from the list:");
+      // Display hero options
+      // e.g., Hero1, Hero2, etc.
+      System.out.println("Press Enter to continue...");
+      scanner.nextLine();
+    } catch (Exception e) {
+      System.err.println("Error during select hero: " + e.getMessage());
+    }
+  }
+
+  @Override
+  public void createHero() {
+    System.out.println("ConsoleView > Creating hero...");
+    try {
+      System.out.println("Please enter your hero's name:");
+      String heroName = scanner.nextLine();
+      System.out.println("Hero '" + heroName + "' created successfully!");
+      System.out.println("Press Enter to continue...");
+      scanner.nextLine();
+    } catch (Exception e) {
+      System.err.println("Error during create hero: " + e.getMessage());
+    }
+  }
+
+  @Override
   public void updateView() {
     System.out.println("ConsoleView > Updating console view...");
     drawConsole();
   }
 
   public void drawConsole() {
-    try (Scanner scanner = new Scanner(System.in)) {
+    try {
       while (true) {
         clearConsole();
         drawMap();
@@ -72,15 +116,8 @@ public class ConsoleView extends GameView {
 
     for (int i = 0; i < side + 2; i++) {
       for (int j = 0; j < side + 2; j++) {
-        if ((i == 0 && j == 0)
-            || (i == 0 && j == side + 1)
-            || (i == side + 1 && j == 0)
-            || (i == side + 1 && j == side + 1)) {
-          map[i][j] = '┼';
-        } else if (i == 0 || i == side + 1) {
-          map[i][j] = '─';
-        } else if (j == 0 || j == side + 1) {
-          map[i][j] = '|';
+        if (i == 0 || i == side + 1 || j == 0 || j == side + 1) {
+          map[i][j] = '#';
         } else {
           map[i][j] = '.';
         }

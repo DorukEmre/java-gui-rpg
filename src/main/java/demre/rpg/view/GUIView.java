@@ -17,6 +17,18 @@ public class GUIView extends GameView {
   }
 
   @Override
+  public void splashScreen() {
+  }
+
+  @Override
+  public void selectHero() {
+  }
+
+  @Override
+  public void createHero() {
+  }
+
+  @Override
   public void updateView() {
     // Logic to update the GUI view based on game state
     System.out.println("GUIView > Updating GUI view...");

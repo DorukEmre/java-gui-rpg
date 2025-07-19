@@ -26,10 +26,16 @@ public class GameEngine {
 
     System.out.println("GameEngine > Starting game...");
 
-    // Create a hero
-    // Select a previously created hero.
+    // Show splash screen
+    gameView.splashScreen();
 
-    // player can see the hero stats
+    // Select a previously created hero
+    gameView.selectHero();
+
+    // Create a hero
+    gameView.createHero();
+
+    // Update the view to reflect the current game state
     gameView.updateView();
   }
 
