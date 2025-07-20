@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 import demre.rpg.model.characters.Hero;
+import demre.rpg.model.map.Tile;
 import demre.rpg.util.CharacterFactory;
 import demre.rpg.view.GameView;
 import jakarta.validation.constraints.NotNull;
@@ -30,6 +31,7 @@ public class GameEngine {
   private Step step;
   private Hero hero;
   private List<Hero> heroes;
+  private Tile[][] map;
 
   private int mapSize = 9; // Level 1 map size
 
@@ -59,6 +61,10 @@ public class GameEngine {
 
   public int getMapSize() {
     return mapSize;
+  }
+
+  public Tile[][] getMap() {
+    return map;
   }
 
   // Setters
@@ -197,6 +203,29 @@ public class GameEngine {
     hero.setYCoord(side / 2);
 
     // generateEnnemies();
+
+    generateMap();
+  }
+
+  private void generateMap() {
+    map = new Tile[mapSize + 2][mapSize + 2];
+    for (int x = 0; x < mapSize + 2; x++) {
+      for (int y = 0; y < mapSize + 2; y++) {
+        String type = "Grass";
+        String symbol = ".";
+        Boolean visible = false;
+        if (x == 0 || x == mapSize + 1 || y == 0 || y == mapSize + 1) {
+          type = "Wall";
+          symbol = "#";
+          visible = true;
+        }
+        map[y][x] = new Tile(x, y, type, symbol, visible);
+      }
+    }
+
+    // Set the hero's starting position
+    Tile heroTile = map[hero.getYCoord() + 1][hero.getXCoord() + 1];
+    heroTile.assignHero();
   }
 
   public boolean isValidDirection(String input) {
@@ -219,6 +248,9 @@ public class GameEngine {
     Direction direction = parseDirection(input);
     System.out.println("Detected direction: " + direction);
 
+    Tile heroTile = map[hero.getYCoord() + 1][hero.getXCoord() + 1];
+    heroTile.assignGrass();
+
     if (direction == Direction.NORTH && hero.getYCoord() > 0) {
       hero.setYCoord(hero.getYCoord() - 1);
     } else if (direction == Direction.SOUTH) {
@@ -228,6 +260,8 @@ public class GameEngine {
     } else if (direction == Direction.WEST) {
       hero.setXCoord(hero.getXCoord() - 1);
     }
+    heroTile = map[hero.getYCoord() + 1][hero.getXCoord() + 1];
+    heroTile.assignHero();
 
   }
 

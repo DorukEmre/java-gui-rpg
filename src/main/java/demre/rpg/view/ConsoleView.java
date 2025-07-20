@@ -6,6 +6,7 @@ import java.util.Scanner;
 import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
 import demre.rpg.model.characters.Hero;
+import demre.rpg.model.map.Tile;
 
 public class ConsoleView extends GameView {
   private final Scanner scanner = new Scanner(System.in);
@@ -156,27 +157,17 @@ public class ConsoleView extends GameView {
     // Level: 9, Map Size: 49x49
 
     int side = gameEngine.getMapSize();
-
-    char[][] map = new char[side + 2][side + 2];
-
-    for (int i = 0; i < side + 2; i++) {
-      for (int j = 0; j < side + 2; j++) {
-        if (i == 0 || i == side + 1 || j == 0 || j == side + 1) {
-          map[i][j] = '#';
-        } else {
-          map[i][j] = '.';
-        }
-      }
-    }
-    int heroX = gameEngine.getHero().getXCoord() + 1;
-    int heroY = gameEngine.getHero().getYCoord() + 1;
-    map[heroY][heroX] = '@';
+    Tile[][] map = gameEngine.getMap();
 
     System.out.println("Level: " + gameEngine.getHero().getLevel() + ", Map Size: " + side + "x" + side);
 
     for (int i = 0; i < side + 2; i++) {
       for (int j = 0; j < side + 2; j++) {
-        System.out.print(map[i][j] + " ");
+        if (map[i][j].isVisible()) {
+          System.out.print(map[i][j].getSymbol() + " ");
+        } else {
+          System.out.print(" " + " ");
+        }
       }
       System.out.println();
     }
