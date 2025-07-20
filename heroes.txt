@@ -1,5 +1,4 @@
-# comma separated values format
-# Name,class,items equipped
-John the Teenager,Knight,2,540,short sword,leather armor
-Alex the Great,Elf,3,124,longbow,leather armor
-Thor the Mighty,Knight,6,990,long sword,steel armor
+Bob,Mage,1,100,5,6,20,une baguette,none,pointy hat
+John,Rogue,2,200,7,8,40,dagger,leather armor,none
+Billy,Warrior,1,100,5,6,20,une baguette,none,pointy hat
+Sharon,Rogue,2,200,7,8,40,dagger,peau de cuir,none
