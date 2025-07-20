@@ -75,7 +75,7 @@ public class ConsoleView extends GameView {
       }
       System.out.println("Enter your hero's name:");
       String heroName = scanner.nextLine();
-      System.out.println("Pick a class for your hero: mage [m], warrior [w], rogue [r]");
+      System.out.println("Pick a class for your hero: (m)age, (w)arrior, (r)ogue");
       String heroClass = scanner.nextLine();
       controller.onCreateHeroContinue(heroName, heroClass);
     } catch (Exception e) {

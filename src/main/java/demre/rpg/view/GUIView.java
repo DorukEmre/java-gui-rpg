@@ -4,6 +4,7 @@ import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
 
 public class GUIView extends GameView {
+  // extends javax.swing.JFrame
 
   public GUIView(GameEngine gameEngine, GameController controller) {
     super(gameEngine, controller);
