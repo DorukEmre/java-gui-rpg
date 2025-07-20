@@ -32,7 +32,7 @@ public class GameController {
     // if heroSelection = num that exists in the list, then set the hero
     if (gameEngine.isValidHeroSelection(heroSelection)) {
       gameEngine.selectHero(heroSelection);
-      gameEngine.setCurrentStep(GameEngine.Step.PLAYING);
+      gameEngine.setCurrentStep(GameEngine.Step.INFO);
     }
     // heroSelection is 'new' or 'create', set the step to CREATE_HERO
     else if (heroSelection.equalsIgnoreCase("new")) {
@@ -48,7 +48,7 @@ public class GameController {
 
     if (gameEngine.isValidHeroName(heroName) && gameEngine.isValidHeroClass(heroClass)) {
       gameEngine.createHero(heroName, heroClass);
-      gameEngine.setCurrentStep(GameEngine.Step.PLAYING);
+      gameEngine.setCurrentStep(GameEngine.Step.INFO);
       System.out.println(
           "onCreateHeroContinue > Hero " + heroClass + " '" + heroName + "' created successfully!");
     } else {
@@ -56,6 +56,11 @@ public class GameController {
       gameEngine.setCurrentStep(GameEngine.Step.INVALID_HERO_CREATION);
     }
 
+  }
+
+  public void onShowHeroContinue() {
+    System.out.println("GameController > Info continue pressed.");
+    gameEngine.setCurrentStep(GameEngine.Step.PLAYING);
   }
 
   // Receive user input and inform the game engine

@@ -1,9 +1,11 @@
 package demre.rpg.view;
 
+import java.util.List;
 import java.util.Scanner;
 
 import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
+import demre.rpg.model.characters.Hero;
 
 public class ConsoleView extends GameView {
   private final Scanner scanner = new Scanner(System.in);
@@ -38,15 +40,24 @@ public class ConsoleView extends GameView {
     System.out.println("ConsoleView > Selecting hero...");
     try {
       clearConsole();
+
+      // Display the list of heroes
+      List<Hero> heroes = gameEngine.getHeroes();
+      for (int i = 0; i < heroes.size(); i++) {
+        Hero hero = heroes.get(i);
+        System.out.println((i + 1) + ". " + hero.getName() + " (" + hero.getClass().getSimpleName() + ")");
+      }
+      System.out.println();
+
       if (step == GameEngine.Step.INVALID_HERO_SELECTION) {
         System.out.println("Invalid hero selection. Please try again.");
       }
       System.out
-          .println("Please select your hero from the list (enter the number), or type 'new' to create a new hero:");
-      // Display hero options
+          .println("Please select your hero from the list (enter the number), or type 'new' to create a new hero:\n");
 
       String heroSelection = scanner.nextLine();
       controller.onSelectHeroContinue(heroSelection);
+
     } catch (Exception e) {
       System.err.println("Error during select hero: " + e.getMessage());
     }
@@ -69,6 +80,34 @@ public class ConsoleView extends GameView {
       controller.onCreateHeroContinue(heroName, heroClass);
     } catch (Exception e) {
       System.err.println("Error during create hero: " + e.getMessage());
+    }
+  }
+
+  @Override
+  public void showHero() {
+    System.out.println("ConsoleView > Showing hero information...");
+    try {
+      clearConsole();
+      Hero hero = gameEngine.getHero();
+
+      System.out.println("Hero Information:\n");
+
+      System.out.println("Name: " + hero.getName());
+      System.out.println("Class: " + hero.getClass().getSimpleName());
+      System.out.println("Level: " + hero.getLevel());
+      System.out.println("Experience: " + hero.getExperience());
+      System.out.println("Attack: " + hero.getAttack());
+      System.out.println("Defense: " + hero.getDefense());
+      System.out.println("Hit Points: " + hero.getHitPoints());
+      System.out.println("Weapon: " + hero.getWeapon().getName());
+      System.out.println("Armor: " + hero.getArmor().getName());
+      System.out.println("Helm: " + hero.getHelm().getName());
+
+      System.out.println("\nPress Enter to continue...");
+      scanner.nextLine();
+      controller.onShowHeroContinue();
+    } catch (Exception e) {
+      System.err.println("Error during show hero: " + e.getMessage());
     }
   }
 

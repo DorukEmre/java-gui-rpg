@@ -22,6 +22,7 @@ public class GameEngine {
     SPLASH_SCREEN,
     SELECT_HERO, INVALID_HERO_SELECTION,
     CREATE_HERO, INVALID_HERO_CREATION,
+    INFO,
     PLAYING, EXIT_GAME
   }
 
@@ -85,6 +86,9 @@ public class GameEngine {
           || currentStep == Step.INVALID_HERO_CREATION) {
         // Show hero creation screen
         gameView.createHero(currentStep);
+      } else if (currentStep == Step.INFO) {
+        // Show hero info screen
+        gameView.showHero();
       } else if (currentStep == Step.PLAYING) {
         // Update the view to reflect the current game state
         gameView.updateView();
@@ -102,7 +106,7 @@ public class GameEngine {
 
     // Convert selection to int and check if it exists in the heroes array
     try {
-      int index = Integer.parseInt(selection);
+      int index = Integer.parseInt(selection) - 1;
       if (index >= 0 && index < heroes.size()) {
         return true;
       }
@@ -130,7 +134,7 @@ public class GameEngine {
   public void selectHero(@NotNull String selection) {
     System.out.println("GameEngine > Selecting hero: " + selection);
 
-    int index = Integer.parseInt(selection);
+    int index = Integer.parseInt(selection) - 1;
     this.hero = heroes.get(index);
     System.out.println("Hero selected: " + hero.getName());
   }

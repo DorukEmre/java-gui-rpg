@@ -30,6 +30,10 @@ public class GUIView extends GameView {
   }
 
   @Override
+  public void showHero() {
+  }
+
+  @Override
   public void updateView() {
     // Logic to update the GUI view based on game state
     System.out.println("GUIView > Updating GUI view...");
