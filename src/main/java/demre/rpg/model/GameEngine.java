@@ -1,6 +1,11 @@
 package demre.rpg.model;
 
 import demre.rpg.controller.GameController.Direction;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.List;
+
 import demre.rpg.controller.GameController.Action;
 import demre.rpg.model.characters.Hero;
 import demre.rpg.view.GameView;
@@ -13,14 +18,15 @@ public class GameEngine {
 
   private Step currentStep;
   private Hero hero;
-  private Hero[] heroes;
+  private List<Hero> heroes;
 
   // Constructor
 
-  public GameEngine() {
-    // Initialise the game engine, load resources, etc.
-    loadGameDataFromFile();
+  public GameEngine()
+      throws FileNotFoundException, IOException {
     this.currentStep = Step.SPLASH_SCREEN;
+    this.heroes = HeroLoader.loadHeroes();
+    this.hero = null;
     System.out.println("GameEngine initialised.");
   }
 
@@ -34,7 +40,7 @@ public class GameEngine {
     return hero;
   }
 
-  public Hero[] getHeroes() {
+  public List<Hero> getHeroes() {
     return heroes;
   }
 
@@ -48,18 +54,11 @@ public class GameEngine {
     this.hero = hero;
   }
 
-  public void setHeroes(Hero[] heroes) {
+  public void setHeroes(List<Hero> heroes) {
     this.heroes = heroes;
   }
 
   // Methods
-
-  private void loadGameDataFromFile() {
-    // Logic to load game data from a file
-    System.out.println("GameEngine > Loading game data from file...");
-
-    // Load existing heroes from file
-  }
 
   public void startGame(@NotNull GameView gameView) {
     System.out.println("GameEngine > Starting game...");
@@ -89,14 +88,14 @@ public class GameEngine {
   public boolean isValidHeroSelection(@NotNull String selection) {
     if (selection.equalsIgnoreCase("valid"))
       return true;
-    if (heroes == null || heroes.length == 0) {
+    if (heroes == null || heroes.size() == 0) {
       return false;
     }
 
     // Convert selection to int and check if it exists in the heroes array
     try {
       int index = Integer.parseInt(selection);
-      if (index >= 0 && index < heroes.length) {
+      if (index >= 0 && index < heroes.size()) {
         return true;
       }
     } catch (NumberFormatException e) {
