@@ -53,7 +53,7 @@ public class ConsoleView extends GameView {
         System.out.println("Invalid hero selection. Please try again.");
       }
       System.out
-          .println("Please select your hero from the list (enter the number), or type 'new' to create a new hero:\n");
+          .println("Enter a number to select your hero from the list, or type 'new' [n] to create a new hero:\n");
 
       String heroSelection = scanner.nextLine();
       controller.onSelectHeroContinue(heroSelection);
@@ -73,9 +73,9 @@ public class ConsoleView extends GameView {
         System.out.println(
             "Hero name must be 3-20 characters long and can only contain alphanumeric characters and spaces.");
       }
-      System.out.println("Please enter your hero's name:");
+      System.out.println("Enter your hero's name:");
       String heroName = scanner.nextLine();
-      System.out.println("Please pick a class for your hero (Mage, Warrior, Rogue):");
+      System.out.println("Pick a class for your hero: mage [m], warrior [w], rogue [r]");
       String heroClass = scanner.nextLine();
       controller.onCreateHeroContinue(heroName, heroClass);
     } catch (Exception e) {

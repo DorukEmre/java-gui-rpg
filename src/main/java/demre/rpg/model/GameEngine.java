@@ -127,8 +127,14 @@ public class GameEngine {
 
   public boolean isValidHeroClass(String heroClass) {
     return (heroClass.equalsIgnoreCase("Mage")
+        || heroClass.equalsIgnoreCase("mage")
+        || heroClass.equalsIgnoreCase("m")
         || heroClass.equalsIgnoreCase("Warrior")
-        || heroClass.equalsIgnoreCase("Rogue"));
+        || heroClass.equalsIgnoreCase("warrior")
+        || heroClass.equalsIgnoreCase("w")
+        || heroClass.equalsIgnoreCase("Rogue")
+        || heroClass.equalsIgnoreCase("rogue")
+        || heroClass.equalsIgnoreCase("r"));
   }
 
   public void selectHero(@NotNull String selection) {
@@ -142,15 +148,23 @@ public class GameEngine {
   public void createHero(@NotNull String name, @NotNull String heroClass) {
     System.out.println("GameEngine > Creating hero: " + name);
 
-    if (heroClass.equalsIgnoreCase("Mage")) {
+    if (heroClass.equalsIgnoreCase("Mage")
+        || heroClass.equalsIgnoreCase("mage")
+        || heroClass.equalsIgnoreCase("m")) {
       this.hero = new Mage(
           name, 1, 0, 5, 5, 10,
           new Weapon("Wooden stick"), new Armor("Cloth armor"), new Helm("Paper hat"));
-    } else if (heroClass.equalsIgnoreCase("Warrior")) {
+
+    } else if (heroClass.equalsIgnoreCase("Warrior")
+        || heroClass.equalsIgnoreCase("warrior")
+        || heroClass.equalsIgnoreCase("w")) {
       this.hero = new Warrior(
           name, 1, 0, 5, 5, 10,
           new Weapon("Wooden stick"), new Armor("Cloth armor"), new Helm("Paper hat"));
-    } else if (heroClass.equalsIgnoreCase("Rogue")) {
+
+    } else if (heroClass.equalsIgnoreCase("Rogue")
+        || heroClass.equalsIgnoreCase("rogue")
+        || heroClass.equalsIgnoreCase("r")) {
       this.hero = new Rogue(
           name, 1, 0, 5, 5, 10,
           new Weapon("Wooden stick"), new Armor("Cloth armor"), new Helm("Paper hat"));

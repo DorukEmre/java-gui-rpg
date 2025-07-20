@@ -34,8 +34,9 @@ public class GameController {
       gameEngine.selectHero(heroSelection);
       gameEngine.setCurrentStep(GameEngine.Step.INFO);
     }
-    // heroSelection is 'new' or 'create', set the step to CREATE_HERO
-    else if (heroSelection.equalsIgnoreCase("new")) {
+    // heroSelection is 'new', set the step to CREATE_HERO
+    else if (heroSelection.equalsIgnoreCase("new")
+        || heroSelection.equalsIgnoreCase("n")) {
       gameEngine.setCurrentStep(GameEngine.Step.CREATE_HERO);
     } else {
       // heroSelection is invalid, set the step to INVALID_HERO_SELECTION
