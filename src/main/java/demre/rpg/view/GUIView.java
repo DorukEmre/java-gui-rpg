@@ -41,4 +41,20 @@ public class GUIView extends GameView {
     // e.g., refresh hero stats, display messages, etc.
   }
 
+  @Override
+  public void showEnemyEncounter() {
+  }
+
+  @Override
+  public void showItemFound() {
+  }
+
+  @Override
+  public void showVictoryScreen() {
+  }
+
+  @Override
+  public void showGameOver() {
+  }
+
 }

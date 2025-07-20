@@ -17,6 +17,8 @@ public class GameEngine {
     CREATE_HERO, INVALID_HERO_CREATION,
     INFO,
     PLAYING, INVALID_ACTION,
+    ENEMY_ENCOUNTER, ITEM_FOUND,
+    VICTORY, DEAD,
     EXIT_GAME
   }
 
@@ -28,9 +30,14 @@ public class GameEngine {
     FIGHT, RUN, KEEP, DROP
   }
 
+  public enum Special {
+    NONE, ENEMY, VICTORY
+  }
+
   private Step step;
   private Hero hero;
   private List<Hero> heroes;
+  private Special event;
   private Tile[][] map;
 
   private int mapSize = 9; // Level 1 map size
@@ -42,6 +49,7 @@ public class GameEngine {
     this.step = Step.SPLASH_SCREEN;
     this.heroes = HeroLoader.loadHeroes();
     this.hero = null;
+    this.event = Special.NONE;
     System.out.println("GameEngine initialised.");
   }
 
@@ -65,6 +73,10 @@ public class GameEngine {
 
   public Tile[][] getMap() {
     return map;
+  }
+
+  public Special getEvent() {
+    return event;
   }
 
   // Setters
@@ -110,6 +122,14 @@ public class GameEngine {
           || step == Step.INVALID_ACTION) {
         // Update the view to reflect the current game state
         gameView.updateView();
+      } else if (step == Step.ENEMY_ENCOUNTER) {
+        gameView.showEnemyEncounter();
+      } else if (step == Step.ITEM_FOUND) {
+        gameView.showItemFound();
+      } else if (step == Step.VICTORY) {
+        gameView.showVictoryScreen();
+      } else if (step == Step.DEAD) {
+        gameView.showGameOver();
       }
     }
     System.out.println("GameEngine > Ending game...");
@@ -261,6 +281,14 @@ public class GameEngine {
       hero.setXCoord(hero.getXCoord() - 1);
     }
     heroTile = map[hero.getYCoord() + 1][hero.getXCoord() + 1];
+    if (heroTile.getType().equals("Wall")) {
+      event = Special.VICTORY;
+    } else if (heroTile.getType().equals("Enemy")) {
+      event = Special.ENEMY;
+      return;
+    } else {
+      event = Special.NONE;
+    }
     heroTile.assignHero();
 
   }

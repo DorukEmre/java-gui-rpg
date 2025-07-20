@@ -118,7 +118,7 @@ public class ConsoleView extends GameView {
     drawConsole();
   }
 
-  public void drawConsole() {
+  private void drawConsole() {
     try {
       while (gameEngine.getStep() == GameEngine.Step.PLAYING
           || gameEngine.getStep() == GameEngine.Step.INVALID_ACTION) {
@@ -172,6 +172,38 @@ public class ConsoleView extends GameView {
       System.out.println();
     }
     System.out.println();
+  }
+
+  @Override
+  public void showEnemyEncounter() {
+  }
+
+  @Override
+  public void showItemFound() {
+  }
+
+  @Override
+  public void showVictoryScreen() {
+    try {
+      clearConsole();
+      System.out.println(AsciiArt.VICTORY);
+      scanner.nextLine();
+      controller.onVictoryScreenContinue();
+    } catch (Exception e) {
+      System.err.println("Error during victory screen: " + e.getMessage());
+    }
+  }
+
+  @Override
+  public void showGameOver() {
+    try {
+      clearConsole();
+      System.out.println(AsciiArt.DIED);
+      scanner.nextLine();
+      controller.onGameOverContinue();
+    } catch (Exception e) {
+      System.err.println("Error during game over screen: " + e.getMessage());
+    }
   }
 
 }

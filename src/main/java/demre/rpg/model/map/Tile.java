@@ -3,8 +3,8 @@ package demre.rpg.model.map;
 public class Tile {
   private final int x;
   private final int y;
-  private String type;
-  private String symbol;
+  private String type; // e.g., "Grass", "Wall", "Hero", "Enemy"
+  private String symbol; // e.g., ".", "#", "@", "X"
   private Boolean isVisible;
 
   // Constructors

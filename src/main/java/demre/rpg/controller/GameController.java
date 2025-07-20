@@ -1,6 +1,7 @@
 package demre.rpg.controller;
 
 import demre.rpg.model.GameEngine;
+import demre.rpg.model.GameEngine.Special;
 
 public class GameController {
   private final GameEngine gameEngine;
@@ -80,6 +81,13 @@ public class GameController {
       return;
     } else if (gameEngine.isValidDirection(input)) {
       gameEngine.movePlayer(input);
+
+      Special event = gameEngine.getEvent();
+      if (event == Special.ENEMY) {
+        gameEngine.setCurrentStep(GameEngine.Step.ENEMY_ENCOUNTER);
+      } else if (event == Special.VICTORY) {
+        gameEngine.setCurrentStep(GameEngine.Step.VICTORY);
+      }
     } else {
       gameEngine.setCurrentStep(GameEngine.Step.INVALID_ACTION);
     }
@@ -89,4 +97,23 @@ public class GameController {
     gameEngine.setCurrentStep(GameEngine.Step.PLAYING);
   }
 
+  public void onEnemyEncounterContinue() {
+    System.out.println("GameController > Enemy encounter continue pressed.");
+    gameEngine.setCurrentStep(GameEngine.Step.PLAYING);
+  }
+
+  public void onItemFoundContinue() {
+    System.out.println("GameController > Item found continue pressed.");
+    gameEngine.setCurrentStep(GameEngine.Step.PLAYING);
+  }
+
+  public void onVictoryScreenContinue() {
+    System.out.println("GameController > Victory screen continue pressed.");
+    gameEngine.setCurrentStep(GameEngine.Step.EXIT_GAME);
+  }
+
+  public void onGameOverContinue() {
+    System.out.println("GameController > Game over continue pressed.");
+    gameEngine.setCurrentStep(GameEngine.Step.EXIT_GAME);
+  }
 }

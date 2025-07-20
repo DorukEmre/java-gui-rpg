@@ -22,4 +22,12 @@ public abstract class GameView {
   public abstract void showHero();
 
   public abstract void updateView();
+
+  public abstract void showEnemyEncounter();
+
+  public abstract void showItemFound();
+
+  public abstract void showVictoryScreen();
+
+  public abstract void showGameOver();
 }
