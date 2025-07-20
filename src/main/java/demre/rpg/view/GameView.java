@@ -17,7 +17,7 @@ public abstract class GameView {
 
   public abstract void selectHero(GameEngine.Step step);
 
-  public abstract void createHero();
+  public abstract void createHero(GameEngine.Step step);
 
   public abstract void updateView();
 }

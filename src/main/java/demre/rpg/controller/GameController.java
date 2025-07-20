@@ -31,15 +31,31 @@ public class GameController {
     // Logic to handle hero selection
     // if heroSelection = num that exists in the list, then set the hero
     if (gameEngine.isValidHeroSelection(heroSelection)) {
+      gameEngine.selectHero(heroSelection);
       gameEngine.setCurrentStep(GameEngine.Step.PLAYING);
     }
     // heroSelection is 'new' or 'create', set the step to CREATE_HERO
     else if (heroSelection.equalsIgnoreCase("new")) {
       gameEngine.setCurrentStep(GameEngine.Step.CREATE_HERO);
     } else {
-      // heroSelection is invalid, set the step to INVALID_HERO
+      // heroSelection is invalid, set the step to INVALID_HERO_SELECTION
       gameEngine.setCurrentStep(GameEngine.Step.INVALID_HERO_SELECTION);
     }
+  }
+
+  public void onCreateHeroContinue(String heroName, String heroClass) {
+    System.out.println("GameController > Hero creation input: " + heroName);
+
+    if (gameEngine.isValidHeroName(heroName) && gameEngine.isValidHeroClass(heroClass)) {
+      gameEngine.createHero(heroName, heroClass);
+      gameEngine.setCurrentStep(GameEngine.Step.PLAYING);
+      System.out.println(
+          "onCreateHeroContinue > Hero " + heroClass + " '" + heroName + "' created successfully!");
+    } else {
+      // heroName is invalid, set the step to INVALID_HERO_CREATION
+      gameEngine.setCurrentStep(GameEngine.Step.INVALID_HERO_CREATION);
+    }
+
   }
 
   // Receive user input and inform the game engine

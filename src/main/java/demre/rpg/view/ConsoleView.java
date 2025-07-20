@@ -4,7 +4,6 @@ import java.util.Scanner;
 
 import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
-import demre.rpg.view.AsciiArt;
 
 public class ConsoleView extends GameView {
   private final Scanner scanner = new Scanner(System.in);
@@ -54,24 +53,20 @@ public class ConsoleView extends GameView {
   }
 
   @Override
-  public void createHero() {
+  public void createHero(GameEngine.Step step) {
     System.out.println("ConsoleView > Creating hero...");
     try {
+      clearConsole();
+      if (step == GameEngine.Step.INVALID_HERO_CREATION) {
+        System.out.println("Invalid hero creation. Please try again.");
+        System.out.println(
+            "Hero name must be 3-20 characters long and can only contain alphanumeric characters and spaces.");
+      }
       System.out.println("Please enter your hero's name:");
       String heroName = scanner.nextLine();
-      if (heroName.isEmpty()) {
-        System.out.println("Hero name cannot be empty. Please try again.");
-        return;
-      } else if (heroName.length() > 20) {
-        System.out.println("Hero name is too long. Please enter a name with 20 characters or less.");
-        return;
-      } else if (!heroName.matches("[a-zA-Z0-9]+")) {
-        System.out.println("Hero name can only contain alphanumeric characters. Please try again.");
-        return;
-      }
-      System.out.println("Hero '" + heroName + "' created successfully!");
-      System.out.println("Press Enter to continue...");
-      scanner.nextLine();
+      System.out.println("Please pick a class for your hero (Mage, Warrior, Rogue):");
+      String heroClass = scanner.nextLine();
+      controller.onCreateHeroContinue(heroName, heroClass);
     } catch (Exception e) {
       System.err.println("Error during create hero: " + e.getMessage());
     }

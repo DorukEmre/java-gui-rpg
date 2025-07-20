@@ -8,12 +8,21 @@ import java.util.List;
 
 import demre.rpg.controller.GameController.Action;
 import demre.rpg.model.characters.Hero;
+import demre.rpg.model.characters.Mage;
+import demre.rpg.model.characters.Rogue;
+import demre.rpg.model.characters.Warrior;
+import demre.rpg.model.items.Armor;
+import demre.rpg.model.items.Helm;
+import demre.rpg.model.items.Weapon;
 import demre.rpg.view.GameView;
 import jakarta.validation.constraints.NotNull;
 
 public class GameEngine {
   public enum Step {
-    SPLASH_SCREEN, SELECT_HERO, INVALID_HERO_SELECTION, CREATE_HERO, PLAYING, EXIT_GAME
+    SPLASH_SCREEN,
+    SELECT_HERO, INVALID_HERO_SELECTION,
+    CREATE_HERO, INVALID_HERO_CREATION,
+    PLAYING, EXIT_GAME
   }
 
   private Step currentStep;
@@ -68,15 +77,14 @@ public class GameEngine {
       if (currentStep == Step.SPLASH_SCREEN) {
         // Show splash screen
         gameView.splashScreen();
-      } else if (currentStep == Step.SELECT_HERO) {
+      } else if (currentStep == Step.SELECT_HERO
+          || currentStep == Step.INVALID_HERO_SELECTION) {
         // Show hero selection screen
         gameView.selectHero(currentStep);
-      } else if (currentStep == Step.INVALID_HERO_SELECTION) {
-        // Show hero selection screen
-        gameView.selectHero(currentStep);
-      } else if (currentStep == Step.CREATE_HERO) {
+      } else if (currentStep == Step.CREATE_HERO
+          || currentStep == Step.INVALID_HERO_CREATION) {
         // Show hero creation screen
-        gameView.createHero();
+        gameView.createHero(currentStep);
       } else if (currentStep == Step.PLAYING) {
         // Update the view to reflect the current game state
         gameView.updateView();
@@ -102,6 +110,48 @@ public class GameEngine {
       // Ignore, will return false below
     }
     return false;
+  }
+
+  public boolean isValidHeroName(String name) {
+    if (name == null || name.trim().isEmpty()
+        || name.length() < 3 || name.length() > 20
+        || !name.matches("[a-zA-Z0-9 ]+")) {
+      return false;
+    }
+    return true;
+  }
+
+  public boolean isValidHeroClass(String heroClass) {
+    return (heroClass.equalsIgnoreCase("Mage")
+        || heroClass.equalsIgnoreCase("Warrior")
+        || heroClass.equalsIgnoreCase("Rogue"));
+  }
+
+  public void selectHero(@NotNull String selection) {
+    System.out.println("GameEngine > Selecting hero: " + selection);
+
+    int index = Integer.parseInt(selection);
+    this.hero = heroes.get(index);
+    System.out.println("Hero selected: " + hero.getName());
+  }
+
+  public void createHero(@NotNull String name, @NotNull String heroClass) {
+    System.out.println("GameEngine > Creating hero: " + name);
+
+    if (heroClass.equalsIgnoreCase("Mage")) {
+      this.hero = new Mage(
+          name, 1, 0, 5, 5, 10,
+          new Weapon("Wooden stick"), new Armor("Cloth armor"), new Helm("Paper hat"));
+    } else if (heroClass.equalsIgnoreCase("Warrior")) {
+      this.hero = new Warrior(
+          name, 1, 0, 5, 5, 10,
+          new Weapon("Wooden stick"), new Armor("Cloth armor"), new Helm("Paper hat"));
+    } else if (heroClass.equalsIgnoreCase("Rogue")) {
+      this.hero = new Rogue(
+          name, 1, 0, 5, 5, 10,
+          new Weapon("Wooden stick"), new Armor("Cloth armor"), new Helm("Paper hat"));
+    }
+
   }
 
   public void movePlayer(Direction direction) {

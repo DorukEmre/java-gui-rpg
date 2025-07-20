@@ -118,4 +118,5 @@ public class HeroLoader {
       throw new IllegalArgumentException("Hero name can only contain alphanumeric characters and spaces.");
     }
   }
+
 }
