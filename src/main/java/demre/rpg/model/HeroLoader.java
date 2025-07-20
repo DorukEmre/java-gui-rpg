@@ -52,18 +52,24 @@ public class HeroLoader {
 
     try (FileReader fr = new FileReader(file);
         BufferedReader br = new BufferedReader(fr)) {
-
       String line;
+
       while ((line = br.readLine()) != null) {
         Hero hero;
         System.out.println("Parsing line: " + line);
-        // skip empty or whitespace only line
-        if (line.trim().isEmpty()) {
+        // skip empty, whitespace only, or comment lines
+        if (line.trim().isEmpty() || line.trim().startsWith("#")) {
           continue;
         }
 
         String[] components = line.trim().split(",");
+        if (components.length != 10) {
+          throw new IllegalArgumentException("Invalid hero data format: " + line);
+        }
+
+        // Parse hero attributes
         String name = components[0].trim();
+        checkHeroName(name);
         String heroClass = components[1].trim();
         int level = Integer.parseInt(components[2].trim());
         int experience = Integer.parseInt(components[3].trim());
@@ -87,14 +93,29 @@ public class HeroLoader {
         } else {
           throw new IllegalArgumentException("Unknown hero class: " + heroClass);
         }
+
+        // Add the hero to the list
+        heroes.add(hero);
+
         System.out.println(
             "Hero loaded: " + hero.getName() + " (" + heroClass + ")");
-        heroes.add(hero);
       }
     } catch (Exception e) {
       throw new RuntimeException("Invalid content or format in heroes file: " + fileName, e);
     }
+
     return heroes;
   }
 
+  public static void checkHeroName(String name) {
+    if (name == null || name.trim().isEmpty()) {
+      throw new IllegalArgumentException("Hero name cannot be null or empty.");
+    }
+    if (name.length() < 3 || name.length() > 20) {
+      throw new IllegalArgumentException("Hero name must be between 3 and 20 characters long.");
+    }
+    if (!name.matches("[a-zA-Z0-9 ]+")) {
+      throw new IllegalArgumentException("Hero name can only contain alphanumeric characters and spaces.");
+    }
+  }
 }
