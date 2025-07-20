@@ -36,7 +36,7 @@ public class ConsoleView extends GameView {
   }
 
   @Override
-  public void selectHero(GameEngine.Step step) {
+  public void selectHero() {
     System.out.println("ConsoleView > Selecting hero...");
     try {
       clearConsole();
@@ -49,7 +49,7 @@ public class ConsoleView extends GameView {
       }
       System.out.println();
 
-      if (step == GameEngine.Step.INVALID_HERO_SELECTION) {
+      if (gameEngine.getStep() == GameEngine.Step.INVALID_HERO_SELECTION) {
         System.out.println("Invalid hero selection. Please try again.");
       }
       System.out
@@ -64,11 +64,11 @@ public class ConsoleView extends GameView {
   }
 
   @Override
-  public void createHero(GameEngine.Step step) {
+  public void createHero() {
     System.out.println("ConsoleView > Creating hero...");
     try {
       clearConsole();
-      if (step == GameEngine.Step.INVALID_HERO_CREATION) {
+      if (gameEngine.getStep() == GameEngine.Step.INVALID_HERO_CREATION) {
         System.out.println("Invalid hero creation. Please try again.");
         System.out.println(
             "Hero name must be 3-20 characters long and can only contain alphanumeric characters and spaces.");
@@ -119,11 +119,11 @@ public class ConsoleView extends GameView {
 
   public void drawConsole() {
     try {
-      while (gameEngine.getCurrentStep() == GameEngine.Step.PLAYING
-          || gameEngine.getCurrentStep() == GameEngine.Step.INVALID_ACTION) {
+      while (gameEngine.getStep() == GameEngine.Step.PLAYING
+          || gameEngine.getStep() == GameEngine.Step.INVALID_ACTION) {
         clearConsole();
         drawMap();
-        if (gameEngine.getCurrentStep() == GameEngine.Step.INVALID_ACTION) {
+        if (gameEngine.getStep() == GameEngine.Step.INVALID_ACTION) {
           System.out.println("Invalid action. Please try again.");
           controller.onInvalidActionContinue();
         }

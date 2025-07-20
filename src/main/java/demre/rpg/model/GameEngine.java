@@ -32,17 +32,17 @@ public class GameEngine {
     FIGHT, RUN, KEEP, DROP
   }
 
-  private Step currentStep;
+  private Step step;
   private Hero hero;
   private List<Hero> heroes;
 
-  private int mapSize = 9; // Default map size
+  private int mapSize = 9; // Level 1 map size
 
   // Constructor
 
   public GameEngine()
       throws FileNotFoundException, IOException {
-    this.currentStep = Step.SPLASH_SCREEN;
+    this.step = Step.SPLASH_SCREEN;
     this.heroes = HeroLoader.loadHeroes();
     this.hero = null;
     System.out.println("GameEngine initialised.");
@@ -50,8 +50,8 @@ public class GameEngine {
 
   // Getters
 
-  public Step getCurrentStep() {
-    return currentStep;
+  public Step getStep() {
+    return step;
   }
 
   public Hero getHero() {
@@ -68,8 +68,8 @@ public class GameEngine {
 
   // Setters
 
-  public void setCurrentStep(Step step) {
-    this.currentStep = step;
+  public void setCurrentStep(Step newStep) {
+    this.step = newStep;
   }
 
   public void setHero(Hero hero) {
@@ -89,24 +89,24 @@ public class GameEngine {
   public void startGame(@NotNull GameView gameView) {
     System.out.println("GameEngine > Starting game...");
 
-    while (currentStep != Step.EXIT_GAME) {
+    while (step != Step.EXIT_GAME) {
 
-      if (currentStep == Step.SPLASH_SCREEN) {
+      if (step == Step.SPLASH_SCREEN) {
         // Show splash screen
         gameView.splashScreen();
-      } else if (currentStep == Step.SELECT_HERO
-          || currentStep == Step.INVALID_HERO_SELECTION) {
+      } else if (step == Step.SELECT_HERO
+          || step == Step.INVALID_HERO_SELECTION) {
         // Show hero selection screen
-        gameView.selectHero(currentStep);
-      } else if (currentStep == Step.CREATE_HERO
-          || currentStep == Step.INVALID_HERO_CREATION) {
+        gameView.selectHero();
+      } else if (step == Step.CREATE_HERO
+          || step == Step.INVALID_HERO_CREATION) {
         // Show hero creation screen
-        gameView.createHero(currentStep);
-      } else if (currentStep == Step.INFO) {
+        gameView.createHero();
+      } else if (step == Step.INFO) {
         // Show hero info screen
         gameView.showHero();
-      } else if (currentStep == Step.PLAYING
-          || currentStep == Step.INVALID_ACTION) {
+      } else if (step == Step.PLAYING
+          || step == Step.INVALID_ACTION) {
         // Update the view to reflect the current game state
         gameView.updateView();
       }

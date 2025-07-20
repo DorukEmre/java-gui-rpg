@@ -22,11 +22,11 @@ public class GUIView extends GameView {
   }
 
   @Override
-  public void selectHero(GameEngine.Step step) {
+  public void selectHero() {
   }
 
   @Override
-  public void createHero(GameEngine.Step step) {
+  public void createHero() {
   }
 
   @Override

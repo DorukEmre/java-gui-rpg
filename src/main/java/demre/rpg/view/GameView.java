@@ -15,9 +15,9 @@ public abstract class GameView {
 
   public abstract void splashScreen();
 
-  public abstract void selectHero(GameEngine.Step step);
+  public abstract void selectHero();
 
-  public abstract void createHero(GameEngine.Step step);
+  public abstract void createHero();
 
   public abstract void showHero();
 
