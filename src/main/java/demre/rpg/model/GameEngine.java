@@ -5,12 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 import demre.rpg.model.characters.Hero;
-import demre.rpg.model.characters.Mage;
-import demre.rpg.model.characters.Rogue;
-import demre.rpg.model.characters.Warrior;
-import demre.rpg.model.items.Armor;
-import demre.rpg.model.items.Helm;
-import demre.rpg.model.items.Weapon;
+import demre.rpg.util.CharacterFactory;
 import demre.rpg.view.GameView;
 import jakarta.validation.constraints.NotNull;
 
@@ -167,28 +162,28 @@ public class GameEngine {
 
   public void createHero(@NotNull String name, @NotNull String heroClass) {
     System.out.println("GameEngine > Creating hero: " + name);
+    Hero newHero;
+    CharacterFactory factory = CharacterFactory.getInstance();
 
     if (heroClass.equalsIgnoreCase("Mage")
         || heroClass.equalsIgnoreCase("mage")
         || heroClass.equalsIgnoreCase("m")) {
-      setHero(new Mage(
-          name, 1, 0, 5, 5, 10,
-          new Weapon("Wooden stick"), new Armor("Cloth armor"), new Helm("Paper hat")));
+      newHero = factory.newHero("Mage", name, 1, 0, 5, 5, 10, "Wooden stick", "Cloth armor", "Paper hat");
 
     } else if (heroClass.equalsIgnoreCase("Warrior")
         || heroClass.equalsIgnoreCase("warrior")
         || heroClass.equalsIgnoreCase("w")) {
-      setHero(new Warrior(
-          name, 1, 0, 5, 5, 10,
-          new Weapon("Wooden stick"), new Armor("Cloth armor"), new Helm("Paper hat")));
+      newHero = factory.newHero("Warrior", name, 1, 0, 5, 5, 10, "Wooden stick", "Cloth armor", "Paper hat");
 
     } else if (heroClass.equalsIgnoreCase("Rogue")
         || heroClass.equalsIgnoreCase("rogue")
         || heroClass.equalsIgnoreCase("r")) {
-      setHero(new Rogue(
-          name, 1, 0, 5, 5, 10,
-          new Weapon("Wooden stick"), new Armor("Cloth armor"), new Helm("Paper hat")));
+      newHero = factory.newHero("Rogue", name, 1, 0, 5, 5, 10, "Wooden stick", "Cloth armor", "Paper hat");
+    } else {
+      throw new IllegalArgumentException("Invalid hero class: " + heroClass);
     }
+
+    setHero(newHero);
 
     initialiseGameState();
 

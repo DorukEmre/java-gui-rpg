@@ -9,12 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import demre.rpg.model.characters.Hero;
-import demre.rpg.model.characters.Mage;
-import demre.rpg.model.characters.Rogue;
-import demre.rpg.model.characters.Warrior;
-import demre.rpg.model.items.Armor;
-import demre.rpg.model.items.Helm;
-import demre.rpg.model.items.Weapon;
+import demre.rpg.util.CharacterFactory;
 
 public class HeroLoader {
 
@@ -55,7 +50,7 @@ public class HeroLoader {
       String line;
 
       while ((line = br.readLine()) != null) {
-        Hero hero;
+
         System.out.println("Parsing line: " + line);
         // skip empty, whitespace only, or comment lines
         if (line.trim().isEmpty() || line.trim().startsWith("#")) {
@@ -80,19 +75,10 @@ public class HeroLoader {
         String armorName = components[8].trim();
         String helmName = components[9].trim();
 
-        // Create a new Hero object based on the parsed data
-        if (heroClass.equalsIgnoreCase("Mage")) {
-          hero = new Mage(name, level, experience, attack, defense, hitPoints,
-              new Weapon(weaponName), new Armor(armorName), new Helm(helmName));
-        } else if (heroClass.equalsIgnoreCase("Warrior")) {
-          hero = new Warrior(name, level, experience, attack, defense, hitPoints,
-              new Weapon(weaponName), new Armor(armorName), new Helm(helmName));
-        } else if (heroClass.equalsIgnoreCase("Rogue")) {
-          hero = new Rogue(name, level, experience, attack, defense, hitPoints,
-              new Weapon(weaponName), new Armor(armorName), new Helm(helmName));
-        } else {
-          throw new IllegalArgumentException("Unknown hero class: " + heroClass);
-        }
+        // Create hero using factory
+        CharacterFactory factory = CharacterFactory.getInstance();
+        Hero hero = factory.newHero(heroClass, name, level, experience,
+            attack, defense, hitPoints, weaponName, armorName, helmName);
 
         // Add the hero to the list
         heroes.add(hero);
