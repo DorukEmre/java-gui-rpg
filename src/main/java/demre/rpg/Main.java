@@ -11,26 +11,32 @@ public class Main {
 
   public static void main(String[] args) {
 
-    checkArgsAndGetGameMode(args);
+    try {
+      // Check command line arguments for game mode
+      checkArgsAndGetGameMode(args);
 
-    GameEngine gameEngine = new GameEngine();
+      GameEngine gameEngine = new GameEngine();
 
-    GameController gameController = new GameController(gameEngine);
-    gameController.initialiseGame();
+      GameController gameController = new GameController(gameEngine);
+      gameController.initialiseGame();
 
-    GameView gameView;
-    if (gameMode.equals("gui")) {
-      System.out.println("Starting GUI mode...");
-      // Initialise GUI components here
-      gameView = new GUIView(gameEngine, gameController);
-    } else {
-      System.out.println("Starting Console mode...");
-      // Initialise console components here
-      gameView = new ConsoleView(gameEngine, gameController);
+      GameView gameView;
+      if (gameMode.equals("gui")) {
+        System.out.println("Starting GUI mode...");
+        // Initialise GUI components here
+        gameView = new GUIView(gameEngine, gameController);
+      } else {
+        System.out.println("Starting Console mode...");
+        // Initialise console components here
+        gameView = new ConsoleView(gameEngine, gameController);
+      }
+
+      gameEngine.startGame(gameView);
+
+    } catch (Exception e) {
+      errorAndExit(e, e.getMessage());
+
     }
-
-    gameEngine.startGame(gameView);
-
     System.exit(0);
   }
 
@@ -41,9 +47,20 @@ public class Main {
     } else if (args.length == 1 && args[0].equals("console")) {
       gameMode = "console";
     } else {
-      System.out.println("Usage: java -jar swingy.jar [gui|console]");
-      System.exit(1);
+      throw new IllegalArgumentException(
+          "Usage: java -jar swingy.jar <gui|console>");
     }
     System.out.println("Hello, swingy in mode: " + gameMode);
+  }
+
+  /**
+   * Prints an error message and exits the program with a non-zero status.
+   * 
+   * @param message the error message to print
+   */
+  private static void errorAndExit(Exception e, String message) {
+    e.printStackTrace();
+    System.out.println("\u001B[31mError:\u001B[0m " + message);
+    System.exit(1);
   }
 }
