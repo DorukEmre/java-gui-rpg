@@ -59,6 +59,16 @@ public class ConsoleView extends GameView {
     try {
       System.out.println("Please enter your hero's name:");
       String heroName = scanner.nextLine();
+      if (heroName.isEmpty()) {
+        System.out.println("Hero name cannot be empty. Please try again.");
+        return;
+      } else if (heroName.length() > 20) {
+        System.out.println("Hero name is too long. Please enter a name with 20 characters or less.");
+        return;
+      } else if (!heroName.matches("[a-zA-Z0-9]+")) {
+        System.out.println("Hero name can only contain alphanumeric characters. Please try again.");
+        return;
+      }
       System.out.println("Hero '" + heroName + "' created successfully!");
       System.out.println("Press Enter to continue...");
       scanner.nextLine();
