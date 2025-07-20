@@ -46,6 +46,10 @@ public class GUIView extends GameView {
   }
 
   @Override
+  public void showEnemyRunFailure() {
+  }
+
+  @Override
   public void showItemFound() {
   }
 

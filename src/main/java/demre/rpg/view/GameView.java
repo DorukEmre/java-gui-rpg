@@ -25,6 +25,8 @@ public abstract class GameView {
 
   public abstract void showEnemyEncounter();
 
+  public abstract void showEnemyRunFailure();
+
   public abstract void showItemFound();
 
   public abstract void showVictoryScreen();

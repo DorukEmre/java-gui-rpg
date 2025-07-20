@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 import demre.rpg.model.characters.Hero;
+import demre.rpg.model.characters.Villain;
 import demre.rpg.model.map.Tile;
 import demre.rpg.util.CharacterFactory;
 import demre.rpg.view.GameView;
@@ -17,8 +18,10 @@ public class GameEngine {
     CREATE_HERO, INVALID_HERO_CREATION,
     INFO,
     PLAYING, INVALID_ACTION,
-    ENEMY_ENCOUNTER, ITEM_FOUND,
-    VICTORY, DEAD,
+    ENEMY_ENCOUNTER, ENEMY_INVALID_ACTION,
+    ENEMY_FIGHT_SUCCESS, ENEMY_RUN_SUCCESS, ENEMY_RUN_FAILURE,
+    ITEM_FOUND, ITEM_INVALID_ACTION,
+    VICTORY, GAME_OVER,
     EXIT_GAME
   }
 
@@ -37,8 +40,10 @@ public class GameEngine {
   private Step step;
   private Hero hero;
   private List<Hero> heroes;
+  private List<Villain> villains;
   private Special event;
   private Tile[][] map;
+  private Tile[] fightTiles; // Tiles involved in a fight, Hero at 0, Enemy at 1
 
   private int mapSize = 9; // Level 1 map size
 
@@ -50,6 +55,7 @@ public class GameEngine {
     this.heroes = HeroLoader.loadHeroes();
     this.hero = null;
     this.event = Special.NONE;
+    this.fightTiles = new Tile[2]; // 0: Hero, 1: Enemy
     System.out.println("GameEngine initialised.");
   }
 
@@ -67,6 +73,19 @@ public class GameEngine {
     return heroes;
   }
 
+  public List<Villain> getVillains() {
+    return villains;
+  }
+
+  public Villain getVillainAtCoord(int x, int y) {
+    for (Villain villain : villains) {
+      if (villain.getXCoord() == x && villain.getYCoord() == y) {
+        return villain;
+      }
+    }
+    return null;
+  }
+
   public int getMapSize() {
     return mapSize;
   }
@@ -77,6 +96,10 @@ public class GameEngine {
 
   public Special getEvent() {
     return event;
+  }
+
+  public Tile[] getFightTiles() {
+    return fightTiles;
   }
 
   // Setters
@@ -93,8 +116,21 @@ public class GameEngine {
     this.heroes = heroes;
   }
 
+  public void setVillains(List<Villain> villains) {
+    this.villains = villains;
+  }
+
   public void setMapSize(int mapSize) {
     this.mapSize = mapSize;
+  }
+
+  public void setEvent(Special event) {
+    this.event = event;
+  }
+
+  public void setFightTiles(Tile heroTile, Tile enemyTile) {
+    this.fightTiles[0] = heroTile;
+    this.fightTiles[1] = enemyTile;
   }
 
   // Methods
@@ -103,6 +139,7 @@ public class GameEngine {
     System.out.println("GameEngine > Starting game...");
 
     while (step != Step.EXIT_GAME) {
+      System.out.println("GameEngine > Current step: " + step);
 
       if (step == Step.SPLASH_SCREEN) {
         // Show splash screen
@@ -119,16 +156,22 @@ public class GameEngine {
         // Show hero info screen
         gameView.showHero();
       } else if (step == Step.PLAYING
-          || step == Step.INVALID_ACTION) {
+          || step == Step.INVALID_ACTION
+          || step == Step.ENEMY_FIGHT_SUCCESS
+          || step == Step.ENEMY_RUN_SUCCESS) {
         // Update the view to reflect the current game state
         gameView.updateView();
-      } else if (step == Step.ENEMY_ENCOUNTER) {
+      } else if (step == Step.ENEMY_ENCOUNTER
+          || step == Step.ENEMY_INVALID_ACTION) {
         gameView.showEnemyEncounter();
-      } else if (step == Step.ITEM_FOUND) {
+      } else if (step == Step.ENEMY_RUN_FAILURE) {
+        gameView.showEnemyRunFailure();
+      } else if (step == Step.ITEM_FOUND
+          || step == Step.ITEM_INVALID_ACTION) {
         gameView.showItemFound();
       } else if (step == Step.VICTORY) {
         gameView.showVictoryScreen();
-      } else if (step == Step.DEAD) {
+      } else if (step == Step.GAME_OVER) {
         gameView.showGameOver();
       }
     }
@@ -246,6 +289,10 @@ public class GameEngine {
     // Set the hero's starting position
     Tile heroTile = map[hero.getYCoord() + 1][hero.getXCoord() + 1];
     heroTile.assignHero();
+
+    // Hard coded one enemy
+    Tile enemyTile = map[3][5];
+    enemyTile.assignEnemy();
   }
 
   public boolean isValidDirection(String input) {
@@ -268,28 +315,40 @@ public class GameEngine {
     Direction direction = parseDirection(input);
     System.out.println("Detected direction: " + direction);
 
-    Tile heroTile = map[hero.getYCoord() + 1][hero.getXCoord() + 1];
-    heroTile.assignGrass();
+    int heroX = hero.getXCoord();
+    int heroY = hero.getYCoord();
+    Tile currentHeroTile = map[heroY + 1][heroX + 1];
 
-    if (direction == Direction.NORTH && hero.getYCoord() > 0) {
-      hero.setYCoord(hero.getYCoord() - 1);
+    int newX = heroX;
+    int newY = heroY;
+
+    if (direction == Direction.NORTH) {
+      newY = heroY - 1;
     } else if (direction == Direction.SOUTH) {
-      hero.setYCoord(hero.getYCoord() + 1);
+      newY = heroY + 1;
     } else if (direction == Direction.EAST) {
-      hero.setXCoord(hero.getXCoord() + 1);
+      newX = heroX + 1;
     } else if (direction == Direction.WEST) {
-      hero.setXCoord(hero.getXCoord() - 1);
+      newX = heroX - 1;
     }
-    heroTile = map[hero.getYCoord() + 1][hero.getXCoord() + 1];
-    if (heroTile.getType().equals("Wall")) {
-      event = Special.VICTORY;
-    } else if (heroTile.getType().equals("Enemy")) {
+
+    Tile targetTile = map[newY + 1][newX + 1];
+    if (targetTile.getType().equals("Enemy")) {
       event = Special.ENEMY;
+      targetTile.setVisible(true);
+      setFightTiles(currentHeroTile, targetTile);
       return;
+    } else if (targetTile.getType().equals("Wall")) {
+      event = Special.VICTORY;
+      hero.setXCoord(newX);
+      hero.setYCoord(newY);
     } else {
       event = Special.NONE;
+      currentHeroTile.assignGrass();
+      hero.setXCoord(newX);
+      hero.setYCoord(newY);
     }
-    heroTile.assignHero();
+    targetTile.assignHero();
 
   }
 
@@ -310,6 +369,48 @@ public class GameEngine {
       default:
         throw new IllegalArgumentException("Invalid direction: " + input);
     }
+  }
+
+  public boolean fightEnemy() {
+    System.out.println("GameEngine > Fighting enemy...");
+
+    Hero hero = getHero();
+    Tile heroTile = getFightTiles()[0];
+    Tile enemyTile = getFightTiles()[1];
+    // Villain villain = getVillainAtCoord(enemyTile.getX(), enemyTile.getY());
+    // if (villain == null) {
+    // System.out.println("No enemy found at the specified coordinates.");
+    // return false;
+    // }
+    // villain.getHitPoints();
+
+    hero.setHitPoints(hero.getHitPoints() - 1); // Example: reduce HP by 1
+    if (hero.getHitPoints() <= 0) {
+      return false;
+    } else {
+      // else if (villain.getHitPoints() <= 0) {
+      System.out.println("Enemy defeated!");
+      // Move the hero to the enemy's tile
+      System.out.println("Herotile coordinates: " + heroTile.getX() + ", " + heroTile.getY());
+      System.out.println("Enemytile coordinates: " + enemyTile.getX() + ", " + enemyTile.getY());
+      System.out.println("Hero coordinates: " + hero.getXCoord() + ", " + hero.getYCoord());
+      // Assign the hero to the enemy tile and grass to the hero
+      enemyTile.assignHero();
+      heroTile.assignGrass();
+      hero.setXCoord(enemyTile.getX() - 1);
+      hero.setYCoord(enemyTile.getY() - 1);
+      // Remove the enemy from the villains list
+      // villains.remove(villain);
+      return true;
+    }
+    // return true;
+    // return false;
+  }
+
+  public boolean runFromEnemy() {
+    System.out.println("GameEngine > Running from enemy...");
+    // return true;
+    return false;
   }
 
 }

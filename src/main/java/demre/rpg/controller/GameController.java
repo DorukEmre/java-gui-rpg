@@ -83,6 +83,7 @@ public class GameController {
       gameEngine.movePlayer(input);
 
       Special event = gameEngine.getEvent();
+      System.out.println("GameController > Event after move: " + event);
       if (event == Special.ENEMY) {
         gameEngine.setCurrentStep(GameEngine.Step.ENEMY_ENCOUNTER);
       } else if (event == Special.VICTORY) {
@@ -97,9 +98,32 @@ public class GameController {
     gameEngine.setCurrentStep(GameEngine.Step.PLAYING);
   }
 
-  public void onEnemyEncounterContinue() {
-    System.out.println("GameController > Enemy encounter continue pressed.");
+  public void onSuccessfulActionContinue() {
     gameEngine.setCurrentStep(GameEngine.Step.PLAYING);
+  }
+
+  public void onEnemyEncounterContinue(String choice) {
+    System.out.println("GameController > Enemy encounter choice: " + choice);
+    Boolean success;
+    if (choice.equalsIgnoreCase("fight") || choice.equalsIgnoreCase("f")) {
+      success = gameEngine.fightEnemy();
+      if (success) {
+        gameEngine.setCurrentStep(GameEngine.Step.ENEMY_FIGHT_SUCCESS);
+      } else {
+        gameEngine.setCurrentStep(GameEngine.Step.GAME_OVER);
+      }
+    } else if (choice.equalsIgnoreCase("run") || choice.equalsIgnoreCase("r")) {
+      success = gameEngine.runFromEnemy();
+      if (success) {
+        gameEngine.setCurrentStep(GameEngine.Step.ENEMY_RUN_SUCCESS);
+      } else {
+        gameEngine.setCurrentStep(GameEngine.Step.ENEMY_RUN_FAILURE);
+      }
+    } else if (choice.equalsIgnoreCase("exit")) {
+      gameEngine.setCurrentStep(GameEngine.Step.EXIT_GAME);
+    } else {
+      gameEngine.setCurrentStep(GameEngine.Step.ENEMY_INVALID_ACTION);
+    }
   }
 
   public void onItemFoundContinue() {

@@ -115,25 +115,27 @@ public class ConsoleView extends GameView {
   @Override
   public void updateView() {
     System.out.println("ConsoleView > Updating console view...");
-    drawConsole();
-  }
 
-  private void drawConsole() {
+    GameEngine.Step step = gameEngine.getStep();
+
     try {
-      while (gameEngine.getStep() == GameEngine.Step.PLAYING
-          || gameEngine.getStep() == GameEngine.Step.INVALID_ACTION) {
-        clearConsole();
-        drawMap();
-        if (gameEngine.getStep() == GameEngine.Step.INVALID_ACTION) {
-          System.out.println("Invalid action. Please try again.");
-          controller.onInvalidActionContinue();
-        }
-        System.out.println(
-            "(N)orth, (S)outh, (E)ast, (W)est, 'info' or 'exit'.");
-        String input = scanner.nextLine();
-        controller.onMapInputContinue(input);
-
+      clearConsole();
+      drawMap();
+      if (step == GameEngine.Step.INVALID_ACTION) {
+        System.out.println("Invalid action. Please try again.");
+        controller.onInvalidActionContinue();
+      } else if (step == GameEngine.Step.ENEMY_FIGHT_SUCCESS) {
+        System.out.println("You defeated the enemy!");
+        controller.onSuccessfulActionContinue();
+      } else if (step == GameEngine.Step.ENEMY_RUN_SUCCESS) {
+        System.out.println("You successfully ran away from the enemy!");
+        controller.onSuccessfulActionContinue();
       }
+      System.out.println(
+          "(N)orth, (S)outh, (E)ast, (W)est, 'info' or 'exit'.");
+      String input = scanner.nextLine();
+      controller.onMapInputContinue(input);
+
     } catch (Exception e) {
       System.err.println("Error during console drawing: " + e.getMessage());
 
@@ -176,6 +178,32 @@ public class ConsoleView extends GameView {
 
   @Override
   public void showEnemyEncounter() {
+    System.out.println("ConsoleView > Enemy encounter screen...");
+    try {
+      clearConsole();
+      drawMap();
+      System.out.println("You encounter an enemy!");
+      System.out.println("(f)ight or (r)un");
+      String enemy_choice = scanner.nextLine();
+      controller.onEnemyEncounterContinue(enemy_choice);
+    } catch (Exception e) {
+      System.err.println("Error during enemy encounter: " + e.getMessage());
+    }
+  }
+
+  @Override
+  public void showEnemyRunFailure() {
+    System.out.println("ConsoleView > Enemy run failure screen...");
+    try {
+      clearConsole();
+      drawMap();
+      System.out.println("You failed to run away from the enemy!");
+      System.out.println("You have to fight. Press Enter.");
+      scanner.nextLine();
+      controller.onEnemyEncounterContinue("fight");
+    } catch (Exception e) {
+      System.err.println("Error during enemy run failure: " + e.getMessage());
+    }
   }
 
   @Override

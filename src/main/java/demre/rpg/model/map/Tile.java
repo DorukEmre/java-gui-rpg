@@ -74,4 +74,8 @@ public class Tile {
     this.symbol = ".";
   }
 
+  public void assignEnemy() {
+    this.type = "Enemy";
+    this.symbol = "X";
+  }
 }
