@@ -5,17 +5,13 @@ import demre.rpg.model.GameEngine;
 public class GameController {
   private final GameEngine gameEngine;
 
-  public enum Direction {
-    NORTH, SOUTH, EAST, WEST
-  }
-
-  public enum Action {
-    FIGHT, RUN, KEEP, DROP
-  }
+  // Constructor
 
   public GameController(GameEngine gameEngine) {
     this.gameEngine = gameEngine;
   }
+
+  // Methods
 
   public void initialiseGame() {
     System.out.println("GameController initialised with engine: " + gameEngine);
@@ -28,7 +24,11 @@ public class GameController {
 
   public void onSelectHeroContinue(String heroSelection) {
     System.out.println("GameController > Hero selection input: " + heroSelection);
-    // Logic to handle hero selection
+    if (heroSelection.equalsIgnoreCase("exit")) {
+      gameEngine.setCurrentStep(GameEngine.Step.EXIT_GAME);
+      return;
+    }
+
     // if heroSelection = num that exists in the list, then set the hero
     if (gameEngine.isValidHeroSelection(heroSelection)) {
       gameEngine.selectHero(heroSelection);
@@ -47,6 +47,11 @@ public class GameController {
   public void onCreateHeroContinue(String heroName, String heroClass) {
     System.out.println("GameController > Hero creation input: " + heroName);
 
+    if (heroClass.equalsIgnoreCase("exit")) {
+      gameEngine.setCurrentStep(GameEngine.Step.EXIT_GAME);
+      return;
+    }
+
     if (gameEngine.isValidHeroName(heroName) && gameEngine.isValidHeroClass(heroClass)) {
       gameEngine.createHero(heroName, heroClass);
       gameEngine.setCurrentStep(GameEngine.Step.INFO);
@@ -64,32 +69,24 @@ public class GameController {
     gameEngine.setCurrentStep(GameEngine.Step.PLAYING);
   }
 
-  // Receive user input and inform the game engine
-  public void handleUserInput(String input) {
-    System.out.println("GameController > Handling user input: " + input);
+  public void onMapInputContinue(String input) {
+    System.out.println("GameController > Player input: " + input);
 
-    try {
-      Direction direction = Direction.valueOf(input.toUpperCase());
-      System.out.println("Detected direction: " + direction);
-      // Handle direction input
-      gameEngine.movePlayer(direction);
+    if (input.equalsIgnoreCase("exit")) {
+      gameEngine.setCurrentStep(GameEngine.Step.EXIT_GAME);
       return;
-
-    } catch (IllegalArgumentException e) {
-      // Not a direction
-    }
-
-    try {
-      Action action = Action.valueOf(input.toUpperCase());
-      System.out.println("Detected action: " + action);
-      // Handle action input
-      gameEngine.doPlayerAction(action);
+    } else if (input.equalsIgnoreCase("info")) {
+      gameEngine.setCurrentStep(GameEngine.Step.INFO);
       return;
-
-    } catch (IllegalArgumentException e) {
-      // Not an action
+    } else if (gameEngine.isValidDirection(input)) {
+      gameEngine.movePlayer(input);
+    } else {
+      gameEngine.setCurrentStep(GameEngine.Step.INVALID_ACTION);
     }
+  }
 
+  public void onInvalidActionContinue() {
+    gameEngine.setCurrentStep(GameEngine.Step.PLAYING);
   }
 
 }

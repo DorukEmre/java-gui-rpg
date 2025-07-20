@@ -119,18 +119,19 @@ public class ConsoleView extends GameView {
 
   public void drawConsole() {
     try {
-      while (true) {
+      while (gameEngine.getCurrentStep() == GameEngine.Step.PLAYING
+          || gameEngine.getCurrentStep() == GameEngine.Step.INVALID_ACTION) {
         clearConsole();
         drawMap();
+        if (gameEngine.getCurrentStep() == GameEngine.Step.INVALID_ACTION) {
+          System.out.println("Invalid action. Please try again.");
+          controller.onInvalidActionContinue();
+        }
         System.out.println(
             "(N)orth, (S)outh, (E)ast, (W)est, 'info' or 'exit'.");
         String input = scanner.nextLine();
-        if ("exit".equalsIgnoreCase(input.trim())) {
-          System.out.println("Goodbye!");
-          break;
-        }
-        System.out.println("You entered: " + input);
-        pause();
+        controller.onMapInputContinue(input);
+
       }
     } catch (Exception e) {
       System.err.println("Error during console drawing: " + e.getMessage());
@@ -141,12 +142,6 @@ public class ConsoleView extends GameView {
   private static void clearConsole() {
     System.out.print("\033[H\033[2J");
     System.out.flush();
-  }
-
-  // Optional pause so the user can see the output before the screen clears
-  private static void pause() {
-    System.out.println("\nPress Enter to continue...");
-    new Scanner(System.in).nextLine();
   }
 
   private void drawMap() {
@@ -160,8 +155,7 @@ public class ConsoleView extends GameView {
     // Level: 8, Map Size: 45x45
     // Level: 9, Map Size: 49x49
 
-    int level = 3;
-    int side = (level - 1) * 5 + 10 - (level % 2);
+    int side = gameEngine.getMapSize();
 
     char[][] map = new char[side + 2][side + 2];
 
@@ -174,10 +168,11 @@ public class ConsoleView extends GameView {
         }
       }
     }
-
-    int heroX = (side + 1) / 2;
-    int heroY = (side + 1) / 2;
+    int heroX = gameEngine.getHero().getXCoord() + 1;
+    int heroY = gameEngine.getHero().getYCoord() + 1;
     map[heroY][heroX] = '@';
+
+    System.out.println("Level: " + gameEngine.getHero().getLevel() + ", Map Size: " + side + "x" + side);
 
     for (int i = 0; i < side + 2; i++) {
       for (int j = 0; j < side + 2; j++) {

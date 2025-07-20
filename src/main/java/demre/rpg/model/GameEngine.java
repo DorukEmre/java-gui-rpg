@@ -1,12 +1,9 @@
 package demre.rpg.model;
 
-import demre.rpg.controller.GameController.Direction;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
-import demre.rpg.controller.GameController.Action;
 import demre.rpg.model.characters.Hero;
 import demre.rpg.model.characters.Mage;
 import demre.rpg.model.characters.Rogue;
@@ -23,12 +20,23 @@ public class GameEngine {
     SELECT_HERO, INVALID_HERO_SELECTION,
     CREATE_HERO, INVALID_HERO_CREATION,
     INFO,
-    PLAYING, EXIT_GAME
+    PLAYING, INVALID_ACTION,
+    EXIT_GAME
+  }
+
+  public enum Direction {
+    NORTH, SOUTH, EAST, WEST
+  }
+
+  public enum Action {
+    FIGHT, RUN, KEEP, DROP
   }
 
   private Step currentStep;
   private Hero hero;
   private List<Hero> heroes;
+
+  private int mapSize = 9; // Default map size
 
   // Constructor
 
@@ -54,6 +62,10 @@ public class GameEngine {
     return heroes;
   }
 
+  public int getMapSize() {
+    return mapSize;
+  }
+
   // Setters
 
   public void setCurrentStep(Step step) {
@@ -66,6 +78,10 @@ public class GameEngine {
 
   public void setHeroes(List<Hero> heroes) {
     this.heroes = heroes;
+  }
+
+  public void setMapSize(int mapSize) {
+    this.mapSize = mapSize;
   }
 
   // Methods
@@ -89,7 +105,8 @@ public class GameEngine {
       } else if (currentStep == Step.INFO) {
         // Show hero info screen
         gameView.showHero();
-      } else if (currentStep == Step.PLAYING) {
+      } else if (currentStep == Step.PLAYING
+          || currentStep == Step.INVALID_ACTION) {
         // Update the view to reflect the current game state
         gameView.updateView();
       }
@@ -141,7 +158,10 @@ public class GameEngine {
     System.out.println("GameEngine > Selecting hero: " + selection);
 
     int index = Integer.parseInt(selection) - 1;
-    this.hero = heroes.get(index);
+    setHero(heroes.get(index));
+
+    initialiseGameState();
+
     System.out.println("Hero selected: " + hero.getName());
   }
 
@@ -151,36 +171,88 @@ public class GameEngine {
     if (heroClass.equalsIgnoreCase("Mage")
         || heroClass.equalsIgnoreCase("mage")
         || heroClass.equalsIgnoreCase("m")) {
-      this.hero = new Mage(
+      setHero(new Mage(
           name, 1, 0, 5, 5, 10,
-          new Weapon("Wooden stick"), new Armor("Cloth armor"), new Helm("Paper hat"));
+          new Weapon("Wooden stick"), new Armor("Cloth armor"), new Helm("Paper hat")));
 
     } else if (heroClass.equalsIgnoreCase("Warrior")
         || heroClass.equalsIgnoreCase("warrior")
         || heroClass.equalsIgnoreCase("w")) {
-      this.hero = new Warrior(
+      setHero(new Warrior(
           name, 1, 0, 5, 5, 10,
-          new Weapon("Wooden stick"), new Armor("Cloth armor"), new Helm("Paper hat"));
+          new Weapon("Wooden stick"), new Armor("Cloth armor"), new Helm("Paper hat")));
 
     } else if (heroClass.equalsIgnoreCase("Rogue")
         || heroClass.equalsIgnoreCase("rogue")
         || heroClass.equalsIgnoreCase("r")) {
-      this.hero = new Rogue(
+      setHero(new Rogue(
           name, 1, 0, 5, 5, 10,
-          new Weapon("Wooden stick"), new Armor("Cloth armor"), new Helm("Paper hat"));
+          new Weapon("Wooden stick"), new Armor("Cloth armor"), new Helm("Paper hat")));
+    }
+
+    initialiseGameState();
+
+  }
+
+  private void initialiseGameState() {
+    int side = (hero.getLevel() - 1) * 5 + 10 - (hero.getLevel() % 2);
+    setMapSize(side);
+
+    hero.setXCoord(side / 2);
+    hero.setYCoord(side / 2);
+
+    // generateEnnemies();
+  }
+
+  public boolean isValidDirection(String input) {
+    return (input.equalsIgnoreCase("N")
+        || input.equalsIgnoreCase("S")
+        || input.equalsIgnoreCase("E")
+        || input.equalsIgnoreCase("W")
+        || input.equalsIgnoreCase("n")
+        || input.equalsIgnoreCase("s")
+        || input.equalsIgnoreCase("e")
+        || input.equalsIgnoreCase("w")
+        || input.equalsIgnoreCase("North")
+        || input.equalsIgnoreCase("South")
+        || input.equalsIgnoreCase("East")
+        || input.equalsIgnoreCase("West"));
+  }
+
+  public void movePlayer(String input) {
+
+    Direction direction = parseDirection(input);
+    System.out.println("Detected direction: " + direction);
+
+    if (direction == Direction.NORTH && hero.getYCoord() > 0) {
+      hero.setYCoord(hero.getYCoord() - 1);
+    } else if (direction == Direction.SOUTH) {
+      hero.setYCoord(hero.getYCoord() + 1);
+    } else if (direction == Direction.EAST) {
+      hero.setXCoord(hero.getXCoord() + 1);
+    } else if (direction == Direction.WEST) {
+      hero.setXCoord(hero.getXCoord() - 1);
     }
 
   }
 
-  public void movePlayer(Direction direction) {
-    // Logic to move the player in the specified direction
-    System.out.println("GameEngine > Moving player in direction: " + direction.name());
-    // e.g., update hero's position based on direction
+  private Direction parseDirection(String input) {
+    switch (input.toUpperCase()) {
+      case "N":
+      case "NORTH":
+        return Direction.NORTH;
+      case "S":
+      case "SOUTH":
+        return Direction.SOUTH;
+      case "E":
+      case "EAST":
+        return Direction.EAST;
+      case "W":
+      case "WEST":
+        return Direction.WEST;
+      default:
+        throw new IllegalArgumentException("Invalid direction: " + input);
+    }
   }
 
-  public void doPlayerAction(Action action) {
-    // Logic to perform an action with the player
-    System.out.println("GameEngine > Performing action: " + action.name());
-    // e.g., handle fight, run, keep, or drop actions
-  }
 }
