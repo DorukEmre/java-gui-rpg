@@ -260,8 +260,13 @@ public class ConsoleView extends GameView {
     try {
       clearConsole();
       System.out.println(AsciiArt.VICTORY);
-      scanner.nextLine();
-      controller.onVictoryScreenContinue();
+      System.out.println();
+      if (gameEngine.getStep() == GameEngine.Step.VICTORY_INVALID_ACTION) {
+        System.out.println("Invalid action. Please try again.");
+      }
+      System.out.println("(n)ext mission or (e)xit game");
+      String choice = scanner.nextLine();
+      controller.onVictoryScreenContinue(choice);
     } catch (Exception e) {
       System.err.println("Error during victory screen: " + e.getMessage());
     }
@@ -272,8 +277,13 @@ public class ConsoleView extends GameView {
     try {
       clearConsole();
       System.out.println(AsciiArt.DIED);
-      scanner.nextLine();
-      controller.onGameOverContinue();
+      System.out.println();
+      if (gameEngine.getStep() == GameEngine.Step.GAME_OVER_INVALID_ACTION) {
+        System.out.println("Invalid action. Please try again.");
+      }
+      System.out.println("(t)ry again or (e)xit game");
+      String choice = scanner.nextLine();
+      controller.onGameOverContinue(choice);
     } catch (Exception e) {
       System.err.println("Error during game over screen: " + e.getMessage());
     }

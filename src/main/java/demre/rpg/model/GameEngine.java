@@ -25,11 +25,11 @@ public class GameEngine {
     SELECT_HERO, INVALID_HERO_SELECTION,
     CREATE_HERO, INVALID_HERO_CREATION,
     INFO,
-    PLAYING, INVALID_ACTION,
+    NEW_MISSION, PLAYING, INVALID_ACTION,
     ENEMY_ENCOUNTER, ENEMY_INVALID_ACTION,
     ENEMY_FIGHT_SUCCESS, ENEMY_RUN_SUCCESS, ENEMY_RUN_FAILURE, LEVEL_UP,
     ITEM_FOUND, ITEM_FOUND_AND_LEVEL_UP, ITEM_INVALID_ACTION,
-    VICTORY, GAME_OVER,
+    VICTORY, VICTORY_INVALID_ACTION, GAME_OVER, GAME_OVER_INVALID_ACTION,
     EXIT_GAME
   }
 
@@ -43,6 +43,7 @@ public class GameEngine {
 
   private Step step;
   private Hero hero;
+  private Hero initialHeroState; // For resetting the hero
   private List<Hero> heroes;
   private List<Villain> villains;
   private Special event;
@@ -57,6 +58,7 @@ public class GameEngine {
       throws FileNotFoundException, IOException {
     this.step = Step.SPLASH_SCREEN;
     this.hero = null;
+    this.initialHeroState = null;
     this.heroes = HeroLoader.loadHeroes();
     this.villains = new ArrayList<>();
     this.event = Special.NONE;
@@ -72,6 +74,10 @@ public class GameEngine {
 
   public Hero getHero() {
     return hero;
+  }
+
+  public Hero getInitialHeroState() {
+    return initialHeroState;
   }
 
   public List<Hero> getHeroes() {
@@ -121,6 +127,10 @@ public class GameEngine {
     this.hero = hero;
   }
 
+  public void setInitialHeroState(Hero hero) {
+    this.initialHeroState = hero.copy();
+  }
+
   public void setHeroes(List<Hero> heroes) {
     this.heroes = heroes;
   }
@@ -165,7 +175,8 @@ public class GameEngine {
           || step == Step.INVALID_HERO_CREATION) {
         // Show hero creation screen
         gameView.createHero();
-      } else if (step == Step.INFO) {
+      } else if (step == Step.NEW_MISSION
+          || step == Step.INFO) {
         // Show hero info screen
         gameView.showHero();
       } else if (step == Step.PLAYING
@@ -184,9 +195,11 @@ public class GameEngine {
           || step == Step.ITEM_FOUND_AND_LEVEL_UP
           || step == Step.ITEM_INVALID_ACTION) {
         gameView.showItemFound();
-      } else if (step == Step.VICTORY) {
+      } else if (step == Step.VICTORY
+          || step == Step.VICTORY_INVALID_ACTION) {
         gameView.showVictoryScreen();
-      } else if (step == Step.GAME_OVER) {
+      } else if (step == Step.GAME_OVER
+          || step == Step.GAME_OVER_INVALID_ACTION) {
         gameView.showGameOver();
       }
     }
@@ -233,10 +246,7 @@ public class GameEngine {
 
     int index = Integer.parseInt(selection) - 1;
     setHero(heroes.get(index));
-
-    initialiseGameState();
-
-    System.out.println("GameEngine > Hero selected: " + hero.getName());
+    setInitialHeroState(heroes.get(index));
   }
 
   public void createHero(@NotNull String name, @NotNull String heroClass) {
@@ -260,9 +270,23 @@ public class GameEngine {
     }
 
     setHero(newHero);
+    setInitialHeroState(newHero);
+  }
 
+  public void newMission(String reason) {
+    System.out.println("GameEngine > Starting new mission...: " + reason);
+    if (reason.equals("start")) {
+    } else if (reason.equals("reset")) {
+      setHero(getInitialHeroState().copy());
+    } else if (reason.equals("continue")) {
+    } else {
+      throw new IllegalArgumentException(
+          "Invalid reason for new mission: " + reason);
+    }
+    villains.clear();
+    event = Special.NONE;
+    fightTiles = new Tile[2];
     initialiseGameState();
-
   }
 
   private void initialiseGameState() {
@@ -553,7 +577,7 @@ public class GameEngine {
   private Boolean checkForItemFound(Villain villain) {
     System.out.println("GameEngine > Checking for item found...");
     // 20% chance to find an item
-    if (Math.random() < 1) {
+    if (Math.random() < 0.2) {
       System.out.println("GameEngine > Item found!");
       // Randomly select an item from the villain's items
       Item[] villainItems = {

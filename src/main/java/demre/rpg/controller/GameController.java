@@ -33,7 +33,8 @@ public class GameController {
     // if heroSelection = num that exists in the list, then set the hero
     if (gameEngine.isValidHeroSelection(heroSelection)) {
       gameEngine.selectHero(heroSelection);
-      gameEngine.setCurrentStep(GameEngine.Step.INFO);
+      gameEngine.newMission("start");
+      gameEngine.setCurrentStep(GameEngine.Step.NEW_MISSION);
     }
     // heroSelection is 'new', set the step to CREATE_HERO
     else if (heroSelection.equalsIgnoreCase("new")
@@ -55,7 +56,8 @@ public class GameController {
 
     if (gameEngine.isValidHeroName(heroName) && gameEngine.isValidHeroClass(heroClass)) {
       gameEngine.createHero(heroName, heroClass);
-      gameEngine.setCurrentStep(GameEngine.Step.INFO);
+      gameEngine.newMission("start");
+      gameEngine.setCurrentStep(GameEngine.Step.NEW_MISSION);
       System.out.println(
           "onCreateHeroContinue > Hero " + heroClass + " '" + heroName + "' created successfully!");
     } else {
@@ -147,13 +149,29 @@ public class GameController {
     }
   }
 
-  public void onVictoryScreenContinue() {
+  public void onVictoryScreenContinue(String choice) {
     System.out.println("GameController > Victory screen continue pressed.");
-    gameEngine.setCurrentStep(GameEngine.Step.EXIT_GAME);
+    if (choice.equalsIgnoreCase("next")
+        || choice.equalsIgnoreCase("n")) {
+      gameEngine.newMission("continue");
+      gameEngine.setCurrentStep(GameEngine.Step.NEW_MISSION);
+    } else if (choice.equalsIgnoreCase("exit")) {
+      gameEngine.setCurrentStep(GameEngine.Step.EXIT_GAME);
+    } else {
+      gameEngine.setCurrentStep(GameEngine.Step.VICTORY_INVALID_ACTION);
+    }
   }
 
-  public void onGameOverContinue() {
+  public void onGameOverContinue(String choice) {
     System.out.println("GameController > Game over continue pressed.");
-    gameEngine.setCurrentStep(GameEngine.Step.EXIT_GAME);
+    if (choice.equalsIgnoreCase("try")
+        || choice.equalsIgnoreCase("t")) {
+      gameEngine.newMission("reset");
+      gameEngine.setCurrentStep(GameEngine.Step.NEW_MISSION);
+    } else if (choice.equalsIgnoreCase("exit")) {
+      gameEngine.setCurrentStep(GameEngine.Step.EXIT_GAME);
+    } else {
+      gameEngine.setCurrentStep(GameEngine.Step.VICTORY_INVALID_ACTION);
+    }
   }
 }
