@@ -92,4 +92,22 @@ public abstract class Hero extends AbstractCharacter {
     this.helm = helm;
   }
 
+  // Methods
+
+  public String toString() {
+    return "Hero\t{" +
+        "name='" + getName() + '\'' +
+        ", class='" + heroClass + '\'' +
+        ", level=" + getLevel() +
+        ", experience=" + experience +
+        ", attack=" + getAttack() +
+        ", defense=" + getDefense() +
+        ", hp=" + getHitPoints() +
+        ", weapon=" + weapon.getName() +
+        ", armor=" + armor.getName() +
+        ", helm=" + helm.getName() +
+        ", at (" + getXCoord() + ", " + getYCoord() + ")" +
+        '}';
+  }
+
 }

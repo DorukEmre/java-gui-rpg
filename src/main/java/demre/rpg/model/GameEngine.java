@@ -2,7 +2,11 @@ package demre.rpg.model;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.awt.Point;
 
 import demre.rpg.model.characters.Hero;
 import demre.rpg.model.characters.Villain;
@@ -52,8 +56,9 @@ public class GameEngine {
   public GameEngine()
       throws FileNotFoundException, IOException {
     this.step = Step.SPLASH_SCREEN;
-    this.heroes = HeroLoader.loadHeroes();
     this.hero = null;
+    this.heroes = HeroLoader.loadHeroes();
+    this.villains = new ArrayList<>();
     this.event = Special.NONE;
     this.fightTiles = new Tile[2]; // 0: Hero, 1: Enemy
     System.out.println("GameEngine initialised.");
@@ -265,20 +270,27 @@ public class GameEngine {
     hero.setXCoord(side / 2);
     hero.setYCoord(side / 2);
 
-    // generateEnnemies();
+    generateVillains();
+    // list all villains
+    for (Villain villain : villains) {
+      System.out.println(villain.toString());
+    }
+    System.out.println(hero.toString());
 
     generateMap();
   }
 
   private void generateMap() {
     map = new Tile[mapSize + 2][mapSize + 2];
+
+    // Create the map with border
     for (int x = 0; x < mapSize + 2; x++) {
       for (int y = 0; y < mapSize + 2; y++) {
         String type = "Grass";
         String symbol = ".";
         Boolean visible = false;
         if (x == 0 || x == mapSize + 1 || y == 0 || y == mapSize + 1) {
-          type = "Wall";
+          type = "Border";
           symbol = "#";
           visible = true;
         }
@@ -286,13 +298,54 @@ public class GameEngine {
       }
     }
 
-    // Set the hero's starting position
+    // Assign hero to starting position
     Tile heroTile = map[hero.getYCoord() + 1][hero.getXCoord() + 1];
     heroTile.assignHero();
 
-    // Hard coded one enemy
-    Tile enemyTile = map[3][5];
-    enemyTile.assignEnemy();
+    // Assign villains to their respective tiles
+    for (Villain villain : villains) {
+      Tile enemyTile = map[villain.getYCoord() + 1][villain.getXCoord() + 1];
+      enemyTile.assignEnemy();
+      enemyTile.setVisible(true);
+    }
+  }
+
+  private void generateVillains() {
+
+    CharacterFactory factory = CharacterFactory.getInstance();
+
+    Set<Point> coords = new HashSet<>();
+    // Add hero coordinates to the set
+    coords.add(new Point(hero.getXCoord(), hero.getYCoord()));
+
+    int nVillains = (int) (getMapSize() * getMapSize() * 0.2);
+    System.out.println("GameEngine > Generating " + nVillains + " villains...");
+
+    for (int i = 0; i < nVillains; i++) {
+      int x = (int) (Math.random() * getMapSize());
+      int y = (int) (Math.random() * getMapSize());
+      // Check coordinates are unique
+      if (!coords.contains(new Point(x, y))) {
+        coords.add(new Point(x, y));
+      } else {
+        i--;
+        continue;
+      }
+
+      // Enemy level = hero level +/- 1
+      int level = hero.getLevel() + (int) (Math.random() * 3) - 1;
+      if (level < 1) {
+        level = 1;
+      }
+      int attack = (int) (Math.random() * 3) + 4 + level; // 4-6 + level
+      int defense = (int) (Math.random() * 3) + 4 + level; // 4-6 + level
+      int hp = ((int) (Math.random() * 4) + 8) + level
+          + (int) (Math.random() * level); // 8-12 + level + random level
+
+      Villain villain = factory.newVillain(level, attack, defense, hp, x, y);
+      villains.add(villain);
+    }
+
   }
 
   public boolean isValidDirection(String input) {
@@ -338,7 +391,7 @@ public class GameEngine {
       targetTile.setVisible(true);
       setFightTiles(currentHeroTile, targetTile);
       return;
-    } else if (targetTile.getType().equals("Wall")) {
+    } else if (targetTile.getType().equals("Border")) {
       event = Special.VICTORY;
       hero.setXCoord(newX);
       hero.setYCoord(newY);
@@ -377,12 +430,12 @@ public class GameEngine {
     Hero hero = getHero();
     Tile heroTile = getFightTiles()[0];
     Tile enemyTile = getFightTiles()[1];
-    // Villain villain = getVillainAtCoord(enemyTile.getX(), enemyTile.getY());
-    // if (villain == null) {
-    // System.out.println("No enemy found at the specified coordinates.");
-    // return false;
-    // }
-    // villain.getHitPoints();
+    Villain villain = getVillainAtCoord(
+        enemyTile.getX() - 1, enemyTile.getY() - 1);
+    if (villain == null) {
+      throw new IllegalStateException("No villain found at enemy tile coordinates.");
+    }
+    villain.getHitPoints();
 
     hero.setHitPoints(hero.getHitPoints() - 1); // Example: reduce HP by 1
     if (hero.getHitPoints() <= 0) {
@@ -400,7 +453,7 @@ public class GameEngine {
       hero.setXCoord(enemyTile.getX() - 1);
       hero.setYCoord(enemyTile.getY() - 1);
       // Remove the enemy from the villains list
-      // villains.remove(villain);
+      villains.remove(villain);
       return true;
     }
     // return true;

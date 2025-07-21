@@ -8,4 +8,14 @@ public class Villain extends AbstractCharacter {
     super("Bandit", attack, defense, hitPoints, level, x, y);
   }
 
+  public String toString() {
+    return "Villain\t{" +
+        "name='" + getName() + '\'' +
+        ", level=" + getLevel() +
+        ", attack=" + getAttack() +
+        ", defense=" + getDefense() +
+        ", hp=" + getHitPoints() +
+        ", at (" + getXCoord() + ", " + getYCoord() + ")" +
+        '}';
+  }
 }
