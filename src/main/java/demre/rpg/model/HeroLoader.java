@@ -68,6 +68,7 @@ public class HeroLoader {
         String heroClass = components[1].trim();
         int level = Integer.parseInt(components[2].trim());
         int experience = Integer.parseInt(components[3].trim());
+        checkExpAndLevel(experience, level);
         int attack = Integer.parseInt(components[4].trim());
         int defense = Integer.parseInt(components[5].trim());
         int hitPoints = Integer.parseInt(components[6].trim());
@@ -90,7 +91,8 @@ public class HeroLoader {
             "Hero loaded: " + hero.getName() + " (" + heroClass + ")");
       }
     } catch (Exception e) {
-      throw new RuntimeException("Invalid content or format in heroes file: " + fileName, e);
+      throw new RuntimeException(
+          "Invalid content or format in heroes file: " + fileName, e);
     }
 
     return heroes;
@@ -101,10 +103,29 @@ public class HeroLoader {
       throw new IllegalArgumentException("Hero name cannot be null or empty.");
     }
     if (name.length() < 3 || name.length() > 20) {
-      throw new IllegalArgumentException("Hero name must be between 3 and 20 characters long.");
+      throw new IllegalArgumentException(
+          "Hero name must be between 3 and 20 characters long.");
     }
     if (!name.matches("[a-zA-Z0-9 ]+")) {
-      throw new IllegalArgumentException("Hero name can only contain alphanumeric characters and spaces.");
+      throw new IllegalArgumentException(
+          "Hero name can only contain alphanumeric characters and spaces.");
+    }
+  }
+
+  private static void checkExpAndLevel(int experience, int level) {
+    if (experience < 0 || level < 1) {
+      throw new IllegalArgumentException(
+          "Experience must be non-negative and level must be at least 1.");
+    }
+
+    int threshold = level * 1000 + (level - 1) * (level - 1) * 450;
+    int prevThreshold = (level == 1)
+        ? 0
+        : (level - 1) * 1000 + (level - 2) * (level - 2) * 450;
+
+    if (experience < prevThreshold || experience >= threshold) {
+      throw new IllegalArgumentException(
+          "Experience not consistent with level.");
     }
   }
 
