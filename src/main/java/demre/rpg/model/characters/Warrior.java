@@ -16,4 +16,11 @@ public class Warrior extends Hero {
     setHeroClass("Warrior");
   }
 
+  @Override
+  public Warrior copy() {
+    return new Warrior(
+        getName(), getLevel(), getExperience(),
+        getAttack(), getDefense(), getHitPoints(),
+        getWeapon(), getArmor(), getHelm());
+  }
 }

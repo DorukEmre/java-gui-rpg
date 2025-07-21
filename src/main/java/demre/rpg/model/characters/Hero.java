@@ -79,6 +79,8 @@ public abstract class Hero extends AbstractCharacter {
     return false;
   }
 
+  public abstract Hero copy();
+
   public String toString() {
     return "Hero\t{" +
         "name='" + getName() + '\'' +

@@ -16,4 +16,11 @@ public class Rogue extends Hero {
     setHeroClass("Rogue");
   }
 
+  @Override
+  public Rogue copy() {
+    return new Rogue(
+        getName(), getLevel(), getExperience(),
+        getAttack(), getDefense(), getHitPoints(),
+        getWeapon(), getArmor(), getHelm());
+  }
 }

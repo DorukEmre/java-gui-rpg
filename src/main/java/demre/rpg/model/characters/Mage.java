@@ -16,4 +16,12 @@ public class Mage extends Hero {
     setHeroClass("Mage");
   }
 
+  @Override
+  public Mage copy() {
+    return new Mage(
+        getName(), getLevel(), getExperience(),
+        getAttack(), getDefense(), getHitPoints(),
+        getWeapon(), getArmor(), getHelm());
+  }
+
 }
