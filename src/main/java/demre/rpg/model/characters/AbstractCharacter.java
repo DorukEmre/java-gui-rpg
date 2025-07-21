@@ -1,5 +1,9 @@
 package demre.rpg.model.characters;
 
+import demre.rpg.model.items.Armor;
+import demre.rpg.model.items.Helm;
+import demre.rpg.model.items.Weapon;
+
 public abstract class AbstractCharacter implements Character {
   private String name;
 
@@ -9,27 +13,32 @@ public abstract class AbstractCharacter implements Character {
 
   private int level;
 
+  private Weapon weapon;
+  private Armor armor;
+  private Helm helm;
+
   private int xCoord;
   private int yCoord;
 
   // Constructors
 
   protected AbstractCharacter(
-      String name, int attack, int defense, int hitPoints, int level) {
+      String name, int attack, int defense, int hitPoints, int level,
+      Weapon weapon, Armor armor, Helm helm) {
     this.name = name;
     this.attack = attack;
     this.defense = defense;
     this.hitPoints = hitPoints;
     this.level = level;
+    this.weapon = weapon;
+    this.armor = armor;
+    this.helm = helm;
   }
 
   protected AbstractCharacter(
-      String name, int attack, int defense, int hitPoints, int level, int x, int y) {
-    this.name = name;
-    this.attack = attack;
-    this.defense = defense;
-    this.hitPoints = hitPoints;
-    this.level = level;
+      String name, int attack, int defense, int hitPoints, int level,
+      Weapon weapon, Armor armor, Helm helm, int x, int y) {
+    this(name, attack, defense, hitPoints, level, weapon, armor, helm);
     this.xCoord = x;
     this.yCoord = y;
   }
@@ -59,6 +68,21 @@ public abstract class AbstractCharacter implements Character {
   @Override
   public int getLevel() {
     return level;
+  }
+
+  @Override
+  public Weapon getWeapon() {
+    return weapon;
+  }
+
+  @Override
+  public Armor getArmor() {
+    return armor;
+  }
+
+  @Override
+  public Helm getHelm() {
+    return helm;
   }
 
   @Override
@@ -96,6 +120,21 @@ public abstract class AbstractCharacter implements Character {
   @Override
   public void setLevel(int level) {
     this.level = level;
+  }
+
+  @Override
+  public void setWeapon(Weapon weapon) {
+    this.weapon = weapon;
+  }
+
+  @Override
+  public void setArmor(Armor armor) {
+    this.armor = armor;
+  }
+
+  @Override
+  public void setHelm(Helm helm) {
+    this.helm = helm;
   }
 
   @Override

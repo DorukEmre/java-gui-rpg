@@ -9,15 +9,6 @@ public abstract class Hero extends AbstractCharacter {
   @NotNull
   private String heroClass;
 
-  @NotNull
-  private Weapon weapon;
-
-  @NotNull
-  private Armor armor;
-
-  @NotNull
-  private Helm helm;
-
   private int experience;
 
   // Constructors
@@ -27,12 +18,9 @@ public abstract class Hero extends AbstractCharacter {
       int attack, int defense, int hitPoints,
       Weapon weapon, Armor armor, Helm helm) {
 
-    super(name, attack, defense, hitPoints, level);
+    super(name, attack, defense, hitPoints, level, weapon, armor, helm);
 
     this.experience = experience;
-    this.weapon = weapon;
-    this.armor = armor;
-    this.helm = helm;
   }
 
   protected Hero(
@@ -40,12 +28,9 @@ public abstract class Hero extends AbstractCharacter {
       int attack, int defense, int hitPoints,
       Weapon weapon, Armor armor, Helm helm, int x, int y) {
 
-    super(name, attack, defense, hitPoints, level, x, y);
+    super(name, attack, defense, hitPoints, level, weapon, armor, helm, x, y);
 
     this.experience = experience;
-    this.weapon = weapon;
-    this.armor = armor;
-    this.helm = helm;
   }
 
   // Getters
@@ -58,18 +43,6 @@ public abstract class Hero extends AbstractCharacter {
     return heroClass;
   }
 
-  public Weapon getWeapon() {
-    return weapon;
-  }
-
-  public Armor getArmor() {
-    return armor;
-  }
-
-  public Helm getHelm() {
-    return helm;
-  }
-
   // Setters
 
   public void setExperience(int experience) {
@@ -78,18 +51,6 @@ public abstract class Hero extends AbstractCharacter {
 
   public void setHeroClass(String heroClass) {
     this.heroClass = heroClass;
-  }
-
-  public void setWeapon(Weapon weapon) {
-    this.weapon = weapon;
-  }
-
-  public void setArmor(Armor armor) {
-    this.armor = armor;
-  }
-
-  public void setHelm(Helm helm) {
-    this.helm = helm;
   }
 
   // Methods
@@ -103,9 +64,12 @@ public abstract class Hero extends AbstractCharacter {
         ", attack=" + getAttack() +
         ", defense=" + getDefense() +
         ", hp=" + getHitPoints() +
-        ", weapon=" + weapon.getName() +
-        ", armor=" + armor.getName() +
-        ", helm=" + helm.getName() +
+        ", weapon=" + getWeapon().getName() +
+        ", +" + getWeapon().getModifier() +
+        ", armor=" + getArmor().getName() +
+        ", +" + getArmor().getModifier() +
+        ", helm=" + getHelm().getName() +
+        ", +" + getHelm().getModifier() +
         ", at (" + getXCoord() + ", " + getYCoord() + ")" +
         '}';
   }

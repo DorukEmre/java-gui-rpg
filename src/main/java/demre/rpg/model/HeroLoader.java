@@ -58,7 +58,7 @@ public class HeroLoader {
         }
 
         String[] components = line.trim().split(",");
-        if (components.length != 10) {
+        if (components.length != 13) {
           throw new IllegalArgumentException("Invalid hero data format: " + line);
         }
 
@@ -72,13 +72,16 @@ public class HeroLoader {
         int defense = Integer.parseInt(components[5].trim());
         int hitPoints = Integer.parseInt(components[6].trim());
         String weaponName = components[7].trim();
-        String armorName = components[8].trim();
-        String helmName = components[9].trim();
+        int weaponModifier = Integer.parseInt(components[8].trim());
+        String armorName = components[9].trim();
+        int armorModifier = Integer.parseInt(components[10].trim());
+        String helmName = components[11].trim();
+        int helmModifier = Integer.parseInt(components[12].trim());
 
         // Create hero using factory
         CharacterFactory factory = CharacterFactory.getInstance();
         Hero hero = factory.newHero(heroClass, name, level, experience,
-            attack, defense, hitPoints, weaponName, armorName, helmName);
+            attack, defense, hitPoints, weaponName, weaponModifier, armorName, armorModifier, helmName, helmModifier);
 
         // Add the hero to the list
         heroes.add(hero);

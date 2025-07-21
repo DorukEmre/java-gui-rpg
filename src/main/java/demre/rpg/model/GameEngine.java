@@ -242,17 +242,17 @@ public class GameEngine {
     if (heroClass.equalsIgnoreCase("Mage")
         || heroClass.equalsIgnoreCase("mage")
         || heroClass.equalsIgnoreCase("m")) {
-      newHero = factory.newHero("Mage", name, 1, 0, 5, 5, 10, "Wooden stick", "Cloth armor", "Paper hat");
+      newHero = factory.newHero("Mage", name, 1, 0, 5, 5, 10, "Wooden stick", 1, "Cloth armor", 1, "Paper hat", 1);
 
     } else if (heroClass.equalsIgnoreCase("Warrior")
         || heroClass.equalsIgnoreCase("warrior")
         || heroClass.equalsIgnoreCase("w")) {
-      newHero = factory.newHero("Warrior", name, 1, 0, 5, 5, 10, "Wooden stick", "Cloth armor", "Paper hat");
+      newHero = factory.newHero("Warrior", name, 1, 0, 5, 5, 10, "Wooden stick", 1, "Cloth armor", 1, "Paper hat", 1);
 
     } else if (heroClass.equalsIgnoreCase("Rogue")
         || heroClass.equalsIgnoreCase("rogue")
         || heroClass.equalsIgnoreCase("r")) {
-      newHero = factory.newHero("Rogue", name, 1, 0, 5, 5, 10, "Wooden stick", "Cloth armor", "Paper hat");
+      newHero = factory.newHero("Rogue", name, 1, 0, 5, 5, 10, "Wooden stick", 1, "Cloth armor", 1, "Paper hat", 1);
     } else {
       throw new IllegalArgumentException("Invalid hero class: " + heroClass);
     }
@@ -342,7 +342,10 @@ public class GameEngine {
       int hp = ((int) (Math.random() * 4) + 8) + level
           + (int) (Math.random() * level); // 8-12 + level + random level
 
-      Villain villain = factory.newVillain(level, attack, defense, hp, x, y);
+      Villain villain = factory.newVillain(level, attack, defense, hp,
+          "Wooden stick", level + (int) (Math.random() * 3) - 1, "Cloth armor", level + (int) (Math.random() * 3) - 1,
+          "Paper hat", level + (int) (Math.random() * 3) - 1,
+          x, y);
       villains.add(villain);
     }
 
@@ -435,29 +438,83 @@ public class GameEngine {
     if (villain == null) {
       throw new IllegalStateException("No villain found at enemy tile coordinates.");
     }
-    villain.getHitPoints();
 
-    hero.setHitPoints(hero.getHitPoints() - 1); // Example: reduce HP by 1
-    if (hero.getHitPoints() <= 0) {
-      return false;
-    } else {
-      // else if (villain.getHitPoints() <= 0) {
-      System.out.println("Enemy defeated!");
-      // Move the hero to the enemy's tile
-      System.out.println("Herotile coordinates: " + heroTile.getX() + ", " + heroTile.getY());
-      System.out.println("Enemytile coordinates: " + enemyTile.getX() + ", " + enemyTile.getY());
-      System.out.println("Hero coordinates: " + hero.getXCoord() + ", " + hero.getYCoord());
+    if (isHeroVictorious(villain)) {
       // Assign the hero to the enemy tile and grass to the hero
       enemyTile.assignHero();
       heroTile.assignGrass();
       hero.setXCoord(enemyTile.getX() - 1);
       hero.setYCoord(enemyTile.getY() - 1);
+
       // Remove the enemy from the villains list
       villains.remove(villain);
       return true;
+
+    } else {
+      return false;
     }
-    // return true;
-    // return false;
+  }
+
+  private Boolean isHeroVictorious(Villain villain) {
+    Hero hero = getHero();
+    int heroAttack = hero.getAttack() + hero.getWeapon().getModifier();
+    int heroDefense = hero.getDefense() + hero.getArmor().getModifier();
+    int heroHitPoints = hero.getHitPoints() + hero.getHelm().getModifier();
+    int heroFightLuck = hero.getClass().getSimpleName().equals("Rogue") ? 2 : 1;
+
+    int villainAttack = villain.getAttack() + villain.getWeapon().getModifier();
+    int villainDefense = villain.getDefense()
+        + villain.getArmor().getModifier();
+    int villainHitPoints = villain.getHitPoints()
+        + villain.getHelm().getModifier();
+
+    int turn = heroHitPoints * 2;
+    System.out.println(hero.toString());
+    System.out.println(villain.toString());
+
+    while (heroHitPoints > 0 && villainHitPoints > 0 && turn > 0) {
+      // Hero attacks first
+      boolean heroCrit = Math.random() < 0.1; // 10% crit chance
+      int heroAttackThisTurn = heroAttack;
+      if (heroCrit) {
+        heroAttackThisTurn *= 2;
+      }
+      int heroAttackRoll = heroAttackThisTurn + (int) (Math.random() * 4);
+      int heroDamage = Math.max(1, heroAttackRoll - villainDefense);
+
+      villainHitPoints -= heroDamage;
+      System.out.println("Hero attacks for: " + heroAttack + " - " + villainDefense + " = " + heroDamage
+          + " damage. Villain HP: " + villainHitPoints);
+
+      if (villainHitPoints <= 0) {
+        System.out.println("Villain defeated!");
+        System.out.println("Hero hit points after fight: " + heroHitPoints);
+        // hero.setHitPoints(heroHitPoints);
+        return true;
+      }
+
+      // Villain attacks back
+      heroCrit = Math.random() < 0.1;
+      int heroDefenseThisTurn = heroDefense;
+      if (heroCrit) {
+        heroDefenseThisTurn *= 2;
+      }
+      int villainAttackRoll = villainAttack + (int) (Math.random() * 4);
+      int villainDamage = Math.max(1, villainAttackRoll - heroDefenseThisTurn);
+      heroHitPoints -= villainDamage;
+      System.out.println("Villain attacks for: " + villainAttack + " - " + heroDefense + " = " + villainDamage
+          + " damage. Hero HP: " + heroHitPoints);
+
+      if (heroHitPoints <= 0) {
+        System.out.println("Hero defeated!");
+        return false;
+      }
+
+      turn--;
+    }
+    System.out.println("The enemy runs away!");
+    System.out.println("Hero hit points after fight: " + heroHitPoints);
+    return true;
   }
 
   public boolean runFromEnemy() {
