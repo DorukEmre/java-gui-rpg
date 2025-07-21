@@ -171,7 +171,7 @@ public class GameController {
     } else if (choice.equalsIgnoreCase("exit")) {
       gameEngine.setCurrentStep(GameEngine.Step.EXIT_GAME);
     } else {
-      gameEngine.setCurrentStep(GameEngine.Step.VICTORY_INVALID_ACTION);
+      gameEngine.setCurrentStep(GameEngine.Step.GAME_OVER_INVALID_ACTION);
     }
   }
 }

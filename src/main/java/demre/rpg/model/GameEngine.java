@@ -411,6 +411,7 @@ public class GameEngine {
       newX = heroX - 1;
     }
 
+    // Check if target tile is an Enemy or a border
     Tile targetTile = map[newY + 1][newX + 1];
     if (targetTile.getType().equals("Enemy")) {
       event = Special.ENEMY;
@@ -419,8 +420,7 @@ public class GameEngine {
       return;
     } else if (targetTile.getType().equals("Border")) {
       event = Special.VICTORY;
-      hero.setXCoord(newX);
-      hero.setYCoord(newY);
+      setInitialHeroState(hero);
     } else {
       event = Special.NONE;
       currentHeroTile.assignGrass();
