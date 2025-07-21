@@ -93,18 +93,18 @@ public class ConsoleView extends GameView {
 
       System.out.println("Hero Information:\n");
 
-      System.out.println("Name: " + hero.getName());
-      System.out.println("Class: " + hero.getClass().getSimpleName());
-      System.out.println("Level: " + hero.getLevel());
-      System.out.println("Experience: " + hero.getExperience());
-      System.out.println("Attack: " + hero.getAttack());
-      System.out.println("Defense: " + hero.getDefense());
-      System.out.println("Hit Points: " + hero.getHitPoints());
-      System.out.println("Weapon: " + hero.getWeapon().getName() +
+      System.out.println("Name:\t\t" + hero.getName());
+      System.out.println("Class:\t\t" + hero.getClass().getSimpleName());
+      System.out.println("Level:\t\t" + hero.getLevel());
+      System.out.println("Experience:\t" + hero.getExperience());
+      System.out.println("Attack:\t\t" + hero.getAttack());
+      System.out.println("Defense:\t" + hero.getDefense());
+      System.out.println("Hit Points:\t" + hero.getHitPoints());
+      System.out.println("Weapon:\t\t" + hero.getWeapon().getName() +
           " +" + hero.getWeapon().getModifier());
-      System.out.println("Armor: " + hero.getArmor().getName() +
+      System.out.println("Armor:\t\t" + hero.getArmor().getName() +
           " +" + hero.getArmor().getModifier());
-      System.out.println("Helm: " + hero.getHelm().getName() +
+      System.out.println("Helm:\t\t" + hero.getHelm().getName() +
           " +" + hero.getHelm().getModifier());
 
       System.out.println("\nPress Enter to continue...");
@@ -175,7 +175,10 @@ public class ConsoleView extends GameView {
         + ", Exp: " + gameEngine.getHero().getExperience()
         + ", Att: " + gameEngine.getHero().getAttack()
         + ", Def: " + gameEngine.getHero().getDefense()
-        + ", HP: " + gameEngine.getHero().getHitPoints());
+        + ", HP: " + gameEngine.getHero().getHitPoints()
+        + ", " + gameEngine.getHero().getWeapon()
+        + ", " + gameEngine.getHero().getArmor()
+        + ", " + gameEngine.getHero().getHelm());
 
     for (int i = 0; i < side + 2; i++) {
       for (int j = 0; j < side + 2; j++) {
@@ -222,6 +225,34 @@ public class ConsoleView extends GameView {
 
   @Override
   public void showItemFound() {
+    System.out.println("ConsoleView > Item found screen...");
+
+    GameEngine.Step step = gameEngine.getStep();
+
+    try {
+      clearConsole();
+      drawMap();
+      if (step == GameEngine.Step.ITEM_INVALID_ACTION) {
+        System.out.println("Invalid action. Please try again.");
+      } else if (step == GameEngine.Step.ITEM_FOUND_AND_LEVEL_UP) {
+        System.out.println("You defeated the enemy and leveled up!");
+        System.out.println("You are now level "
+            + gameEngine.getHero().getLevel() + " with "
+            + gameEngine.getHero().getExperience() + " experience points.");
+      } else if (step == GameEngine.Step.ITEM_FOUND) {
+        System.out.println("You defeated the enemy!");
+      }
+      System.out.println("You found an item. " + gameEngine.getItemFound());
+      System.out.println("Your current items are: "
+          + gameEngine.getHero().getWeapon() + ", "
+          + gameEngine.getHero().getArmor() + ", "
+          + gameEngine.getHero().getHelm());
+      System.out.println("(k)eep or (l)eave");
+      String item_choice = scanner.nextLine();
+      controller.onItemFoundContinue(item_choice);
+    } catch (Exception e) {
+      System.err.println("Error during item found: " + e.getMessage());
+    }
   }
 
   @Override

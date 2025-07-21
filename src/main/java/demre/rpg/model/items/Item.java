@@ -40,4 +40,11 @@ public abstract class Item {
     this.modifier = modifier;
   }
 
+  // Methods
+
+  public String toString() {
+    // Format: "type: name +modifier" e.g., "Weapon: Sword +5"
+    return (type + ": " + name + " +" + modifier);
+  }
+
 }

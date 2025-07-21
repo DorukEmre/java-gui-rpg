@@ -10,6 +10,10 @@ import java.awt.Point;
 
 import demre.rpg.model.characters.Hero;
 import demre.rpg.model.characters.Villain;
+import demre.rpg.model.items.Armor;
+import demre.rpg.model.items.Helm;
+import demre.rpg.model.items.Item;
+import demre.rpg.model.items.Weapon;
 import demre.rpg.model.map.Tile;
 import demre.rpg.util.CharacterFactory;
 import demre.rpg.view.GameView;
@@ -24,17 +28,13 @@ public class GameEngine {
     PLAYING, INVALID_ACTION,
     ENEMY_ENCOUNTER, ENEMY_INVALID_ACTION,
     ENEMY_FIGHT_SUCCESS, ENEMY_RUN_SUCCESS, ENEMY_RUN_FAILURE, LEVEL_UP,
-    ITEM_FOUND, ITEM_INVALID_ACTION,
+    ITEM_FOUND, ITEM_FOUND_AND_LEVEL_UP, ITEM_INVALID_ACTION,
     VICTORY, GAME_OVER,
     EXIT_GAME
   }
 
   public enum Direction {
     NORTH, SOUTH, EAST, WEST
-  }
-
-  public enum Action {
-    FIGHT, RUN, KEEP, DROP
   }
 
   public enum Special {
@@ -48,8 +48,8 @@ public class GameEngine {
   private Special event;
   private Tile[][] map;
   private Tile[] fightTiles; // Tiles involved in a fight, Hero at 0, Enemy at 1
-
   private int mapSize = 9; // Level 1 map size
+  private Item itemFound;
 
   // Constructor
 
@@ -61,6 +61,7 @@ public class GameEngine {
     this.villains = new ArrayList<>();
     this.event = Special.NONE;
     this.fightTiles = new Tile[2]; // 0: Hero, 1: Enemy
+    this.itemFound = null;
   }
 
   // Getters
@@ -106,6 +107,10 @@ public class GameEngine {
     return fightTiles;
   }
 
+  public Item getItemFound() {
+    return itemFound;
+  }
+
   // Setters
 
   public void setCurrentStep(Step newStep) {
@@ -135,6 +140,10 @@ public class GameEngine {
   public void setFightTiles(Tile heroTile, Tile enemyTile) {
     this.fightTiles[0] = heroTile;
     this.fightTiles[1] = enemyTile;
+  }
+
+  public void setItemFound(Item item) {
+    this.itemFound = item;
   }
 
   // Methods
@@ -172,6 +181,7 @@ public class GameEngine {
       } else if (step == Step.ENEMY_RUN_FAILURE) {
         gameView.showEnemyRunFailure();
       } else if (step == Step.ITEM_FOUND
+          || step == Step.ITEM_FOUND_AND_LEVEL_UP
           || step == Step.ITEM_INVALID_ACTION) {
         gameView.showItemFound();
       } else if (step == Step.VICTORY) {
@@ -447,11 +457,18 @@ public class GameEngine {
       hero.setXCoord(enemyTile.getX() - 1);
       hero.setYCoord(enemyTile.getY() - 1);
 
+      // Check if villain drops an item
+      Boolean itemFound = checkForItemFound(villain);
+
       // Remove the enemy from the villains list
       villains.remove(villain);
 
-      if (levelUp)
+      if (levelUp && itemFound) {
+        return "item found and level up";
+      } else if (levelUp)
         return "level up";
+      else if (itemFound)
+        return "item found";
       else
         return "victory";
 
@@ -531,6 +548,46 @@ public class GameEngine {
       return "success";
     }
     return "failure";
+  }
+
+  private Boolean checkForItemFound(Villain villain) {
+    System.out.println("GameEngine > Checking for item found...");
+    // 20% chance to find an item
+    if (Math.random() < 1) {
+      System.out.println("GameEngine > Item found!");
+      // Randomly select an item from the villain's items
+      Item[] villainItems = {
+          villain.getWeapon(),
+          villain.getArmor(),
+          villain.getHelm()
+      };
+      Item item = villainItems[(int) (Math.random() * villainItems.length)];
+      setItemFound(item);
+      System.out.println("GameEngine > Item found: " + item);
+      return true;
+    } else {
+      System.out.println("GameEngine > No item found.");
+      return false;
+    }
+  }
+
+  public void keepItem() {
+    System.out.println("GameEngine > Keeping item...");
+    // Replace the item in the hero's inventory
+    Item item = getItemFound();
+    if (item != null) {
+      if (item.getType().equals("Weapon")) {
+        hero.setWeapon((Weapon) item);
+      } else if (item.getType().equals("Armor")) {
+        hero.setArmor((Armor) item);
+      } else if (item.getType().equals("Helm")) {
+        hero.setHelm((Helm) item);
+      }
+      System.out.println("GameEngine > Item added to inventory: " + item);
+      setItemFound(null);
+    } else {
+      System.out.println("GameEngine > No item to keep.");
+    }
   }
 
 }

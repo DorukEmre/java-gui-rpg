@@ -109,8 +109,12 @@ public class GameController {
       encounter = gameEngine.fightEnemy();
       if (encounter.equals("victory")) {
         gameEngine.setCurrentStep(GameEngine.Step.ENEMY_FIGHT_SUCCESS);
+      } else if (encounter.equals("item found and level up")) {
+        gameEngine.setCurrentStep(GameEngine.Step.ITEM_FOUND_AND_LEVEL_UP);
       } else if (encounter.equals("level up")) {
         gameEngine.setCurrentStep(GameEngine.Step.LEVEL_UP);
+      } else if (encounter.equals("item found")) {
+        gameEngine.setCurrentStep(GameEngine.Step.ITEM_FOUND);
       } else {
         gameEngine.setCurrentStep(GameEngine.Step.GAME_OVER);
       }
@@ -128,9 +132,19 @@ public class GameController {
     }
   }
 
-  public void onItemFoundContinue() {
+  public void onItemFoundContinue(String choice) {
     System.out.println("GameController > Item found continue pressed.");
-    gameEngine.setCurrentStep(GameEngine.Step.PLAYING);
+    if (choice.equalsIgnoreCase("keep") || choice.equalsIgnoreCase("k")) {
+      gameEngine.keepItem();
+      gameEngine.setCurrentStep(GameEngine.Step.PLAYING);
+    } else if (choice.equalsIgnoreCase("leave")
+        || choice.equalsIgnoreCase("l")) {
+      gameEngine.setCurrentStep(GameEngine.Step.PLAYING);
+    } else if (choice.equalsIgnoreCase("exit")) {
+      gameEngine.setCurrentStep(GameEngine.Step.EXIT_GAME);
+    } else {
+      gameEngine.setCurrentStep(GameEngine.Step.ITEM_INVALID_ACTION);
+    }
   }
 
   public void onVictoryScreenContinue() {
