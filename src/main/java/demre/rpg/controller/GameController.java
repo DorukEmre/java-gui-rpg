@@ -104,17 +104,19 @@ public class GameController {
 
   public void onEnemyEncounterContinue(String choice) {
     System.out.println("GameController > Enemy encounter choice: " + choice);
-    Boolean success;
+    String encounter;
     if (choice.equalsIgnoreCase("fight") || choice.equalsIgnoreCase("f")) {
-      success = gameEngine.fightEnemy();
-      if (success) {
+      encounter = gameEngine.fightEnemy();
+      if (encounter.equals("victory")) {
         gameEngine.setCurrentStep(GameEngine.Step.ENEMY_FIGHT_SUCCESS);
+      } else if (encounter.equals("level up")) {
+        gameEngine.setCurrentStep(GameEngine.Step.LEVEL_UP);
       } else {
         gameEngine.setCurrentStep(GameEngine.Step.GAME_OVER);
       }
     } else if (choice.equalsIgnoreCase("run") || choice.equalsIgnoreCase("r")) {
-      success = gameEngine.runFromEnemy();
-      if (success) {
+      encounter = gameEngine.runFromEnemy();
+      if (encounter.equals("success")) {
         gameEngine.setCurrentStep(GameEngine.Step.ENEMY_RUN_SUCCESS);
       } else {
         gameEngine.setCurrentStep(GameEngine.Step.ENEMY_RUN_FAILURE);

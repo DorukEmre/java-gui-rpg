@@ -100,9 +100,12 @@ public class ConsoleView extends GameView {
       System.out.println("Attack: " + hero.getAttack());
       System.out.println("Defense: " + hero.getDefense());
       System.out.println("Hit Points: " + hero.getHitPoints());
-      System.out.println("Weapon: " + hero.getWeapon().getName());
-      System.out.println("Armor: " + hero.getArmor().getName());
-      System.out.println("Helm: " + hero.getHelm().getName());
+      System.out.println("Weapon: " + hero.getWeapon().getName() +
+          " +" + hero.getWeapon().getModifier());
+      System.out.println("Armor: " + hero.getArmor().getName() +
+          " +" + hero.getArmor().getModifier());
+      System.out.println("Helm: " + hero.getHelm().getName() +
+          " +" + hero.getHelm().getModifier());
 
       System.out.println("\nPress Enter to continue...");
       scanner.nextLine();
@@ -126,6 +129,12 @@ public class ConsoleView extends GameView {
         controller.onInvalidActionContinue();
       } else if (step == GameEngine.Step.ENEMY_FIGHT_SUCCESS) {
         System.out.println("You defeated the enemy!");
+        controller.onSuccessfulActionContinue();
+      } else if (step == GameEngine.Step.LEVEL_UP) {
+        System.out.println("You defeated the enemy and leveled up!");
+        System.out.println("You are now level "
+            + gameEngine.getHero().getLevel() + " with "
+            + gameEngine.getHero().getExperience() + " experience points.");
         controller.onSuccessfulActionContinue();
       } else if (step == GameEngine.Step.ENEMY_RUN_SUCCESS) {
         System.out.println("You successfully ran away from the enemy!");
@@ -161,7 +170,12 @@ public class ConsoleView extends GameView {
     int side = gameEngine.getMapSize();
     Tile[][] map = gameEngine.getMap();
 
-    System.out.println("Level: " + gameEngine.getHero().getLevel() + ", Map Size: " + side + "x" + side);
+    System.out.println("Map Size: " + side + "x" + side
+        + ", Level: " + gameEngine.getHero().getLevel()
+        + ", Exp: " + gameEngine.getHero().getExperience()
+        + ", Att: " + gameEngine.getHero().getAttack()
+        + ", Def: " + gameEngine.getHero().getDefense()
+        + ", HP: " + gameEngine.getHero().getHitPoints());
 
     for (int i = 0; i < side + 2; i++) {
       for (int j = 0; j < side + 2; j++) {

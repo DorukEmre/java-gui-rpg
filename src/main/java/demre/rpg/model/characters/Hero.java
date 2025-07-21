@@ -55,6 +55,30 @@ public abstract class Hero extends AbstractCharacter {
 
   // Methods
 
+  public void addExperience(int experience) {
+    this.experience += experience;
+  }
+
+  public Boolean checkLevelUp(int prevExperience) {
+    // Level 1 - 1000 XP
+    // Level 2 - 2450 XP
+    // Level 3 - 4800 XP
+    // Level 4 - 8050 XP
+    // Level 5 - 12200 XP
+
+    int experienceNeeded = getLevel() * 1000
+        + (getLevel() - 1) * (getLevel() - 1) * 450;
+    if (prevExperience < experienceNeeded
+        && getExperience() >= experienceNeeded) {
+      setLevel(getLevel() + 1);
+      setAttack(getAttack() + (int) (Math.random() * 3)); // add 0-2
+      setDefense(getDefense() + (int) (Math.random() * 3)); // add 0-2
+      setHitPoints(getHitPoints() + (int) (Math.random() * 3) + 4); // add 4-6
+      return true;
+    }
+    return false;
+  }
+
   public String toString() {
     return "Hero\t{" +
         "name='" + getName() + '\'' +
