@@ -81,6 +81,15 @@ public abstract class Hero extends AbstractCharacter {
 
   public abstract Hero copy();
 
+  public String saveString() {
+    return String.format("%s,%s,%d,%d,%d,%d,%d,%s,%d,%s,%d,%s,%d",
+        getName(), heroClass, getLevel(), experience,
+        getAttack(), getDefense(), getHitPoints(),
+        getWeapon().getName(), getWeapon().getModifier(),
+        getArmor().getName(), getArmor().getModifier(),
+        getHelm().getName(), getHelm().getModifier());
+  }
+
   public String toString() {
     return "Hero\t{" +
         "name='" + getName() + '\'' +

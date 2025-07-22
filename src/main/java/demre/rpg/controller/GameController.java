@@ -1,7 +1,11 @@
 package demre.rpg.controller;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import demre.rpg.model.GameEngine;
 import demre.rpg.model.GameEngine.Special;
+import demre.rpg.storage.HeroStorage;
 
 public class GameController {
   private final GameEngine gameEngine;
@@ -72,7 +76,8 @@ public class GameController {
     gameEngine.setCurrentStep(GameEngine.Step.PLAYING);
   }
 
-  public void onMapInputContinue(String input) {
+  public void onMapInputContinue(String input)
+      throws FileNotFoundException, IOException {
     System.out.println("GameController > Player input: " + input);
 
     if (input.equalsIgnoreCase("exit")) {
@@ -89,6 +94,7 @@ public class GameController {
       if (event == Special.ENEMY) {
         gameEngine.setCurrentStep(GameEngine.Step.ENEMY_ENCOUNTER);
       } else if (event == Special.VICTORY) {
+        HeroStorage.saveState(gameEngine);
         gameEngine.setCurrentStep(GameEngine.Step.VICTORY);
       }
     } else {
@@ -155,7 +161,8 @@ public class GameController {
         || choice.equalsIgnoreCase("n")) {
       gameEngine.newMission("continue");
       gameEngine.setCurrentStep(GameEngine.Step.NEW_MISSION);
-    } else if (choice.equalsIgnoreCase("exit")) {
+    } else if (choice.equalsIgnoreCase("exit")
+        || choice.equalsIgnoreCase("e")) {
       gameEngine.setCurrentStep(GameEngine.Step.EXIT_GAME);
     } else {
       gameEngine.setCurrentStep(GameEngine.Step.VICTORY_INVALID_ACTION);
@@ -168,7 +175,8 @@ public class GameController {
         || choice.equalsIgnoreCase("t")) {
       gameEngine.newMission("reset");
       gameEngine.setCurrentStep(GameEngine.Step.NEW_MISSION);
-    } else if (choice.equalsIgnoreCase("exit")) {
+    } else if (choice.equalsIgnoreCase("exit")
+        || choice.equalsIgnoreCase("e")) {
       gameEngine.setCurrentStep(GameEngine.Step.EXIT_GAME);
     } else {
       gameEngine.setCurrentStep(GameEngine.Step.GAME_OVER_INVALID_ACTION);

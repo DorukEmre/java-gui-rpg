@@ -42,6 +42,8 @@ public class GameEngine {
   }
 
   private Step step;
+  // Hero index in heroes list: null = non loaded, >=0 hero selected
+  private Integer selectedHeroIndex = null;
   private Hero hero;
   private Hero initialHeroState; // For resetting the hero
   private List<Hero> heroes;
@@ -70,6 +72,10 @@ public class GameEngine {
 
   public Step getStep() {
     return step;
+  }
+
+  public Integer getSelectedHeroIndex() {
+    return selectedHeroIndex;
   }
 
   public Hero getHero() {
@@ -123,6 +129,10 @@ public class GameEngine {
     this.step = newStep;
   }
 
+  public void setSelectedHeroIndex(Integer index) {
+    this.selectedHeroIndex = index;
+  }
+
   public void setHero(Hero hero) {
     this.hero = hero;
   }
@@ -133,6 +143,14 @@ public class GameEngine {
 
   public void setHeroes(List<Hero> heroes) {
     this.heroes = heroes;
+  }
+
+  public void setHeroInHeroesAtIndex(int index, Hero newHero) {
+    if (heroes != null && index >= 0 && index < heroes.size()) {
+      heroes.set(index, newHero);
+    } else {
+      throw new IndexOutOfBoundsException("Invalid hero index: " + index);
+    }
   }
 
   public void setVillains(List<Villain> villains) {
@@ -245,8 +263,10 @@ public class GameEngine {
     System.out.println("GameEngine > Selecting hero: " + selection);
 
     int index = Integer.parseInt(selection) - 1;
+
     setHero(heroes.get(index));
     setInitialHeroState(heroes.get(index));
+    selectedHeroIndex = index;
   }
 
   public void createHero(@NotNull String name, @NotNull String heroClass) {
@@ -271,6 +291,8 @@ public class GameEngine {
 
     setHero(newHero);
     setInitialHeroState(newHero);
+    heroes.add(newHero); // Append new hero to list to be able to save later
+    selectedHeroIndex = heroes.size() - 1;
   }
 
   public void newMission(String reason) {
