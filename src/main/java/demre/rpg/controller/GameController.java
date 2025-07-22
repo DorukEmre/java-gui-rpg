@@ -1,11 +1,9 @@
 package demre.rpg.controller;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import demre.rpg.model.GameEngine;
 import demre.rpg.model.GameEngine.Special;
-import demre.rpg.storage.HeroStorage;
 
 public class GameController {
   private final GameEngine gameEngine;
@@ -17,10 +15,6 @@ public class GameController {
   }
 
   // Methods
-
-  public void initialiseGame() {
-    System.out.println("GameController initialised with engine: " + gameEngine);
-  }
 
   public void onSplashScreenContinue() {
     System.out.println("GameController > Splash screen continue pressed.");
@@ -77,7 +71,7 @@ public class GameController {
   }
 
   public void onMapInputContinue(String input)
-      throws FileNotFoundException, IOException {
+      throws IOException {
     System.out.println("GameController > Player input: " + input);
 
     if (input.equalsIgnoreCase("exit")) {
@@ -94,7 +88,6 @@ public class GameController {
       if (event == Special.ENEMY) {
         gameEngine.setCurrentStep(GameEngine.Step.ENEMY_ENCOUNTER);
       } else if (event == Special.VICTORY) {
-        HeroStorage.saveState(gameEngine);
         gameEngine.setCurrentStep(GameEngine.Step.VICTORY);
       }
     } else {

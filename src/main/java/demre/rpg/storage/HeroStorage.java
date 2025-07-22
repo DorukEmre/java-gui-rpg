@@ -1,58 +1,75 @@
 package demre.rpg.storage;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 
+import java.io.IOException;
+
+import demre.rpg.Main;
 import demre.rpg.model.GameEngine;
 import demre.rpg.model.characters.Hero;
 
 public class HeroStorage {
 
-  public static void saveState(GameEngine gameEngine)
-      throws FileNotFoundException, IOException {
-    // Logic to save the hero state
-    System.out.println("saveState > Hero state saved.");
-    String outputFile = "heroes.txt";
-    Hero hero = gameEngine.getHero();
-    Integer selectedHeroIndex = gameEngine.getSelectedHeroIndex();
+  private static String url = "jdbc:sqlite:" + Main.databaseName;
 
-    if (selectedHeroIndex == null) {
-      System.out.println("saveState > No hero selected.");
-      return;
+  public static void saveToDatabase(GameEngine gameEngine)
+      throws IOException {
 
-    } else if (selectedHeroIndex != null
-        && selectedHeroIndex >= 0
-        && selectedHeroIndex < gameEngine.getHeroes().size()) {
-
-      gameEngine.setHeroInHeroesAtIndex(selectedHeroIndex, hero);
-      List<Hero> heroes = gameEngine.getHeroes();
-
-      File file = new File(outputFile);
-
-      if ((!file.exists() && !file.createNewFile())
-          || !file.isFile() || !file.canWrite())
-        throw new IOException("Failed to create output file.");
-      try (
-          FileWriter fileWriter = new FileWriter(file, false);
-          PrintWriter writer = new PrintWriter(
-              new BufferedWriter(fileWriter), true)) {
-        writer.println(
-            "# name, class, level, xp, att, def, hp, weapon, mod, armor, mod, helm, mod\n");
-        for (Hero eachHero : heroes) {
-          if (eachHero != null) {
-            writer.println(eachHero.saveString());
-          }
-        }
-      } catch (IOException e) {
-        System.err.println("Error writing to file: " + e.getMessage());
+    try (Connection conn = DriverManager.getConnection(url)) {
+      System.out.println("saveToDatabase > Connection to database: " + conn);
+      if (conn == null) {
+        throw new IOException("Failed to connect to the database.");
       }
-    } else {
-      System.out.println("saveState > No hero selected or invalid index.");
+
+      // Create table if it does not exist
+      String createTableSQL = "CREATE TABLE IF NOT EXISTS heroes ("
+          + "id INTEGER PRIMARY KEY,"
+          + "name TEXT NOT NULL,"
+          + "class TEXT NOT NULL,"
+          + "level INTEGER NOT NULL,"
+          + "xp INTEGER NOT NULL,"
+          + "att INTEGER NOT NULL,"
+          + "def INTEGER NOT NULL,"
+          + "hp INTEGER NOT NULL,"
+          + "weapon TEXT NOT NULL,"
+          + "weapon_mod INTEGER NOT NULL,"
+          + "armor TEXT NOT NULL,"
+          + "armor_mod INTEGER NOT NULL,"
+          + "helm TEXT NOT NULL,"
+          + "helm_mod INTEGER NOT NULL"
+          + ")";
+      try (PreparedStatement pstmt = conn.prepareStatement(createTableSQL)) {
+        pstmt.executeUpdate();
+      }
+
+      String sql = "INSERT OR REPLACE INTO heroes (id, name, class, level, xp, att, def, hp, weapon, weapon_mod, armor, armor_mod, helm, helm_mod) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+      Hero hero = gameEngine.getHero();
+      int selectedHeroIndex = gameEngine.getSelectedHeroIndex();
+      gameEngine.setHeroInHeroesAtIndex(selectedHeroIndex, hero);
+
+      try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        pstmt.setInt(1, selectedHeroIndex + 1);
+        pstmt.setString(2, hero.getName());
+        pstmt.setString(3, hero.getHeroClass());
+        pstmt.setInt(4, hero.getLevel());
+        pstmt.setInt(5, hero.getExperience());
+        pstmt.setInt(6, hero.getAttack());
+        pstmt.setInt(7, hero.getDefense());
+        pstmt.setInt(8, hero.getHitPoints());
+        pstmt.setString(9, hero.getWeapon().getName());
+        pstmt.setInt(10, hero.getWeapon().getModifier());
+        pstmt.setString(11, hero.getArmor().getName());
+        pstmt.setInt(12, hero.getArmor().getModifier());
+        pstmt.setString(13, hero.getHelm().getName());
+        pstmt.setInt(14, hero.getHelm().getModifier());
+        pstmt.executeUpdate();
+      }
+
+    } catch (Exception e) {
+      throw new IOException("Database error: " + e.getMessage(), e);
     }
   }
 

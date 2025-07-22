@@ -8,6 +8,7 @@ import demre.rpg.view.GUIView;
 
 public class Main {
   public static String gameMode = "console";
+  public static final String databaseName = "heroes.db";
 
   public static void main(String[] args) {
 
@@ -16,18 +17,14 @@ public class Main {
       checkArgsAndGetGameMode(args);
 
       GameEngine gameEngine = new GameEngine();
+      gameEngine.initialise();
 
       GameController gameController = new GameController(gameEngine);
-      gameController.initialiseGame();
 
       GameView gameView;
       if (gameMode.equals("gui")) {
-        System.out.println("Starting GUI mode...");
-        // Initialise GUI components here
         gameView = new GUIView(gameEngine, gameController);
       } else {
-        System.out.println("Starting Console mode...");
-        // Initialise console components here
         gameView = new ConsoleView(gameEngine, gameController);
       }
 

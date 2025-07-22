@@ -15,8 +15,11 @@ import demre.rpg.model.items.Helm;
 import demre.rpg.model.items.Item;
 import demre.rpg.model.items.Weapon;
 import demre.rpg.model.map.Tile;
+import demre.rpg.storage.HeroLoader;
+import demre.rpg.storage.HeroStorage;
 import demre.rpg.util.CharacterFactory;
 import demre.rpg.view.GameView;
+
 import jakarta.validation.constraints.NotNull;
 
 public class GameEngine {
@@ -61,7 +64,7 @@ public class GameEngine {
     this.step = Step.SPLASH_SCREEN;
     this.hero = null;
     this.initialHeroState = null;
-    this.heroes = HeroLoader.loadHeroes();
+    this.heroes = null;
     this.villains = new ArrayList<>();
     this.event = Special.NONE;
     this.fightTiles = new Tile[2]; // 0: Hero, 1: Enemy
@@ -153,6 +156,13 @@ public class GameEngine {
     }
   }
 
+  public void addHero(Hero hero) {
+    if (heroes == null) {
+      heroes = new ArrayList<>();
+    }
+    heroes.add(hero);
+  }
+
   public void setVillains(List<Villain> villains) {
     this.villains = villains;
   }
@@ -175,6 +185,11 @@ public class GameEngine {
   }
 
   // Methods
+
+  public void initialise() {
+    HeroLoader.loadHeroesFromDatabase(this);
+    System.out.println("GameEngine > Initialised heroes: " + (heroes != null ? heroes.size() : 0));
+  }
 
   public void startGame(@NotNull GameView gameView) {
     System.out.println("GameEngine > Starting game...");
@@ -291,7 +306,7 @@ public class GameEngine {
 
     setHero(newHero);
     setInitialHeroState(newHero);
-    heroes.add(newHero); // Append new hero to list to be able to save later
+    addHero(newHero);
     selectedHeroIndex = heroes.size() - 1;
   }
 
@@ -414,7 +429,8 @@ public class GameEngine {
         || input.equalsIgnoreCase("West"));
   }
 
-  public void movePlayer(String input) {
+  public void movePlayer(String input)
+      throws IOException {
 
     Direction direction = parseDirection(input);
     System.out.println("GameEngine > Detected direction: " + direction);
@@ -438,15 +454,16 @@ public class GameEngine {
 
     // Check if target tile is an Enemy or a border
     Tile targetTile = map[newY + 1][newX + 1];
-    if (targetTile.getType().equals("Enemy")) {
+    if (targetTile.getType().equals("Enemy")) { // fight
       event = Special.ENEMY;
       targetTile.setVisible(true);
       setFightTiles(currentHeroTile, targetTile);
       return;
-    } else if (targetTile.getType().equals("Border")) {
+    } else if (targetTile.getType().equals("Border")) { // victory
       event = Special.VICTORY;
-      setInitialHeroState(hero);
-    } else {
+      setInitialHeroState(hero); // Replace with current hero state
+      HeroStorage.saveToDatabase(this);
+    } else { // move
       event = Special.NONE;
       currentHeroTile.assignGrass();
       hero.setXCoord(newX);

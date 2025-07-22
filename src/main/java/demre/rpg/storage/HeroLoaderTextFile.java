@@ -1,4 +1,4 @@
-package demre.rpg.model;
+package demre.rpg.storage;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,9 +11,9 @@ import java.util.List;
 import demre.rpg.model.characters.Hero;
 import demre.rpg.util.CharacterFactory;
 
-public class HeroLoader {
+public class HeroLoaderTextFile {
 
-  public static List<Hero> loadHeroes()
+  public static List<Hero> loadHeroesFromTextFile()
       throws FileNotFoundException, IOException {
     System.out.println("Loading heroes from file...");
     List<Hero> heroes;
