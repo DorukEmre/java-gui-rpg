@@ -11,6 +11,18 @@ import demre.rpg.model.items.Weapon;
 
 public class CharacterFactory {
   private static CharacterFactory instance;
+  private static final String[] ADJECTIVES = {
+      "Silver", "Golden", "Mystic", "Party", "Enchanted", "Wobbly",
+      "Ancient", "Shiny", "Pointy", "Lightweight", "Fluffy", "Bouncy"
+  };
+  private static final String[] WEAPON_TYPES = {
+      "Banana", "Noodle", "Toothbrush", "Sock", "Plunger", "Umbrella", "Spoon" };
+  private static final String[] ARMOR_TYPES = {
+      "Bathrobe", "Tutu", "Onesie", "Apron", "Cardboard Box", "Bubble Wrap"
+  };
+  private static final String[] HELM_TYPES = {
+      "Colander", "Hat", "Sombrero", "Beanie", "Tiara", "Mask"
+  };
 
   private CharacterFactory() {
   }
@@ -52,6 +64,17 @@ public class CharacterFactory {
 
   }
 
+  public Hero newHero(String heroClass, String name,
+      int level, int experience, int attack, int defense, int hitPoints,
+      int weaponModifier,
+      int armorModifier,
+      int helmModifier) {
+    return newHero(heroClass, name, level, experience, attack, defense, hitPoints,
+        generateWeaponName(), weaponModifier,
+        generateArmorName(), armorModifier,
+        generateHelmName(), helmModifier);
+  }
+
   public Villain newVillain(int level, int attack, int defense, int hitPoints,
       String weaponName, int weaponModifier,
       String armorName, int armorModifier,
@@ -61,6 +84,32 @@ public class CharacterFactory {
         new Weapon(weaponName, weaponModifier),
         new Armor(armorName, armorModifier),
         new Helm(helmName, helmModifier), x, y);
+  }
+
+  public Villain newVillain(int level, int attack, int defense, int hitPoints,
+      int weaponModifier,
+      int armorModifier,
+      int helmModifier,
+      int x, int y) {
+    return (newVillain(level, attack, defense, hitPoints,
+        generateWeaponName(), weaponModifier,
+        generateArmorName(), armorModifier,
+        generateHelmName(), helmModifier, x, y));
+  }
+
+  private String generateWeaponName() {
+    return (ADJECTIVES[(int) (Math.random() * ADJECTIVES.length)] + " "
+        + WEAPON_TYPES[(int) (Math.random() * WEAPON_TYPES.length)]);
+  }
+
+  private String generateArmorName() {
+    return (ADJECTIVES[(int) (Math.random() * ADJECTIVES.length)] + " "
+        + ARMOR_TYPES[(int) (Math.random() * ARMOR_TYPES.length)]);
+  }
+
+  private String generateHelmName() {
+    return (ADJECTIVES[(int) (Math.random() * ADJECTIVES.length)] + " "
+        + HELM_TYPES[(int) (Math.random() * HELM_TYPES.length)]);
   }
 
 }

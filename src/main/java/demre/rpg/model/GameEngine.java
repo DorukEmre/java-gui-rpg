@@ -276,15 +276,15 @@ public class GameEngine {
 
     if (heroClass.equalsIgnoreCase("Mage")
         || heroClass.equalsIgnoreCase("m")) {
-      newHero = factory.newHero("Mage", name, 1, 0, 5, 5, 20, "Wooden stick", 1, "Cloth armor", 1, "Paper hat", 1);
+      newHero = factory.newHero("Mage", name, 1, 0, 5, 5, 20, 1, 1, 1);
 
     } else if (heroClass.equalsIgnoreCase("Warrior")
         || heroClass.equalsIgnoreCase("w")) {
-      newHero = factory.newHero("Warrior", name, 1, 0, 5, 5, 20, "Wooden stick", 1, "Cloth armor", 1, "Paper hat", 1);
+      newHero = factory.newHero("Warrior", name, 1, 0, 5, 5, 20, 1, 1, 1);
 
     } else if (heroClass.equalsIgnoreCase("Rogue")
         || heroClass.equalsIgnoreCase("r")) {
-      newHero = factory.newHero("Rogue", name, 1, 0, 5, 5, 20, "Wooden stick", 1, "Cloth armor", 1, "Paper hat", 1);
+      newHero = factory.newHero("Rogue", name, 1, 0, 5, 5, 20, 1, 1, 1);
     } else {
       throw new IllegalArgumentException("Invalid hero class: " + heroClass);
     }
@@ -381,23 +381,26 @@ public class GameEngine {
       }
 
       // Enemy level = hero level +/- 1
-      int level = hero.getLevel() + (int) (Math.random() * 3) - 1;
+      int level = hero.getLevel() + getOffset(3, -1);
       if (level < 1) {
         level = 1;
       }
-      int attack = (int) (Math.random() * 3) + 4 + level; // 4-6 + level
-      int defense = (int) (Math.random() * 3) + 4 + level; // 4-6 + level
+      int attack = getOffset(3, 4) + level; // 4-6 + level
+      int defense = getOffset(3, 4) + level; // 4-6 + level
       // hp: 8-12 + level + (4-6) * level
-      int hp = ((int) (Math.random() * 4) + 8) + level
-          + ((int) (Math.random() * 3) + 4) * level;
+      int hp = getOffset(4, 8) + level
+          + getOffset(3, 4) * level;
 
       Villain villain = factory.newVillain(level, attack, defense, hp,
-          "Wooden stick", level + (int) (Math.random() * 3) - 1, "Cloth armor", level + (int) (Math.random() * 3) - 1,
-          "Paper hat", level + (int) (Math.random() * 3) - 1,
-          x, y);
+          level + getOffset(3, -1), level + getOffset(3, -1),
+          level + getOffset(3, -1), x, y);
       villains.add(villain);
     }
 
+  }
+
+  private int getOffset(int max, int base) {
+    return ((int) (Math.random() * max) + base);
   }
 
   public boolean isValidDirection(String input) {
