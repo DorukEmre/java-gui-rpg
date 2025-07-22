@@ -44,17 +44,25 @@ public class ConsoleView extends GameView {
 
       // Display the list of heroes
       List<Hero> heroes = gameEngine.getHeroes();
-      for (int i = 0; i < heroes.size(); i++) {
-        Hero hero = heroes.get(i);
-        System.out.println((i + 1) + ". " + hero.getName() + " (" + hero.getClass().getSimpleName() + ")");
-      }
-      System.out.println();
+      if (heroes.isEmpty()) {
+        if (gameEngine.getStep() == GameEngine.Step.INVALID_HERO_SELECTION) {
+          System.out.println("Invalid hero selection. Please try again.");
+        }
+        System.out.println(
+            "No heroes available. Type 'new' [n] to create a new hero:\n");
 
-      if (gameEngine.getStep() == GameEngine.Step.INVALID_HERO_SELECTION) {
-        System.out.println("Invalid hero selection. Please try again.");
+      } else {
+        for (int i = 0; i < heroes.size(); i++) {
+          Hero hero = heroes.get(i);
+          System.out.println((i + 1) + ". " + hero.getName() + " (" + hero.getClass().getSimpleName() + ")");
+        }
+        System.out.println();
+        if (gameEngine.getStep() == GameEngine.Step.INVALID_HERO_SELECTION) {
+          System.out.println("Invalid hero selection. Please try again.");
+        }
+        System.out
+            .println("Enter a number to select your hero from the list, or type 'new' [n] to create a new hero:\n");
       }
-      System.out
-          .println("Enter a number to select your hero from the list, or type 'new' [n] to create a new hero:\n");
 
       String heroSelection = scanner.nextLine();
       controller.onSelectHeroContinue(heroSelection);
