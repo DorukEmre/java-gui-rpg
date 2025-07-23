@@ -259,7 +259,10 @@ public class GameEngine {
         || heroClass.equalsIgnoreCase("Warrior")
         || heroClass.equalsIgnoreCase("w")
         || heroClass.equalsIgnoreCase("Rogue")
-        || heroClass.equalsIgnoreCase("r"));
+        || heroClass.equalsIgnoreCase("r")
+        || heroClass.equals("1")
+        || heroClass.equals("2")
+        || heroClass.equals("3"));
   }
 
   public void selectHero(@NotNull String selection) {
@@ -277,17 +280,17 @@ public class GameEngine {
     Hero newHero;
     CharacterFactory factory = CharacterFactory.getInstance();
 
-    if (heroClass.equalsIgnoreCase("Mage")
-        || heroClass.equalsIgnoreCase("m")) {
-      newHero = factory.newHero("Mage", name, 1, 0, 5, 5, 20, 1, 1, 1);
-
-    } else if (heroClass.equalsIgnoreCase("Warrior")
-        || heroClass.equalsIgnoreCase("w")) {
+    if (heroClass.equalsIgnoreCase("Warrior")
+        || heroClass.equalsIgnoreCase("w") || heroClass.equals("1")) {
       newHero = factory.newHero("Warrior", name, 1, 0, 5, 5, 20, 1, 1, 1);
 
     } else if (heroClass.equalsIgnoreCase("Rogue")
-        || heroClass.equalsIgnoreCase("r")) {
+        || heroClass.equalsIgnoreCase("r") || heroClass.equals("2")) {
       newHero = factory.newHero("Rogue", name, 1, 0, 5, 5, 20, 1, 1, 1);
+
+    } else if (heroClass.equalsIgnoreCase("Mage")
+        || heroClass.equalsIgnoreCase("m") || heroClass.equals("3")) {
+      newHero = factory.newHero("Mage", name, 1, 0, 5, 5, 20, 1, 1, 1);
     } else {
       throw new IllegalArgumentException("Invalid hero class: " + heroClass);
     }
@@ -491,6 +494,12 @@ public class GameEngine {
       Boolean levelUp = false;
       int prevExperience = hero.getExperience();
       int experienceReward = villain.getExperienceReward();
+
+      if (hero.getHeroClass().equals("Warrior")) {
+        experienceReward *= 1.1; // Warriors get 10% more XP
+      }
+
+      // Adjust experience based on level difference
       if (villain.getLevel() == hero.getLevel() - 1) {
         experienceReward = (int) (experienceReward * 0.5);
       } else if (villain.getLevel() <= hero.getLevel() - 2) {
@@ -564,7 +573,10 @@ public class GameEngine {
       }
 
       // Villain attacks back
-      heroCrit = Math.random() < 0.1;
+      if (hero.getHeroClass().equals("Rogue"))
+        heroCrit = Math.random() < 0.2; // Rogues +10% dodge attacks
+      else
+        heroCrit = Math.random() < 0.1;
       int heroDefenseThisTurn = heroDefense;
       if (heroCrit) {
         heroDefenseThisTurn *= 2;
@@ -583,8 +595,7 @@ public class GameEngine {
 
       turn--;
     }
-    System.out.println("GameEngine > The enemy runs away!");
-    System.out.println("GameEngine > Hero hit points after fight: " + heroHitPoints);
+    // Enemy runs away, default player victory
     return true;
   }
 
@@ -600,9 +611,11 @@ public class GameEngine {
 
   private Boolean checkForItemFound(Villain villain) {
     System.out.println("GameEngine > Checking for item found...");
-    // 20% chance to find an item
-    if (Math.random() < 0.2) {
-      System.out.println("GameEngine > Item found!");
+
+    // 20% chance to find an item. Mages +10%
+    double dropChance = hero.getHeroClass().equals("Mage") ? 0.22 : 0.2;
+
+    if (Math.random() < dropChance) {
       // Randomly select an item from the villain's items
       Item[] villainItems = {
           villain.getWeapon(),
@@ -610,17 +623,15 @@ public class GameEngine {
           villain.getHelm()
       };
       Item item = villainItems[(int) (Math.random() * villainItems.length)];
+
       setItemFound(item);
-      System.out.println("GameEngine > Item found: " + item);
       return true;
     } else {
-      System.out.println("GameEngine > No item found.");
       return false;
     }
   }
 
   public void keepItem() {
-    System.out.println("GameEngine > Keeping item...");
     // Replace the item in the hero's inventory
     Item item = getItemFound();
     if (item != null) {
@@ -631,10 +642,7 @@ public class GameEngine {
       } else if (item.getType().equals("Helm")) {
         hero.setHelm((Helm) item);
       }
-      System.out.println("GameEngine > Item added to inventory: " + item);
       setItemFound(null);
-    } else {
-      System.out.println("GameEngine > No item to keep.");
     }
   }
 

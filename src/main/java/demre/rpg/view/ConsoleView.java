@@ -82,13 +82,22 @@ public class ConsoleView extends GameView {
       if (gameEngine.getStep() == GameEngine.Step.INVALID_HERO_CREATION) {
         System.out.println("Invalid hero creation. Please try again.");
         System.out.println(
-            "Hero name must be 3-20 characters long and can only contain alphanumeric characters and spaces.");
+            "Hero name must be 3-20 characters long and can only contain alphanumeric characters and spaces.\n");
       }
       System.out.println("Enter your hero's name:");
       String heroName = scanner.nextLine();
-      System.out.println("Pick a class for your hero: (m)age, (w)arrior, (r)ogue");
+
+      System.out.println("\nPick a class for your hero:");
+      System.out.println(
+          "1. Warrior - A strong fighter, +10% experience gain");
+      System.out.println(
+          "2. Rogue - A stealthy assassin, +10% chance to dodge attacks");
+      System.out.println(
+          "3. Mage - A master of magic, +10% chance to find items");
       String heroClass = scanner.nextLine();
+
       controller.onCreateHeroContinue(heroName, heroClass);
+
     } catch (Exception e) {
       throw new RuntimeException(
           "Error during create hero: " + e.getMessage());
@@ -121,6 +130,7 @@ public class ConsoleView extends GameView {
       System.out.println("\nPress Enter to continue...");
       scanner.nextLine();
       controller.onShowHeroContinue();
+
     } catch (Exception e) {
       throw new RuntimeException(
           "Error during show hero: " + e.getMessage());
