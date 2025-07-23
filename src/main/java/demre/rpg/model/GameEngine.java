@@ -10,14 +10,15 @@ import java.awt.Point;
 
 import demre.rpg.model.characters.Hero;
 import demre.rpg.model.characters.Villain;
+import demre.rpg.model.factories.CharacterFactory;
 import demre.rpg.model.items.Armor;
 import demre.rpg.model.items.Helm;
 import demre.rpg.model.items.Item;
 import demre.rpg.model.items.Weapon;
 import demre.rpg.model.map.Tile;
+import demre.rpg.model.factories.TileFactory;
 import demre.rpg.storage.HeroLoader;
 import demre.rpg.storage.HeroStorage;
-import demre.rpg.util.CharacterFactory;
 import demre.rpg.view.GameView;
 
 import jakarta.validation.constraints.NotNull;
@@ -338,7 +339,7 @@ public class GameEngine {
           symbol = "#";
           visible = true;
         }
-        map[y][x] = new Tile(x, y, type, symbol, visible);
+        map[y][x] = TileFactory.createTile(x, y, type, symbol, visible);
       }
     }
 

@@ -1,21 +1,27 @@
 package demre.rpg.model.map;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class Tile {
+
+  @Min(0)
   private final int x;
+
+  @Min(0)
   private final int y;
+
+  @NotBlank
   private String type; // e.g., "Grass", "Border", "Hero", "Enemy"
+
+  @NotBlank
   private String symbol; // e.g., ".", "#", "@", "X"
+
+  @NotNull
   private Boolean isVisible;
 
   // Constructors
-
-  public Tile(int x, int y, String type, String symbol) {
-    this.x = x;
-    this.y = y;
-    this.type = type;
-    this.symbol = symbol;
-    this.isVisible = false;
-  }
 
   public Tile(int x, int y, String type, String symbol, Boolean isVisible) {
     this.x = x;
@@ -60,8 +66,6 @@ public class Tile {
   public void setVisible(Boolean visible) {
     this.isVisible = visible;
   }
-
-  // Methods
 
   public void assignHero() {
     this.type = "Hero";
