@@ -9,9 +9,18 @@ MVC (Model-View-Controller) architecture, the Model (game engine and logic) is i
     - GUIView for graphical output
 - Controller: Handles user input and updates the model/view
 
+# Annotation-based validation
+
+Implemented at the Model level to ensures that the data is always valid, regardless of whether it comes from the console, GUI, or database.
+
+- Validation annotations defined in model classes
+- Validation can be triggered in the controller (validation before calling model methods)
+- Errors displayed in the view 
+
 # Dependencies
 - jakarta.validation-api — Provides standard validation annotations and interfaces as part of the Jakarta Bean Validation specification (e.g., @NotNull, @Size).
 
 - hibernate-validator — Reference implementation of Jakarta Bean Validation that executes validation logic at runtime and supports custom constraints.
 
 - expressly — Reference implementation of Jakarta Expression Language (EL) used for dynamic message interpolation in validation error messages.
+

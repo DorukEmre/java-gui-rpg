@@ -1,9 +1,19 @@
 package demre.rpg.model.items;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public abstract class Item {
 
+  @NotBlank
   private String type; // e.g., ""Weapon", "Helm", "Armor"
+
+  @NotBlank
   private String name;
+
+  @Min(0)
+  @NotNull
   private int modifier;
 
   protected Item(String type, String name, int modifier) {
@@ -24,20 +34,6 @@ public abstract class Item {
 
   public int getModifier() {
     return modifier;
-  }
-
-  // Setters
-
-  public void setType(String type) {
-    this.type = type;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public void setModifier(int modifier) {
-    this.modifier = modifier;
   }
 
   // Methods
