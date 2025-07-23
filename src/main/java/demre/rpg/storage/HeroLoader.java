@@ -31,7 +31,7 @@ public class HeroLoader {
               rs.getString("class"),
               rs.getString("name"),
               rs.getInt("level"),
-              rs.getInt("xp"),
+              rs.getInt("exp"),
               rs.getInt("att"),
               rs.getInt("def"),
               rs.getInt("hp"),

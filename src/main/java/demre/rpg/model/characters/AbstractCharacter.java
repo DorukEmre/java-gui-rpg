@@ -3,21 +3,34 @@ package demre.rpg.model.characters;
 import demre.rpg.model.items.Armor;
 import demre.rpg.model.items.Helm;
 import demre.rpg.model.items.Weapon;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public abstract class AbstractCharacter implements Character {
+  @Size(min = 3, max = 20)
   private String name;
 
+  @Min(1)
   private int attack;
+  @Min(1)
   private int defense;
+  @Min(1)
   private int hitPoints;
 
+  @Min(1)
   private int level;
 
+  @NotNull
   private Weapon weapon;
+  @NotNull
   private Armor armor;
+  @NotNull
   private Helm helm;
 
+  @Min(0)
   private int xCoord;
+  @Min(0)
   private int yCoord;
 
   // Constructors

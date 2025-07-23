@@ -40,7 +40,7 @@ public class HeroStorageTextFile {
             "# name, class, level, xp, att, def, hp, weapon, mod, armor, mod, helm, mod\n");
         for (Hero eachHero : heroes) {
           if (eachHero != null) {
-            writer.println(eachHero.saveString());
+            writer.println(saveString(eachHero));
           }
         }
       } catch (IOException e) {
@@ -50,5 +50,17 @@ public class HeroStorageTextFile {
       throw new IllegalArgumentException(
           "Invalid selected hero index: " + selectedHeroIndex);
     }
+  }
+
+  // Returns a string representation of the hero's state to be saved to a file
+  private static String saveString(Hero hero) {
+
+    return String.format("%s,%s,%d,%d,%d,%d,%d,%s,%d,%s,%d,%s,%d",
+        hero.getName(), hero.getHeroClass(),
+        hero.getLevel(), hero.getExperience(),
+        hero.getAttack(), hero.getDefense(), hero.getHitPoints(),
+        hero.getWeapon().getName(), hero.getWeapon().getModifier(),
+        hero.getArmor().getName(), hero.getArmor().getModifier(),
+        hero.getHelm().getName(), hero.getHelm().getModifier());
   }
 }

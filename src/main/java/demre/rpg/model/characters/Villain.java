@@ -24,7 +24,6 @@ public class Villain extends AbstractCharacter {
     int expReward = (int) ((currentLevelExp - prevLevelExp)
         * (Math.random() * 5 + 18) / 100); // 18% to 23% of the level's exp
 
-    System.out.println("Villain > Experience reward: " + expReward);
     return expReward;
   }
 

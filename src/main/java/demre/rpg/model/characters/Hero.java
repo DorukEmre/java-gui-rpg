@@ -3,12 +3,14 @@ package demre.rpg.model.characters;
 import demre.rpg.model.items.Armor;
 import demre.rpg.model.items.Helm;
 import demre.rpg.model.items.Weapon;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 
 public abstract class Hero extends AbstractCharacter {
-  @NotNull
+  @NotBlank
   private String heroClass;
 
+  @Min(0)
   private int experience;
 
   // Constructors
@@ -81,13 +83,19 @@ public abstract class Hero extends AbstractCharacter {
 
   public abstract Hero copy();
 
-  public String saveString() {
-    return String.format("%s,%s,%d,%d,%d,%d,%d,%s,%d,%s,%d,%s,%d",
-        getName(), heroClass, getLevel(), experience,
-        getAttack(), getDefense(), getHitPoints(),
-        getWeapon().getName(), getWeapon().getModifier(),
-        getArmor().getName(), getArmor().getModifier(),
-        getHelm().getName(), getHelm().getModifier());
+  public String description() {
+    return String.format(
+        "%s, %s\nLevel: %d exp: %d att: %d def: %d HP: %d\t%s, %s, %s",
+        getName(),
+        heroClass,
+        getLevel(),
+        experience,
+        getAttack(),
+        getDefense(),
+        getHitPoints(),
+        getWeapon(),
+        getArmor(),
+        getHelm());
   }
 
   public String toString() {

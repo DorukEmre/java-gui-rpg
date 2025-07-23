@@ -29,7 +29,7 @@ public class HeroStorage {
           + "name TEXT NOT NULL,"
           + "class TEXT NOT NULL,"
           + "level INTEGER NOT NULL,"
-          + "xp INTEGER NOT NULL,"
+          + "exp INTEGER NOT NULL,"
           + "att INTEGER NOT NULL,"
           + "def INTEGER NOT NULL,"
           + "hp INTEGER NOT NULL,"
@@ -44,7 +44,7 @@ public class HeroStorage {
         pstmt.executeUpdate();
       }
 
-      String sql = "INSERT OR REPLACE INTO heroes (id, name, class, level, xp, att, def, hp, weapon, weapon_mod, armor, armor_mod, helm, helm_mod) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+      String sql = "INSERT OR REPLACE INTO heroes (id, name, class, level, exp, att, def, hp, weapon, weapon_mod, armor, armor_mod, helm, helm_mod) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
       Hero hero = gameEngine.getHero();
       int selectedHeroIndex = gameEngine.getSelectedHeroIndex();

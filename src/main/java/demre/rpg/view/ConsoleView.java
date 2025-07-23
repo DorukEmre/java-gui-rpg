@@ -55,9 +55,8 @@ public class ConsoleView extends GameView {
       } else {
         for (int i = 0; i < heroes.size(); i++) {
           Hero hero = heroes.get(i);
-          System.out.println((i + 1) + ". " + hero.getName() + " (" + hero.getClass().getSimpleName() + ")");
+          System.out.println((i + 1) + ". " + hero.description() + "\n");
         }
-        System.out.println();
         if (gameEngine.getStep() == GameEngine.Step.INVALID_HERO_SELECTION) {
           System.out.println("Invalid hero selection. Please try again.");
         }
@@ -193,15 +192,8 @@ public class ConsoleView extends GameView {
     int side = gameEngine.getMapSize();
     Tile[][] map = gameEngine.getMap();
 
-    System.out.println("Map Size: " + side + "x" + side
-        + ", Level: " + gameEngine.getHero().getLevel()
-        + ", Exp: " + gameEngine.getHero().getExperience()
-        + ", Att: " + gameEngine.getHero().getAttack()
-        + ", Def: " + gameEngine.getHero().getDefense()
-        + ", HP: " + gameEngine.getHero().getHitPoints()
-        + ", " + gameEngine.getHero().getWeapon()
-        + ", " + gameEngine.getHero().getArmor()
-        + ", " + gameEngine.getHero().getHelm());
+    System.out.println("Map Size: " + side + "x" + side);
+    System.out.println(gameEngine.getHero().description());
 
     for (int i = 0; i < side + 2; i++) {
       for (int j = 0; j < side + 2; j++) {
