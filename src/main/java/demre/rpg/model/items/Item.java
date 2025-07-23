@@ -2,7 +2,6 @@ package demre.rpg.model.items;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 public abstract class Item {
 
@@ -13,7 +12,6 @@ public abstract class Item {
   private String name;
 
   @Min(0)
-  @NotNull
   private int modifier;
 
   protected Item(String type, String name, int modifier) {

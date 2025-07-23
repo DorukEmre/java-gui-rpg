@@ -68,7 +68,8 @@ public class ConsoleView extends GameView {
       controller.onSelectHeroContinue(heroSelection);
 
     } catch (Exception e) {
-      System.err.println("Error during select hero: " + e.getMessage());
+      // System.err.println("Error during select hero: " + e.getMessage());
+      throw new RuntimeException("Error during select hero: " + e.getMessage(), e);
     }
   }
 

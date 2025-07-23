@@ -1,4 +1,4 @@
-package demre.rpg.util;
+package demre.rpg.model.factories;
 
 import demre.rpg.model.characters.Hero;
 import demre.rpg.model.characters.Mage;
@@ -8,6 +8,7 @@ import demre.rpg.model.characters.Warrior;
 import demre.rpg.model.items.Armor;
 import demre.rpg.model.items.Helm;
 import demre.rpg.model.items.Weapon;
+import demre.rpg.model.factories.ItemFactory;
 
 public class CharacterFactory {
   private static CharacterFactory instance;
@@ -44,19 +45,19 @@ public class CharacterFactory {
 
     if (heroClass.equalsIgnoreCase("Mage")) {
       hero = new Mage(name, level, experience, attack, defense, hitPoints,
-          new Weapon(weaponName, weaponModifier),
-          new Armor(armorName, armorModifier),
-          new Helm(helmName, helmModifier));
+          ItemFactory.createWeapon(weaponName, weaponModifier),
+          ItemFactory.createArmor(armorName, armorModifier),
+          ItemFactory.createHelm(helmName, helmModifier));
     } else if (heroClass.equalsIgnoreCase("Warrior")) {
       hero = new Warrior(name, level, experience, attack, defense, hitPoints,
-          new Weapon(weaponName, weaponModifier),
-          new Armor(armorName, armorModifier),
-          new Helm(helmName, helmModifier));
+          ItemFactory.createWeapon(weaponName, weaponModifier),
+          ItemFactory.createArmor(armorName, armorModifier),
+          ItemFactory.createHelm(helmName, helmModifier));
     } else if (heroClass.equalsIgnoreCase("Rogue")) {
       hero = new Rogue(name, level, experience, attack, defense, hitPoints,
-          new Weapon(weaponName, weaponModifier),
-          new Armor(armorName, armorModifier),
-          new Helm(helmName, helmModifier));
+          ItemFactory.createWeapon(weaponName, weaponModifier),
+          ItemFactory.createArmor(armorName, armorModifier),
+          ItemFactory.createHelm(helmName, helmModifier));
     } else {
       throw new IllegalArgumentException("Unknown hero class: " + heroClass);
     }
@@ -81,9 +82,9 @@ public class CharacterFactory {
       String helmName, int helmModifier,
       int x, int y) {
     return new Villain(attack, defense, hitPoints, level,
-        new Weapon(weaponName, weaponModifier),
-        new Armor(armorName, armorModifier),
-        new Helm(helmName, helmModifier), x, y);
+        ItemFactory.createWeapon(weaponName, weaponModifier),
+        ItemFactory.createArmor(armorName, armorModifier),
+        ItemFactory.createHelm(helmName, helmModifier), x, y);
   }
 
   public Villain newVillain(int level, int attack, int defense, int hitPoints,

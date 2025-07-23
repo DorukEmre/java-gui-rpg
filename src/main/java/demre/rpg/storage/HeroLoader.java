@@ -8,7 +8,7 @@ import java.sql.PreparedStatement;
 import demre.rpg.Main;
 import demre.rpg.model.GameEngine;
 import demre.rpg.model.characters.Hero;
-import demre.rpg.util.CharacterFactory;
+import demre.rpg.model.factories.CharacterFactory;
 
 public class HeroLoader {
   private static String url = "jdbc:sqlite:" + Main.databaseName;

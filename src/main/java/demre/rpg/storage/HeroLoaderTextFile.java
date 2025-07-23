@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import demre.rpg.model.characters.Hero;
-import demre.rpg.util.CharacterFactory;
+import demre.rpg.model.factories.CharacterFactory;
 
 public class HeroLoaderTextFile {
 
