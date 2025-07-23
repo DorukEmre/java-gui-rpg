@@ -32,16 +32,12 @@ public class GameEngine {
     ENEMY_ENCOUNTER, ENEMY_INVALID_ACTION,
     ENEMY_FIGHT_SUCCESS, ENEMY_RUN_SUCCESS, ENEMY_RUN_FAILURE, LEVEL_UP,
     ITEM_FOUND, ITEM_FOUND_AND_LEVEL_UP, ITEM_INVALID_ACTION,
-    VICTORY, VICTORY_INVALID_ACTION, GAME_OVER, GAME_OVER_INVALID_ACTION,
+    VICTORY_MISSION, VICTORY_INVALID_ACTION, GAME_OVER, GAME_OVER_INVALID_ACTION,
     EXIT_GAME
   }
 
   public enum Direction {
     NORTH, SOUTH, EAST, WEST
-  }
-
-  public enum Special {
-    NONE, ENEMY, VICTORY
   }
 
   private Step step;
@@ -51,7 +47,6 @@ public class GameEngine {
   private Hero initialHeroState; // For resetting the hero
   private List<Hero> heroes;
   private List<Villain> villains;
-  private Special event;
   private Tile[][] map;
   private Tile[] fightTiles; // Tiles involved in a fight, Hero at 0, Enemy at 1
   private int mapSize = 9; // Level 1 map size
@@ -66,7 +61,6 @@ public class GameEngine {
     this.initialHeroState = null;
     this.heroes = null;
     this.villains = new ArrayList<>();
-    this.event = Special.NONE;
     this.fightTiles = new Tile[2]; // 0: Hero, 1: Enemy
     this.itemFound = null;
   }
@@ -112,10 +106,6 @@ public class GameEngine {
 
   public Tile[][] getMap() {
     return map;
-  }
-
-  public Special getEvent() {
-    return event;
   }
 
   public Tile[] getFightTiles() {
@@ -171,10 +161,6 @@ public class GameEngine {
     this.mapSize = mapSize;
   }
 
-  public void setEvent(Special event) {
-    this.event = event;
-  }
-
   public void setFightTiles(Tile heroTile, Tile enemyTile) {
     this.fightTiles[0] = heroTile;
     this.fightTiles[1] = enemyTile;
@@ -228,7 +214,7 @@ public class GameEngine {
           || step == Step.ITEM_FOUND_AND_LEVEL_UP
           || step == Step.ITEM_INVALID_ACTION) {
         gameView.showItemFound();
-      } else if (step == Step.VICTORY
+      } else if (step == Step.VICTORY_MISSION
           || step == Step.VICTORY_INVALID_ACTION) {
         gameView.showVictoryScreen();
       } else if (step == Step.GAME_OVER
@@ -312,16 +298,11 @@ public class GameEngine {
 
   public void newMission(String reason) {
     System.out.println("GameEngine > Starting new mission...: " + reason);
-    if (reason.equals("start")) {
-    } else if (reason.equals("reset")) {
+    if (reason.equals("reset")) {
       setHero(getInitialHeroState().copy());
-    } else if (reason.equals("continue")) {
-    } else {
-      throw new IllegalArgumentException(
-          "Invalid reason for new mission: " + reason);
     }
+
     villains.clear();
-    event = Special.NONE;
     fightTiles = new Tile[2];
     initialiseGameState();
   }
@@ -455,16 +436,15 @@ public class GameEngine {
     // Check if target tile is an Enemy or a border
     Tile targetTile = map[newY + 1][newX + 1];
     if (targetTile.getType().equals("Enemy")) { // fight
-      event = Special.ENEMY;
+      step = Step.ENEMY_ENCOUNTER;
       targetTile.setVisible(true);
       setFightTiles(currentHeroTile, targetTile);
       return;
     } else if (targetTile.getType().equals("Border")) { // victory
-      event = Special.VICTORY;
+      step = Step.VICTORY_MISSION;
       setInitialHeroState(hero); // Replace with current hero state
       HeroStorage.saveToDatabase(this);
     } else { // move
-      event = Special.NONE;
       currentHeroTile.assignGrass();
       hero.setXCoord(newX);
       hero.setYCoord(newY);
@@ -492,7 +472,7 @@ public class GameEngine {
     }
   }
 
-  public String fightEnemy() {
+  public void fightEnemy() {
     System.out.println("GameEngine > Fighting enemy...");
 
     Hero hero = getHero();
@@ -529,17 +509,17 @@ public class GameEngine {
       // Remove the enemy from the villains list
       villains.remove(villain);
 
-      if (levelUp && itemFound) {
-        return "item found and level up";
-      } else if (levelUp)
-        return "level up";
+      if (levelUp && itemFound)
+        step = Step.ITEM_FOUND_AND_LEVEL_UP;
+      else if (levelUp)
+        step = Step.LEVEL_UP;
       else if (itemFound)
-        return "item found";
+        step = Step.ITEM_FOUND;
       else
-        return "victory";
+        step = Step.ENEMY_FIGHT_SUCCESS;
 
     } else {
-      return "defeat";
+      step = Step.GAME_OVER;
     }
   }
 
@@ -606,14 +586,14 @@ public class GameEngine {
     return true;
   }
 
-  public String runFromEnemy() {
+  public void runFromEnemy() {
     System.out.println("GameEngine > Running from enemy...");
     // 50% chance to run away
     if (Math.random() < 0.5) {
       System.out.println("GameEngine > Hero successfully ran away!");
-      return "success";
+      step = Step.ENEMY_RUN_SUCCESS;
     }
-    return "failure";
+    step = Step.ENEMY_RUN_FAILURE;
   }
 
   private Boolean checkForItemFound(Villain villain) {

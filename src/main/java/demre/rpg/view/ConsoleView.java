@@ -149,7 +149,7 @@ public class ConsoleView extends GameView {
         controller.onSuccessfulActionContinue();
       }
       System.out.println(
-          "(N)orth, (S)outh, (E)ast, (W)est, 'info' or 'exit'.");
+          "(N)orth, (S)outh, (E)ast, (W)est, (i)nfo or 'exit'.");
       String input = scanner.nextLine();
       controller.onMapInputContinue(input);
 
