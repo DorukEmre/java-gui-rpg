@@ -17,7 +17,6 @@ public class Main {
       checkArgsAndGetGameMode(args);
 
       GameEngine gameEngine = new GameEngine();
-      gameEngine.initialise();
 
       GameController gameController = new GameController(gameEngine);
 
@@ -28,7 +27,8 @@ public class Main {
         gameView = new ConsoleView(gameEngine, gameController);
       }
 
-      gameEngine.startGame(gameView);
+      gameEngine.initialise(gameView, gameController);
+      gameEngine.startGame();
 
     } catch (Exception e) {
       errorAndExit(e, e.getMessage());

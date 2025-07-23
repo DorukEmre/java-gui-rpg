@@ -24,10 +24,8 @@ public class GameController {
   public void onSelectHeroContinue(String input) {
     System.out.println("GameController > Hero selection input: " + input);
 
-    if (input.equalsIgnoreCase("exit")) {
-      gameEngine.setCurrentStep(Step.EXIT_GAME);
+    if (handleExitOrViewChange(input, false))
       return;
-    }
 
     if (gameEngine.isValidHeroSelection(input)) {
       gameEngine.selectHero(input);
@@ -44,10 +42,8 @@ public class GameController {
   public void onCreateHeroContinue(String heroName, String heroClass) {
     System.out.println("GameController > Hero creation input: " + heroName);
 
-    if (heroClass.equalsIgnoreCase("exit")) {
-      gameEngine.setCurrentStep(Step.EXIT_GAME);
+    if (handleExitOrViewChange(heroClass, false))
       return;
-    }
 
     if (gameEngine.isValidHeroName(heroName)
         && gameEngine.isValidHeroClass(heroClass)) {
@@ -69,10 +65,8 @@ public class GameController {
       throws IOException {
     System.out.println("GameController > Player input: " + input);
 
-    if (input.equalsIgnoreCase("exit")) {
-      gameEngine.setCurrentStep(Step.EXIT_GAME);
+    if (handleExitOrViewChange(input, false))
       return;
-    }
 
     if (input.equalsIgnoreCase("info")
         || input.equalsIgnoreCase("i")) {
@@ -97,10 +91,8 @@ public class GameController {
   public void onEnemyEncounterContinue(String input) {
     System.out.println("GameController > Enemy encounter input: " + input);
 
-    if (input.equalsIgnoreCase("exit")) {
-      gameEngine.setCurrentStep(Step.EXIT_GAME);
+    if (handleExitOrViewChange(input, false))
       return;
-    }
 
     if (input.equalsIgnoreCase("fight") || input.equalsIgnoreCase("f")) {
       gameEngine.fightEnemy();
@@ -114,10 +106,8 @@ public class GameController {
   public void onItemFoundContinue(String input) {
     System.out.println("GameController > Item found continue pressed.");
 
-    if (input.equalsIgnoreCase("exit")) {
-      gameEngine.setCurrentStep(Step.EXIT_GAME);
+    if (handleExitOrViewChange(input, false))
       return;
-    }
 
     if (input.equalsIgnoreCase("keep") || input.equalsIgnoreCase("k")) {
       gameEngine.keepItem();
@@ -133,11 +123,8 @@ public class GameController {
   public void onVictoryScreenContinue(String input) {
     System.out.println("GameController > Victory screen continue pressed.");
 
-    if (input.equalsIgnoreCase("exit")
-        || input.equalsIgnoreCase("e")) {
-      gameEngine.setCurrentStep(Step.EXIT_GAME);
+    if (handleExitOrViewChange(input, true))
       return;
-    }
 
     if (input.equalsIgnoreCase("next")
         || input.equalsIgnoreCase("n")) {
@@ -151,11 +138,8 @@ public class GameController {
   public void onGameOverContinue(String input) {
     System.out.println("GameController > Game over continue pressed.");
 
-    if (input.equalsIgnoreCase("exit")
-        || input.equalsIgnoreCase("e")) {
-      gameEngine.setCurrentStep(Step.EXIT_GAME);
+    if (handleExitOrViewChange(input, true))
       return;
-    }
 
     if (input.equalsIgnoreCase("try")
         || input.equalsIgnoreCase("t")) {
@@ -164,5 +148,20 @@ public class GameController {
     } else {
       gameEngine.setCurrentStep(Step.GAME_OVER_INVALID_ACTION);
     }
+  }
+
+  private Boolean handleExitOrViewChange(String input, boolean allowShortExit) {
+    if (input.equalsIgnoreCase("exit")
+        || (allowShortExit && input.equalsIgnoreCase("e"))) {
+      gameEngine.setCurrentStep(Step.EXIT_GAME);
+      return true;
+    } else if (input.equalsIgnoreCase("gui") || input.equalsIgnoreCase("g")) {
+      gameEngine.setGameView("gui");
+      return true;
+    } else if (input.equalsIgnoreCase("console")) {
+      gameEngine.setGameView("console");
+      return true;
+    }
+    return false;
   }
 }

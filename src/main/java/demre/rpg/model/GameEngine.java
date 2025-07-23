@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.awt.Point;
 
+import demre.rpg.controller.GameController;
 import demre.rpg.model.characters.Hero;
 import demre.rpg.model.characters.Villain;
 import demre.rpg.model.factories.CharacterFactory;
@@ -19,6 +20,8 @@ import demre.rpg.model.map.Tile;
 import demre.rpg.model.factories.TileFactory;
 import demre.rpg.storage.HeroLoader;
 import demre.rpg.storage.HeroStorage;
+import demre.rpg.view.ConsoleView;
+import demre.rpg.view.GUIView;
 import demre.rpg.view.GameView;
 
 public class GameEngine {
@@ -39,6 +42,9 @@ public class GameEngine {
   public enum Direction {
     NORTH, SOUTH, EAST, WEST
   }
+
+  private GameView gameView;
+  private GameController gameController;
 
   private Step step;
   // Hero index in heroes list: null = non loaded, >=0 hero selected
@@ -116,6 +122,10 @@ public class GameEngine {
     return itemFound;
   }
 
+  public GameController getGameController() {
+    return gameController;
+  }
+
   // Setters
 
   public void setCurrentStep(Step newStep) {
@@ -170,17 +180,42 @@ public class GameEngine {
     this.itemFound = item;
   }
 
+  public void setGameView(String newGameView)
+      throws IllegalArgumentException {
+
+    if (newGameView.equals("gui")) {
+      this.gameView = new GUIView(this, getGameController());
+    } else if (newGameView.equals("console")) {
+      this.gameView = new ConsoleView(this, getGameController());
+    } else {
+      throw new IllegalArgumentException("Invalid game view: " + newGameView);
+    }
+  }
+
   // Methods
 
-  public void initialise()
+  public void initialise(GameView gameView, GameController gameController)
       throws IOException {
+    if (gameView == null || gameController == null) {
+      throw new IllegalArgumentException(
+          "Initialisation parameters cannot be null.");
+    }
+    this.gameView = gameView;
+    this.gameController = gameController;
+
     HeroLoader.loadHeroesFromDatabase(this);
+
     System.out.println("GameEngine > Initialised heroes: "
         + (heroes != null ? heroes.size() : 0));
   }
 
-  public void startGame(GameView gameView) {
+  public void startGame() {
     System.out.println("GameEngine > Starting game...");
+
+    if (gameView == null || gameController == null) {
+      throw new IllegalArgumentException(
+          "Initialisation parameters cannot be null.");
+    }
 
     while (step != Step.EXIT_GAME) {
       System.out.println("GameEngine > Current step: " + step);
