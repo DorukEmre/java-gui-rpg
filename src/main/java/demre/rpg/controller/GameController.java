@@ -49,7 +49,8 @@ public class GameController {
       return;
     }
 
-    if (gameEngine.isValidHeroName(heroName) && gameEngine.isValidHeroClass(heroClass)) {
+    if (gameEngine.isValidHeroName(heroName)
+        && gameEngine.isValidHeroClass(heroClass)) {
       gameEngine.createHero(heroName, heroClass);
       gameEngine.newMission("start");
       gameEngine.setCurrentStep(Step.NEW_MISSION);

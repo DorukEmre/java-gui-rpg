@@ -85,7 +85,7 @@ public abstract class Hero extends AbstractCharacter {
 
   public String description() {
     return String.format(
-        "%s, %s\nLevel: %d exp: %d att: %d def: %d HP: %d\t%s, %s, %s",
+        "%s, %s\n\tLevel: %d exp: %d att: %d def: %d HP: %d\t%s, %s, %s",
         getName(),
         heroClass,
         getLevel(),

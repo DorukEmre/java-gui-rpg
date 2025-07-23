@@ -45,7 +45,7 @@ public class ConsoleView extends GameView {
 
       // Display the list of heroes
       List<Hero> heroes = gameEngine.getHeroes();
-      if (heroes.isEmpty()) {
+      if (heroes == null || heroes.isEmpty()) {
         if (gameEngine.getStep() == GameEngine.Step.INVALID_HERO_SELECTION) {
           System.out.println("Invalid hero selection. Please try again.");
         }

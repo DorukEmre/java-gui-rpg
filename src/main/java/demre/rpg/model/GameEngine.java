@@ -21,8 +21,6 @@ import demre.rpg.storage.HeroLoader;
 import demre.rpg.storage.HeroStorage;
 import demre.rpg.view.GameView;
 
-import jakarta.validation.constraints.NotNull;
-
 public class GameEngine {
   public enum Step {
     SPLASH_SCREEN,
@@ -33,7 +31,8 @@ public class GameEngine {
     ENEMY_ENCOUNTER, ENEMY_INVALID_ACTION,
     ENEMY_FIGHT_SUCCESS, ENEMY_RUN_SUCCESS, ENEMY_RUN_FAILURE, LEVEL_UP,
     ITEM_FOUND, ITEM_FOUND_AND_LEVEL_UP, ITEM_INVALID_ACTION,
-    VICTORY_MISSION, VICTORY_INVALID_ACTION, GAME_OVER, GAME_OVER_INVALID_ACTION,
+    VICTORY_MISSION, VICTORY_INVALID_ACTION,
+    GAME_OVER, GAME_OVER_INVALID_ACTION,
     EXIT_GAME
   }
 
@@ -176,10 +175,11 @@ public class GameEngine {
   public void initialise()
       throws IOException {
     HeroLoader.loadHeroesFromDatabase(this);
-    System.out.println("GameEngine > Initialised heroes: " + (heroes != null ? heroes.size() : 0));
+    System.out.println("GameEngine > Initialised heroes: "
+        + (heroes != null ? heroes.size() : 0));
   }
 
-  public void startGame(@NotNull GameView gameView) {
+  public void startGame(GameView gameView) {
     System.out.println("GameEngine > Starting game...");
 
     while (step != Step.EXIT_GAME) {
@@ -227,7 +227,7 @@ public class GameEngine {
     System.out.println("GameEngine > Ending game...");
   }
 
-  public boolean isValidHeroSelection(@NotNull String selection) {
+  public boolean isValidHeroSelection(String selection) {
     if (heroes == null || heroes.size() == 0) {
       return false;
     }
@@ -265,7 +265,7 @@ public class GameEngine {
         || heroClass.equals("3"));
   }
 
-  public void selectHero(@NotNull String selection) {
+  public void selectHero(String selection) {
     System.out.println("GameEngine > Selecting hero: " + selection);
 
     int index = Integer.parseInt(selection) - 1;
@@ -275,7 +275,7 @@ public class GameEngine {
     selectedHeroIndex = index;
   }
 
-  public void createHero(@NotNull String name, @NotNull String heroClass) {
+  public void createHero(String name, String heroClass) {
     System.out.println("GameEngine > Creating hero: " + name);
     Hero newHero;
     CharacterFactory factory = CharacterFactory.getInstance();
@@ -486,7 +486,8 @@ public class GameEngine {
     Villain villain = getVillainAtCoord(
         enemyTile.getX() - 1, enemyTile.getY() - 1);
     if (villain == null) {
-      throw new IllegalStateException("No villain found at enemy tile coordinates.");
+      throw new IllegalStateException(
+          "No villain found at enemy tile coordinates.");
     }
 
     if (isHeroVictorious(villain)) {
@@ -562,12 +563,14 @@ public class GameEngine {
 
       villainHitPoints -= heroDamage;
       System.out
-          .println("GameEngine > Hero attacks for: " + heroAttackRoll + " - " + villainDefense + " = " + heroDamage
+          .println("GameEngine > Hero attacks for: "
+              + heroAttackRoll + " - " + villainDefense + " = " + heroDamage
               + " damage. Villain HP: " + villainHitPoints);
 
       if (villainHitPoints <= 0) {
         System.out.println("GameEngine > Villain defeated!");
-        System.out.println("GameEngine > Hero hit points after fight: " + heroHitPoints);
+        System.out.println(
+            "GameEngine > Hero hit points after fight: " + heroHitPoints);
         // hero.setHitPoints(heroHitPoints);
         return true;
       }
@@ -585,7 +588,8 @@ public class GameEngine {
       int villainDamage = Math.max(1, villainAttackRoll - heroDefenseThisTurn);
       heroHitPoints -= villainDamage;
       System.out.println(
-          "GameEngine > Villain attacks for: " + villainAttack + " - " + heroDefenseThisTurn + " = " + villainDamage
+          "GameEngine > Villain attacks for: "
+              + villainAttack + " - " + heroDefenseThisTurn + " = " + villainDamage
               + " damage. Hero HP: " + heroHitPoints);
 
       if (heroHitPoints <= 0) {
