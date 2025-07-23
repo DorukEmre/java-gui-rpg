@@ -37,7 +37,8 @@ public class TileFactory {
       for (ConstraintViolation<Tile> violation : violations) {
         sb.append(violation.getPropertyPath()).append(": ").append(violation.getMessage()).append("\n");
       }
-      throw new IllegalArgumentException("Tile validation failed: " + sb.toString());
+      throw new IllegalArgumentException(
+          "Validation error. Tile: " + sb.toString());
     }
   }
 }

@@ -173,7 +173,8 @@ public class GameEngine {
 
   // Methods
 
-  public void initialise() {
+  public void initialise()
+      throws IOException {
     HeroLoader.loadHeroesFromDatabase(this);
     System.out.println("GameEngine > Initialised heroes: " + (heroes != null ? heroes.size() : 0));
   }

@@ -13,7 +13,8 @@ import demre.rpg.model.factories.CharacterFactory;
 public class HeroLoader {
   private static String url = "jdbc:sqlite:" + Main.databaseName;
 
-  public static void loadHeroesFromDatabase(GameEngine gameEngine) {
+  public static void loadHeroesFromDatabase(GameEngine gameEngine)
+      throws IOException {
 
     try (Connection conn = DriverManager.getConnection(url)) {
       System.out.println("loadHeroesFromDatabase > Connected to database.");
@@ -45,7 +46,7 @@ public class HeroLoader {
         }
       }
     } catch (Exception e) {
-      System.err.println("Error loading from database: " + e.getMessage());
+      throw new IOException("Error loading from database: " + e.getMessage());
     }
   }
 

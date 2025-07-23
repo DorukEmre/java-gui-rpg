@@ -32,7 +32,8 @@ public class ConsoleView extends GameView {
       scanner.nextLine();
       controller.onSplashScreenContinue();
     } catch (Exception e) {
-      System.err.println("Error during splash screen: " + e.getMessage());
+      throw new RuntimeException(
+          "Error during splash screen: " + e.getMessage());
     }
   }
 
@@ -68,8 +69,8 @@ public class ConsoleView extends GameView {
       controller.onSelectHeroContinue(heroSelection);
 
     } catch (Exception e) {
-      // System.err.println("Error during select hero: " + e.getMessage());
-      throw new RuntimeException("Error during select hero: " + e.getMessage(), e);
+      throw new RuntimeException(
+          "Error during select hero: " + e.getMessage(), e);
     }
   }
 
@@ -89,7 +90,8 @@ public class ConsoleView extends GameView {
       String heroClass = scanner.nextLine();
       controller.onCreateHeroContinue(heroName, heroClass);
     } catch (Exception e) {
-      System.err.println("Error during create hero: " + e.getMessage());
+      throw new RuntimeException(
+          "Error during create hero: " + e.getMessage());
     }
   }
 
@@ -120,7 +122,8 @@ public class ConsoleView extends GameView {
       scanner.nextLine();
       controller.onShowHeroContinue();
     } catch (Exception e) {
-      System.err.println("Error during show hero: " + e.getMessage());
+      throw new RuntimeException(
+          "Error during show hero: " + e.getMessage());
     }
   }
 
@@ -155,7 +158,8 @@ public class ConsoleView extends GameView {
       controller.onMapInputContinue(input);
 
     } catch (Exception e) {
-      System.err.println("Error during console drawing: " + e.getMessage());
+      throw new RuntimeException(
+          "Error during console drawing: " + e.getMessage());
 
     }
   }
@@ -213,7 +217,8 @@ public class ConsoleView extends GameView {
       String enemy_choice = scanner.nextLine();
       controller.onEnemyEncounterContinue(enemy_choice);
     } catch (Exception e) {
-      System.err.println("Error during enemy encounter: " + e.getMessage());
+      throw new RuntimeException(
+          "Error during enemy encounter: " + e.getMessage());
     }
   }
 
@@ -228,7 +233,8 @@ public class ConsoleView extends GameView {
       scanner.nextLine();
       controller.onEnemyEncounterContinue("fight");
     } catch (Exception e) {
-      System.err.println("Error during enemy run failure: " + e.getMessage());
+      throw new RuntimeException(
+          "Error during enemy run failure: " + e.getMessage());
     }
   }
 
@@ -260,7 +266,8 @@ public class ConsoleView extends GameView {
       String item_choice = scanner.nextLine();
       controller.onItemFoundContinue(item_choice);
     } catch (Exception e) {
-      System.err.println("Error during item found: " + e.getMessage());
+      throw new RuntimeException(
+          "Error during item found: " + e.getMessage());
     }
   }
 
@@ -277,7 +284,8 @@ public class ConsoleView extends GameView {
       String choice = scanner.nextLine();
       controller.onVictoryScreenContinue(choice);
     } catch (Exception e) {
-      System.err.println("Error during victory screen: " + e.getMessage());
+      throw new RuntimeException(
+          "Error during victory screen: " + e.getMessage());
     }
   }
 
@@ -294,7 +302,8 @@ public class ConsoleView extends GameView {
       String choice = scanner.nextLine();
       controller.onGameOverContinue(choice);
     } catch (Exception e) {
-      System.err.println("Error during game over screen: " + e.getMessage());
+      throw new RuntimeException(
+          "Error during game over screen: " + e.getMessage());
     }
   }
 

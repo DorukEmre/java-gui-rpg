@@ -57,7 +57,7 @@ public class Main {
    */
   private static void errorAndExit(Exception e, String message) {
     e.printStackTrace();
-    System.out.println("\u001B[31mError:\u001B[0m " + message);
+    System.err.println("\u001B[31mError:\u001B[0m " + message);
     System.exit(1);
   }
 }

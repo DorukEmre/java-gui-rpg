@@ -43,7 +43,8 @@ public class ItemFactory {
       for (ConstraintViolation<Item> violation : violations) {
         sb.append(violation.getPropertyPath()).append(": ").append(violation.getMessage()).append("\n");
       }
-      throw new IllegalArgumentException("Item validation failed: " + sb.toString());
+      throw new IllegalArgumentException(
+          "Validation error. Item: " + sb.toString());
     }
   }
 
