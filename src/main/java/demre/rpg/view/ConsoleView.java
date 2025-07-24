@@ -31,7 +31,7 @@ public class ConsoleView
       case SPLASH_SCREEN -> splashScreen();
       case SELECT_HERO, INVALID_HERO_SELECTION -> selectHero();
       case CREATE_HERO, INVALID_HERO_CREATION -> createHero();
-      case INFO, NEW_MISSION -> showHero();
+      case INFO, NEW_MISSION -> showHeroInfo();
       case PLAYING, INVALID_ACTION, ENEMY_FIGHT_SUCCESS, LEVEL_UP, ENEMY_RUN_SUCCESS -> showMap();
       case ENEMY_ENCOUNTER, ENEMY_INVALID_ACTION -> showEnemyEncounter();
       case ENEMY_RUN_FAILURE -> showEnemyRunFailure();
@@ -134,7 +134,7 @@ public class ConsoleView
   }
 
   @Override
-  public void showHero() {
+  public void showHeroInfo() {
     System.out.println("ConsoleView > Showing hero information...");
     try {
       clearConsole();
@@ -168,7 +168,7 @@ public class ConsoleView
 
   @Override
   public void showMap() {
-    System.out.println("ConsoleView > Updating console view...");
+    System.out.println("ConsoleView > Showing game map...");
 
     GameEngine.Step step = gameEngine.getStep();
 

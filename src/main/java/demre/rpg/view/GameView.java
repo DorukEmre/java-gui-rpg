@@ -8,7 +8,7 @@ public interface GameView {
 
   void createHero();
 
-  void showHero();
+  void showHeroInfo();
 
   void showMap();
 

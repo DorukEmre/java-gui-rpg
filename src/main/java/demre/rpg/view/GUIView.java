@@ -3,23 +3,17 @@ package demre.rpg.view;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-import javax.swing.WindowConstants;
-import javax.swing.BoxLayout;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GraphicsConfiguration;
 
 import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
 import demre.rpg.model.GameEngineListener;
+import demre.rpg.view.gui.HeroInfoPanel;
 import demre.rpg.view.gui.SelectHeroPanel;
 import demre.rpg.view.gui.SplashScreenPanel;
-import demre.rpg.model.GameEngine.Step;
 
 public class GUIView
     extends javax.swing.JFrame
@@ -43,7 +37,7 @@ public class GUIView
       case SPLASH_SCREEN -> splashScreen();
       case SELECT_HERO, INVALID_HERO_SELECTION -> selectHero();
       case CREATE_HERO, INVALID_HERO_CREATION -> createHero();
-      case INFO, NEW_MISSION -> showHero();
+      case INFO, NEW_MISSION -> showHeroInfo();
       case PLAYING, INVALID_ACTION, ENEMY_FIGHT_SUCCESS, LEVEL_UP, ENEMY_RUN_SUCCESS -> showMap();
       case ENEMY_ENCOUNTER, ENEMY_INVALID_ACTION -> showEnemyEncounter();
       case ENEMY_RUN_FAILURE -> showEnemyRunFailure();
@@ -115,14 +109,16 @@ public class GUIView
   }
 
   @Override
-  public void showHero() {
+  public void showHeroInfo() {
     System.out.println("GUIView > Displaying hero information...");
+
+    showStage("heroInfo", new HeroInfoPanel(controller, gameEngine));
 
   }
 
   @Override
   public void showMap() {
-    System.out.println("GUIView > Updating GUI view...");
+    System.out.println("GUIView > Showing game map...");
   }
 
   @Override
