@@ -150,21 +150,21 @@ public class GameController {
     }
   }
 
-  public void switchToConsole() {
-    System.out.println("GameController > Switching to console view...");
-
-    gameEngine.setGameView("console");
-  }
-
   private Boolean handleExitOrViewChange(String input, boolean allowShortExit) {
     if (input.equalsIgnoreCase("exit")
         || (allowShortExit && input.equalsIgnoreCase("e"))) {
       gameEngine.exitGame();
       return true;
     } else if (input.equalsIgnoreCase("gui")) {
-      gameEngine.setGameView("gui");
+      switchView("gui");
       return true;
     }
     return false;
+  }
+
+  public void switchView(String newGameView) {
+    System.out.println("GameController > Switching to view: " + newGameView);
+
+    gameEngine.setGameView(newGameView);
   }
 }

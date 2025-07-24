@@ -2,16 +2,22 @@ package demre.rpg.view;
 
 import javax.swing.JPanel;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
+import javax.swing.BoxLayout;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GraphicsConfiguration;
 
 import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
 import demre.rpg.model.GameEngineListener;
+import demre.rpg.view.gui.SplashScreenPanel;
 import demre.rpg.model.GameEngine.Step;
 
 public class GUIView
@@ -20,47 +26,14 @@ public class GUIView
 
   private final GameEngine gameEngine;
   private final GameController controller;
-  private JPanel mainPanel;
+  private JPanel contentPanel;
+  private CardLayout cardLayout;
 
   public GUIView(GameEngine gameEngine, GameController controller) {
     this.gameEngine = gameEngine;
     this.controller = controller;
     System.out.println("GUIView initialised with engine: " + gameEngine + " and controller: " + controller);
     initialiseGUIComponents();
-  }
-
-  private void initialiseGUIComponents() {
-    System.out.println("GUIView > Initialising GUI components...");
-
-    // Create main window
-    setTitle("RPG Game");
-    setSize(800, 600);
-    setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    // e.g., set up panels, buttons, labels, etc.
-    this.mainPanel = new JPanel();
-
-    mainPanel.setLayout(new BorderLayout());
-
-    JLabel titleLabel = new JLabel(
-        "Welcome to the RPG Game", SwingConstants.CENTER);
-    titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-    mainPanel.add(titleLabel, BorderLayout.NORTH);
-
-    JButton consoleButton = new JButton("Switch to Console View");
-    mainPanel.add(consoleButton, BorderLayout.SOUTH);
-
-    // Logic to wait for user input (e.g., button click) to proceed
-    consoleButton.addActionListener(e -> {
-      System.out.println("GUIView > Switching view to console...");
-      // mainPanel.remove(consoleButton);
-      // mainPanel.revalidate();
-      // mainPanel.repaint();
-      controller.switchToConsole();
-    });
-
-    setContentPane(mainPanel);
-    setVisible(true);
-    System.out.println("GUIView > GUI components initialised.");
   }
 
   @Override
@@ -70,7 +43,7 @@ public class GUIView
       case SELECT_HERO, INVALID_HERO_SELECTION -> selectHero();
       case CREATE_HERO, INVALID_HERO_CREATION -> createHero();
       case INFO, NEW_MISSION -> showHero();
-      case PLAYING, INVALID_ACTION, ENEMY_FIGHT_SUCCESS, LEVEL_UP, ENEMY_RUN_SUCCESS -> updateView();
+      case PLAYING, INVALID_ACTION, ENEMY_FIGHT_SUCCESS, LEVEL_UP, ENEMY_RUN_SUCCESS -> showMap();
       case ENEMY_ENCOUNTER, ENEMY_INVALID_ACTION -> showEnemyEncounter();
       case ENEMY_RUN_FAILURE -> showEnemyRunFailure();
       case ITEM_FOUND, ITEM_FOUND_AND_LEVEL_UP, ITEM_INVALID_ACTION -> showItemFound();
@@ -82,22 +55,49 @@ public class GUIView
     }
   }
 
+  private void initialiseGUIComponents() {
+    System.out.println("GUIView > Initialising GUI components...");
+
+    // Create main window
+    setTitle("RPG Game");
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setLayout(new BorderLayout());
+    setSize(800, 600);
+    setMinimumSize(new Dimension(600, 400));
+
+    // Create content panel to display different views
+    cardLayout = new CardLayout();
+    contentPanel = new JPanel(cardLayout);
+    contentPanel.setPreferredSize(getSize());
+
+    // Add button to switch to console view
+    JPanel bottomPanel = new JPanel();
+    JButton switchButton = new JButton("Switch to Console View");
+    bottomPanel.add(switchButton);
+
+    // Add listeners
+    switchButton.addActionListener(
+        e -> controller.switchView("console"));
+
+    add(contentPanel, BorderLayout.CENTER);
+    add(bottomPanel, BorderLayout.SOUTH);
+    setVisible(true);
+
+    System.out.println("GUIView > GUI components initialised.");
+  }
+
+  public void showStage(String stageName, JPanel stagePanel) {
+    contentPanel.add(stagePanel, stageName);
+    cardLayout.show(contentPanel, stageName);
+    contentPanel.revalidate();
+    contentPanel.repaint();
+  }
+
   @Override
   public void splashScreen() {
     System.out.println("GUIView > Displaying splash screen...");
-    JButton startButton = new JButton("Start Game");
-    mainPanel.add(startButton, BorderLayout.CENTER);
 
-    // Logic to wait for user input (e.g., button click) to proceed
-    startButton.addActionListener(e -> {
-      System.out.println("GUIView > Start button clicked, proceeding to game...");
-      mainPanel.remove(startButton);
-      mainPanel.revalidate();
-      mainPanel.repaint();
-      controller.onSplashScreenContinue("continue");
-    });
-
-    return;
+    showStage("splash", new SplashScreenPanel(controller));
   }
 
   @Override
@@ -118,7 +118,7 @@ public class GUIView
   }
 
   @Override
-  public void updateView() {
+  public void showMap() {
     System.out.println("GUIView > Updating GUI view...");
   }
 
