@@ -7,7 +7,7 @@ import demre.rpg.view.ConsoleView;
 import demre.rpg.view.GUIView;
 
 public class Main {
-  public static String gameMode = "console";
+  public static String gameMode;
   public static final String databaseName = "heroes.db";
 
   public static void main(String[] args) {
@@ -47,7 +47,6 @@ public class Main {
       throw new IllegalArgumentException(
           "Usage: java -jar swingy.jar <gui|console>");
     }
-    System.out.println("Hello, swingy in mode: " + gameMode);
   }
 
   /**

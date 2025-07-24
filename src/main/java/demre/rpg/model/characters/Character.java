@@ -3,7 +3,6 @@ package demre.rpg.model.characters;
 import demre.rpg.model.items.Armor;
 import demre.rpg.model.items.Helm;
 import demre.rpg.model.items.Weapon;
-import jakarta.validation.constraints.NotNull;
 
 public interface Character {
 
@@ -31,23 +30,23 @@ public interface Character {
 
   // Setters
 
-  void setName(@NotNull String name);
+  void setName(String name);
 
-  void setAttack(@NotNull int attack);
+  void setAttack(int attack);
 
-  void setDefense(@NotNull int defense);
+  void setDefense(int defense);
 
-  void setHitPoints(@NotNull int hitPoints);
+  void setHitPoints(int hitPoints);
 
-  void setLevel(@NotNull int level);
+  void setLevel(int level);
 
-  void setWeapon(@NotNull Weapon weapon);
+  void setWeapon(Weapon weapon);
 
-  void setArmor(@NotNull Armor armor);
+  void setArmor(Armor armor);
 
-  void setHelm(@NotNull Helm helm);
+  void setHelm(Helm helm);
 
-  void setXCoord(@NotNull int xCoord);
+  void setXCoord(int xCoord);
 
-  void setYCoord(@NotNull int yCoord);
+  void setYCoord(int yCoord);
 }
