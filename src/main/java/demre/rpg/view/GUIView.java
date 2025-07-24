@@ -17,6 +17,7 @@ import java.awt.GraphicsConfiguration;
 import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
 import demre.rpg.model.GameEngineListener;
+import demre.rpg.view.gui.SelectHeroPanel;
 import demre.rpg.view.gui.SplashScreenPanel;
 import demre.rpg.model.GameEngine.Step;
 
@@ -103,7 +104,9 @@ public class GUIView
   @Override
   public void selectHero() {
     System.out.println("GUIView > Displaying hero selection screen...");
-    // gameEngine.setCurrentStep(Step.EXIT_GAME);
+
+    showStage(
+        "selectHero", new SelectHeroPanel(controller, gameEngine));
   }
 
   @Override
