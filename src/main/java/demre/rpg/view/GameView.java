@@ -21,4 +21,6 @@ public interface GameView {
   void showVictoryScreen();
 
   void showGameOver();
+
+  void cleanup();
 }

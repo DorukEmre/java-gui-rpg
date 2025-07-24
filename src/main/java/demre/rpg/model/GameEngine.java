@@ -45,6 +45,7 @@ public class GameEngine {
 
   private GameView gameView;
   private GameController gameController;
+  private final List<GameEngineListener> listeners = new ArrayList<>();
 
   private Step step;
   // Hero index in heroes list: null = non loaded, >=0 hero selected
@@ -62,7 +63,7 @@ public class GameEngine {
 
   public GameEngine()
       throws FileNotFoundException, IOException {
-    this.step = Step.SPLASH_SCREEN;
+    this.step = null;
     this.hero = null;
     this.initialHeroState = null;
     this.heroes = null;
@@ -130,6 +131,9 @@ public class GameEngine {
 
   public void setCurrentStep(Step newStep) {
     this.step = newStep;
+    for (GameEngineListener listener : listeners) {
+      listener.onStepChanged(newStep);
+    }
   }
 
   public void setSelectedHeroIndex(Integer index) {
@@ -180,15 +184,29 @@ public class GameEngine {
     this.itemFound = item;
   }
 
-  public void setGameView(String newGameView)
-      throws IllegalArgumentException {
+  public void setGameView(String newGameView) {
 
+    // Unregister current listener if needed
+    if (this.gameView instanceof GameEngineListener) {
+      removeListener((GameEngineListener) this.gameView);
+    }
+
+    if (this.gameView instanceof GUIView guiView) {
+      guiView.dispose();
+    }
+
+    // Create new view
     if (newGameView.equals("gui")) {
       this.gameView = new GUIView(this, getGameController());
-    } else if (newGameView.equals("console")) {
+    } else { // (newGameView.equals("console"))
       this.gameView = new ConsoleView(this, getGameController());
-    } else {
-      throw new IllegalArgumentException("Invalid game view: " + newGameView);
+    }
+
+    // Register new view as listener and notify it of the current step
+    if (this.gameView instanceof GameEngineListener) {
+      GameEngineListener newListener = (GameEngineListener) this.gameView;
+      addListener(newListener);
+      newListener.onStepChanged(this.step);
     }
   }
 
@@ -203,11 +221,25 @@ public class GameEngine {
     this.gameView = gameView;
     this.gameController = gameController;
 
+    addListener((GameEngineListener) gameView);
+
     HeroLoader.loadHeroesFromDatabase(this);
 
     System.out.println("GameEngine > Initialised heroes: "
         + (heroes != null ? heroes.size() : 0));
   }
+
+  // Listeners
+
+  public void addListener(GameEngineListener listener) {
+    listeners.add(listener);
+  }
+
+  public void removeListener(GameEngineListener listener) {
+    listeners.remove(listener);
+  }
+
+  //
 
   public void startGame() {
     System.out.println("GameEngine > Starting game...");
@@ -217,49 +249,13 @@ public class GameEngine {
           "Initialisation parameters cannot be null.");
     }
 
-    while (step != Step.EXIT_GAME) {
-      System.out.println("GameEngine > Current step: " + step);
+    setCurrentStep(Step.SPLASH_SCREEN);
+  }
 
-      if (step == Step.SPLASH_SCREEN) {
-        // Show splash screen
-        gameView.splashScreen();
-      } else if (step == Step.SELECT_HERO
-          || step == Step.INVALID_HERO_SELECTION) {
-        // Show hero selection screen
-        gameView.selectHero();
-      } else if (step == Step.CREATE_HERO
-          || step == Step.INVALID_HERO_CREATION) {
-        // Show hero creation screen
-        gameView.createHero();
-      } else if (step == Step.NEW_MISSION
-          || step == Step.INFO) {
-        // Show hero info screen
-        gameView.showHero();
-      } else if (step == Step.PLAYING
-          || step == Step.INVALID_ACTION
-          || step == Step.ENEMY_FIGHT_SUCCESS
-          || step == Step.LEVEL_UP
-          || step == Step.ENEMY_RUN_SUCCESS) {
-        // Update the view to reflect the current game state
-        gameView.updateView();
-      } else if (step == Step.ENEMY_ENCOUNTER
-          || step == Step.ENEMY_INVALID_ACTION) {
-        gameView.showEnemyEncounter();
-      } else if (step == Step.ENEMY_RUN_FAILURE) {
-        gameView.showEnemyRunFailure();
-      } else if (step == Step.ITEM_FOUND
-          || step == Step.ITEM_FOUND_AND_LEVEL_UP
-          || step == Step.ITEM_INVALID_ACTION) {
-        gameView.showItemFound();
-      } else if (step == Step.VICTORY_MISSION
-          || step == Step.VICTORY_INVALID_ACTION) {
-        gameView.showVictoryScreen();
-      } else if (step == Step.GAME_OVER
-          || step == Step.GAME_OVER_INVALID_ACTION) {
-        gameView.showGameOver();
-      }
-    }
-    System.out.println("GameEngine > Ending game...");
+  public void exitGame() {
+    System.out.println("GameEngine > Exiting game...");
+    setCurrentStep(Step.EXIT_GAME);
+    // HeroStorage.saveToDatabase(this);
   }
 
   public boolean isValidHeroSelection(String selection) {
@@ -476,20 +472,22 @@ public class GameEngine {
     // Check if target tile is an Enemy or a border
     Tile targetTile = map[newY + 1][newX + 1];
     if (targetTile.getType().equals("Enemy")) { // fight
-      step = Step.ENEMY_ENCOUNTER;
       targetTile.setVisible(true);
       setFightTiles(currentHeroTile, targetTile);
-      return;
+      setCurrentStep(Step.ENEMY_ENCOUNTER);
+
     } else if (targetTile.getType().equals("Border")) { // victory
-      step = Step.VICTORY_MISSION;
       setInitialHeroState(hero); // Replace with current hero state
       HeroStorage.saveToDatabase(this);
+      setCurrentStep(Step.VICTORY_MISSION);
+
     } else { // move
       currentHeroTile.assignGrass();
       hero.setXCoord(newX);
       hero.setYCoord(newY);
+      targetTile.assignHero();
+      setCurrentStep(Step.PLAYING);
     }
-    targetTile.assignHero();
 
   }
 
@@ -557,16 +555,16 @@ public class GameEngine {
       villains.remove(villain);
 
       if (levelUp && itemFound)
-        step = Step.ITEM_FOUND_AND_LEVEL_UP;
+        setCurrentStep(Step.ITEM_FOUND_AND_LEVEL_UP);
       else if (levelUp)
-        step = Step.LEVEL_UP;
+        setCurrentStep(Step.LEVEL_UP);
       else if (itemFound)
-        step = Step.ITEM_FOUND;
+        setCurrentStep(Step.ITEM_FOUND);
       else
-        step = Step.ENEMY_FIGHT_SUCCESS;
+        setCurrentStep(Step.ENEMY_FIGHT_SUCCESS);
 
     } else {
-      step = Step.GAME_OVER;
+      setCurrentStep(Step.GAME_OVER);
     }
   }
 
@@ -643,9 +641,9 @@ public class GameEngine {
     // 50% chance to run away
     if (Math.random() < 0.5) {
       System.out.println("GameEngine > Hero successfully ran away!");
-      step = Step.ENEMY_RUN_SUCCESS;
+      setCurrentStep(Step.ENEMY_RUN_SUCCESS);
     }
-    step = Step.ENEMY_RUN_FAILURE;
+    setCurrentStep(Step.ENEMY_RUN_FAILURE);
   }
 
   private Boolean checkForItemFound(Villain villain) {

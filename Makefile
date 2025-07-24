@@ -12,13 +12,16 @@ compile	: clean
 package	: clean
 	mvn package
 
-run			:
+console	:
 	java -jar target/$(TARGET) console
+
+gui run	:
+	java -jar target/$(TARGET) gui
 
 clean		:
 	mvn clean
 
 re			: clean all
 
-.PHONY	: all compile package run clean re
+.PHONY	: all compile package run console gui clean re
 .DEFAULT_GOAL := all

@@ -5,10 +5,13 @@ import java.util.Scanner;
 
 import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
+import demre.rpg.model.GameEngineListener;
 import demre.rpg.model.characters.Hero;
 import demre.rpg.model.map.Tile;
 
-public class ConsoleView implements GameView {
+public class ConsoleView
+    implements GameView, GameEngineListener {
+
   private final GameEngine gameEngine;
   private final GameController controller;
 
@@ -18,6 +21,35 @@ public class ConsoleView implements GameView {
     this.gameEngine = gameEngine;
     this.controller = controller;
     System.out.println("ConsoleView initialised with engine: " + gameEngine + " and controller: " + controller);
+    discardBufferedInput();
+  }
+
+  @Override
+  public void onStepChanged(GameEngine.Step newStep) {
+    switch (newStep) {
+      case SPLASH_SCREEN -> splashScreen();
+      case SELECT_HERO, INVALID_HERO_SELECTION -> selectHero();
+      case CREATE_HERO, INVALID_HERO_CREATION -> createHero();
+      case INFO, NEW_MISSION -> showHero();
+      case PLAYING, INVALID_ACTION, ENEMY_FIGHT_SUCCESS, LEVEL_UP, ENEMY_RUN_SUCCESS -> updateView();
+      case ENEMY_ENCOUNTER, ENEMY_INVALID_ACTION -> showEnemyEncounter();
+      case ENEMY_RUN_FAILURE -> showEnemyRunFailure();
+      case ITEM_FOUND, ITEM_FOUND_AND_LEVEL_UP, ITEM_INVALID_ACTION -> showItemFound();
+      case VICTORY_MISSION, VICTORY_INVALID_ACTION -> showVictoryScreen();
+      case GAME_OVER, GAME_OVER_INVALID_ACTION -> showGameOver();
+      case EXIT_GAME -> cleanup();
+      default -> {
+      }
+    }
+  }
+
+  private void discardBufferedInput() {
+    try {
+      while (System.in.available() > 0) {
+        System.in.read();
+      }
+    } catch (Exception ignored) {
+    }
   }
 
   @Override
@@ -26,8 +58,8 @@ public class ConsoleView implements GameView {
     try {
       clearConsole();
       System.out.println(AsciiArt.SPLASH);
-      scanner.nextLine();
-      controller.onSplashScreenContinue();
+      String input = scanner.nextLine();
+      controller.onSplashScreenContinue(input);
     } catch (Exception e) {
       throw new RuntimeException(
           "Error during splash screen: " + e.getMessage());
@@ -124,8 +156,8 @@ public class ConsoleView implements GameView {
           " +" + hero.getHelm().getModifier());
 
       System.out.println("\nPress Enter to continue...");
-      scanner.nextLine();
-      controller.onShowHeroContinue();
+      String input = scanner.nextLine();
+      controller.onShowHeroInfoContinue(input);
 
     } catch (Exception e) {
       throw new RuntimeException(
@@ -144,19 +176,15 @@ public class ConsoleView implements GameView {
       drawMap();
       if (step == GameEngine.Step.INVALID_ACTION) {
         System.out.println("Invalid action. Please try again.");
-        controller.onInvalidActionContinue();
       } else if (step == GameEngine.Step.ENEMY_FIGHT_SUCCESS) {
         System.out.println("You defeated the enemy!");
-        controller.onSuccessfulActionContinue();
       } else if (step == GameEngine.Step.LEVEL_UP) {
         System.out.println("You defeated the enemy and leveled up!");
         System.out.println("You are now level "
             + gameEngine.getHero().getLevel() + " with "
             + gameEngine.getHero().getExperience() + " experience points.");
-        controller.onSuccessfulActionContinue();
       } else if (step == GameEngine.Step.ENEMY_RUN_SUCCESS) {
         System.out.println("You successfully ran away from the enemy!");
-        controller.onSuccessfulActionContinue();
       }
       System.out.println(
           "(N)orth, (S)outh, (E)ast, (W)est, (i)nfo or 'exit'.");
@@ -303,6 +331,17 @@ public class ConsoleView implements GameView {
     } catch (Exception e) {
       throw new RuntimeException(
           "Error during game over screen: " + e.getMessage());
+    }
+  }
+
+  @Override
+  public void cleanup() {
+    System.out.println("ConsoleView > Cleaning up resources...");
+    try {
+      scanner.close();
+    } catch (Exception e) {
+      throw new RuntimeException(
+          "Error during cleanup: " + e.getMessage());
     }
   }
 

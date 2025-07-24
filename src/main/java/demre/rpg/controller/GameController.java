@@ -16,8 +16,12 @@ public class GameController {
 
   // Methods
 
-  public void onSplashScreenContinue() {
+  public void onSplashScreenContinue(String input) {
     System.out.println("GameController > Splash screen continue pressed.");
+
+    if (handleExitOrViewChange(input, false))
+      return;
+
     gameEngine.setCurrentStep(Step.SELECT_HERO);
   }
 
@@ -56,8 +60,12 @@ public class GameController {
 
   }
 
-  public void onShowHeroContinue() {
+  public void onShowHeroInfoContinue(String input) {
     System.out.println("GameController > Info continue pressed.");
+
+    if (handleExitOrViewChange(input, false))
+      return;
+
     gameEngine.setCurrentStep(Step.PLAYING);
   }
 
@@ -78,14 +86,6 @@ public class GameController {
     } else {
       gameEngine.setCurrentStep(Step.INVALID_ACTION);
     }
-  }
-
-  public void onInvalidActionContinue() {
-    gameEngine.setCurrentStep(Step.PLAYING);
-  }
-
-  public void onSuccessfulActionContinue() {
-    gameEngine.setCurrentStep(Step.PLAYING);
   }
 
   public void onEnemyEncounterContinue(String input) {
@@ -150,16 +150,19 @@ public class GameController {
     }
   }
 
+  public void switchToConsole() {
+    System.out.println("GameController > Switching to console view...");
+
+    gameEngine.setGameView("console");
+  }
+
   private Boolean handleExitOrViewChange(String input, boolean allowShortExit) {
     if (input.equalsIgnoreCase("exit")
         || (allowShortExit && input.equalsIgnoreCase("e"))) {
-      gameEngine.setCurrentStep(Step.EXIT_GAME);
+      gameEngine.exitGame();
       return true;
-    } else if (input.equalsIgnoreCase("gui") || input.equalsIgnoreCase("g")) {
+    } else if (input.equalsIgnoreCase("gui")) {
       gameEngine.setGameView("gui");
-      return true;
-    } else if (input.equalsIgnoreCase("console")) {
-      gameEngine.setGameView("console");
       return true;
     }
     return false;

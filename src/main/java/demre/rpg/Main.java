@@ -34,7 +34,6 @@ public class Main {
       errorAndExit(e, e.getMessage());
 
     }
-    System.exit(0);
   }
 
   // Check command line arguments for game mode
