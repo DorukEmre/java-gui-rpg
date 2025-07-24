@@ -1,35 +1,24 @@
 package demre.rpg.view;
 
-import demre.rpg.controller.GameController;
-import demre.rpg.model.GameEngine;
+public interface GameView {
 
-public abstract class GameView {
-  protected final GameEngine gameEngine;
-  protected final GameController controller;
+  void splashScreen();
 
-  protected GameView(GameEngine gameEngine, GameController controller) {
-    this.gameEngine = gameEngine;
-    this.controller = controller;
-    System.out.println("GameView > Constructor initialised");
-  }
+  void selectHero();
 
-  public abstract void splashScreen();
+  void createHero();
 
-  public abstract void selectHero();
+  void showHero();
 
-  public abstract void createHero();
+  void updateView();
 
-  public abstract void showHero();
+  void showEnemyEncounter();
 
-  public abstract void updateView();
+  void showEnemyRunFailure();
 
-  public abstract void showEnemyEncounter();
+  void showItemFound();
 
-  public abstract void showEnemyRunFailure();
+  void showVictoryScreen();
 
-  public abstract void showItemFound();
-
-  public abstract void showVictoryScreen();
-
-  public abstract void showGameOver();
+  void showGameOver();
 }

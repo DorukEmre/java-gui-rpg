@@ -8,19 +8,16 @@ import demre.rpg.model.GameEngine;
 import demre.rpg.model.characters.Hero;
 import demre.rpg.model.map.Tile;
 
-public class ConsoleView extends GameView {
+public class ConsoleView implements GameView {
+  private final GameEngine gameEngine;
+  private final GameController controller;
+
   private final Scanner scanner = new Scanner(System.in);
 
   public ConsoleView(GameEngine gameEngine, GameController controller) {
-    super(gameEngine, controller);
+    this.gameEngine = gameEngine;
+    this.controller = controller;
     System.out.println("ConsoleView initialised with engine: " + gameEngine + " and controller: " + controller);
-    initialiseConsoleComponents();
-  }
-
-  private void initialiseConsoleComponents() {
-    // Logic to Initialise console components
-    System.out.println("ConsoleView > Initialising console components...");
-    // e.g., set up input/output streams, etc.
   }
 
   @Override

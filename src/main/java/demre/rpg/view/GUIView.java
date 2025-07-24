@@ -3,11 +3,13 @@ package demre.rpg.view;
 import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
 
-public class GUIView extends GameView {
-  // extends javax.swing.JFrame
+public class GUIView extends javax.swing.JFrame implements GameView {
+  private final GameEngine gameEngine;
+  private final GameController controller;
 
   public GUIView(GameEngine gameEngine, GameController controller) {
-    super(gameEngine, controller);
+    this.gameEngine = gameEngine;
+    this.controller = controller;
     System.out.println("GUIView initialised with engine: " + gameEngine + " and controller: " + controller);
     initialiseGUIComponents();
   }
