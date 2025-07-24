@@ -8,6 +8,7 @@ import demre.rpg.model.GameEngine;
 import demre.rpg.model.GameEngineListener;
 import demre.rpg.model.characters.Hero;
 import demre.rpg.model.map.Tile;
+import demre.rpg.view.console.AsciiArt;
 
 public class ConsoleView
     implements GameView, GameEngineListener {
@@ -31,7 +32,7 @@ public class ConsoleView
       case SELECT_HERO, INVALID_HERO_SELECTION -> selectHero();
       case CREATE_HERO, INVALID_HERO_CREATION -> createHero();
       case INFO, NEW_MISSION -> showHero();
-      case PLAYING, INVALID_ACTION, ENEMY_FIGHT_SUCCESS, LEVEL_UP, ENEMY_RUN_SUCCESS -> updateView();
+      case PLAYING, INVALID_ACTION, ENEMY_FIGHT_SUCCESS, LEVEL_UP, ENEMY_RUN_SUCCESS -> showMap();
       case ENEMY_ENCOUNTER, ENEMY_INVALID_ACTION -> showEnemyEncounter();
       case ENEMY_RUN_FAILURE -> showEnemyRunFailure();
       case ITEM_FOUND, ITEM_FOUND_AND_LEVEL_UP, ITEM_INVALID_ACTION -> showItemFound();
@@ -166,7 +167,7 @@ public class ConsoleView
   }
 
   @Override
-  public void updateView() {
+  public void showMap() {
     System.out.println("ConsoleView > Updating console view...");
 
     GameEngine.Step step = gameEngine.getStep();

@@ -10,7 +10,7 @@ public interface GameView {
 
   void showHero();
 
-  void updateView();
+  void showMap();
 
   void showEnemyEncounter();
 

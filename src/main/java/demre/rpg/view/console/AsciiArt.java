@@ -1,4 +1,4 @@
-package demre.rpg.view;
+package demre.rpg.view.console;
 
 public class AsciiArt {
   public static final String SPLASH = """
