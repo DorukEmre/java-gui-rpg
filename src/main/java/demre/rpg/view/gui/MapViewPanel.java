@@ -4,8 +4,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.Window;
-import java.io.IOException;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -22,23 +20,66 @@ import demre.rpg.view.GUIView;
 
 public class MapViewPanel extends JPanel {
   private final GameController controller;
+  private final GameEngine gameEngine;
 
   public MapViewPanel(GameController controller, GameEngine gameEngine) {
     this.controller = controller;
+    this.gameEngine = gameEngine;
 
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-    // MapDrawPanel mapDrawPanel = new MapDrawPanel(controller, gameEngine);
-    // add(mapDrawPanel);
-
     MapDrawPanel mapDrawPanel = new MapDrawPanel(controller, gameEngine);
     JScrollPane scrollPane = new JScrollPane(mapDrawPanel);
-    scrollPane.setPreferredSize(new Dimension(400, 400));
+
+    // Dimension preferredSize = mapDrawPanel.getPreferredSize();
+    // scrollPane.setPreferredSize(preferredSize);
+    // scrollPane.setMinimumSize(preferredSize);
+    // scrollPane.setMaximumSize(new Dimension(preferredSize.width + 30,
+    // preferredSize.height + 30));
+
     add(scrollPane);
 
     JPanel directionPanel = createDirectionPanel();
     add(Box.createVerticalStrut(20));
     add(directionPanel);
+
+    SwingUtilities.invokeLater(() -> centerMapOnHero(scrollPane, mapDrawPanel));
+
+    // Add label with mapDrawPanel size, scrollPane size, and directionPanel size
+    JLabel sizeLabel = new JLabel();
+    sizeLabel.setFont(new Font("Serif", Font.PLAIN, 16));
+    sizeLabel.setAlignmentX(CENTER_ALIGNMENT);
+    add(sizeLabel);
+
+    // Helper to update the label
+    Runnable updateSizeLabel = () -> sizeLabel.setText(
+        "Map size: " + mapDrawPanel.getWidth() + "x" + mapDrawPanel.getHeight() +
+            ", ScrollPane size: " + scrollPane.getWidth() + "x" + scrollPane.getHeight() +
+            ", DirectionPanel size: " + directionPanel.getWidth() + "x" + directionPanel.getHeight());
+    // Add listeners to update the label on resize
+    scrollPane.addComponentListener(new java.awt.event.ComponentAdapter() {
+      public void componentResized(java.awt.event.ComponentEvent e) {
+        updateSizeLabel.run();
+      }
+    });
+    mapDrawPanel.addComponentListener(new java.awt.event.ComponentAdapter() {
+      public void componentResized(java.awt.event.ComponentEvent e) {
+        updateSizeLabel.run();
+      }
+    });
+    directionPanel.addComponentListener(new java.awt.event.ComponentAdapter() {
+      public void componentResized(java.awt.event.ComponentEvent e) {
+        updateSizeLabel.run();
+      }
+    });
+    this.addComponentListener(new java.awt.event.ComponentAdapter() {
+      public void componentResized(java.awt.event.ComponentEvent e) {
+        updateSizeLabel.run();
+      }
+    });
+
+    // Set initial text
+    updateSizeLabel.run();
 
     // add(Box.createVerticalStrut(20));
 
@@ -124,6 +165,7 @@ public class MapViewPanel extends JPanel {
     button.setEnabled(false);
     button.setBorderPainted(false);
     button.setContentAreaFilled(false);
+
     return button;
   }
 
@@ -144,4 +186,29 @@ public class MapViewPanel extends JPanel {
     return button;
   }
 
+  private void centerMapOnHero(JScrollPane scrollPane, MapDrawPanel mapDrawPanel) {
+    int tileSize = mapDrawPanel.getTileSize();
+    int heroX = gameEngine.getHero().getXCoord() + 1;
+    int heroY = gameEngine.getHero().getYCoord() + 1;
+
+    int viewWidth = scrollPane.getViewport().getWidth();
+    int viewHeight = scrollPane.getViewport().getHeight();
+
+    int heroPx = heroX * tileSize;
+    int heroPy = heroY * tileSize;
+
+    int scrollX = heroPx - viewWidth / 2 + tileSize / 2;
+    int scrollY = heroPy - viewHeight / 2 + tileSize / 2;
+
+    scrollX = Math.max(0, scrollX);
+    scrollY = Math.max(0, scrollY);
+
+    scrollPane.getViewport().setViewPosition(new java.awt.Point(scrollX, scrollY));
+
+    System.out.println("MapViewPanel > Centering map on hero at: " + heroX + ", " + heroY);
+    System.out.println("MapViewPanel > Hero position in pixels: " + heroPx + ", " + heroPy);
+    System.out.println("MapViewPanel > Scroll position set to: " + scrollX + ", " + scrollY);
+    System.out.println("MapViewPanel > Viewport size: " + viewWidth + "x" + viewHeight);
+    System.out.println("MapViewPanel > Map size: " + mapDrawPanel.getWidth() + "x" + mapDrawPanel.getHeight());
+  }
 }

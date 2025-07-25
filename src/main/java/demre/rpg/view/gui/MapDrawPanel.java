@@ -3,14 +3,11 @@ package demre.rpg.view.gui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.Window;
+import java.awt.Toolkit;
 
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 import demre.rpg.Main;
 import demre.rpg.controller.GameController;
@@ -26,19 +23,21 @@ public class MapDrawPanel extends JPanel {
   private final int side;
   private final JButton[][] tileButtons;
   private final GameController controller;
+  protected int tileSize;
 
   public MapDrawPanel(GameController controller, GameEngine gameEngine) {
     this.controller = controller;
-    System.out.println("MapPanel > Initialising map panel...");
+    System.out.println("MapDrawPanel > Initialising map panel...");
 
     this.side = gameEngine.getMapSize() + 2;
+    seTileSize();
     Tile[][] map = gameEngine.getMap();
     int heroX = gameEngine.getHero().getXCoord() + 1;
     int heroY = gameEngine.getHero().getYCoord() + 1;
 
-    System.out.println("GUI MapPanel > Map size: " + side + "x" + side);
+    System.out.println("MapDrawPanel > Map size: " + side + "x" + side);
 
-    setLayout(new GridLayout(side, side));
+    setLayout(null); // Manual layout
     tileButtons = new JButton[side][side];
 
     // Create map tiles
@@ -55,10 +54,9 @@ public class MapDrawPanel extends JPanel {
 
         tileButton.setEnabled(tile.isVisible());
         tileButton.setFont(new Font("Monospaced", Font.PLAIN, 16));
-        tileButton.setAlignmentX(CENTER_ALIGNMENT);
         tileButton.setFocusable(false);
-        tileButton.setPreferredSize(new Dimension(32, 32));
         tileButton.setMargin(new Insets(0, 0, 0, 0));
+        tileButton.setBounds(x * tileSize, y * tileSize, tileSize, tileSize);
 
         tileButtons[y][x] = tileButton;
         add(tileButton);
@@ -83,7 +81,7 @@ public class MapDrawPanel extends JPanel {
 
   private void enableTile(JButton tileButton, String direction) {
     tileButton.setEnabled(true);
-    tileButton.setBackground(Color.YELLOW);
+    tileButton.setBackground(new Color(255, 230, 240));
     tileButton.addActionListener(e -> {
       try {
         controller.onMapInputContinue(direction);
@@ -94,27 +92,52 @@ public class MapDrawPanel extends JPanel {
     });
   }
 
+  protected int getTileSize() {
+    return tileSize;
+  }
+
+  private void seTileSize() {
+    // Set tile size based on screen resolution
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+    if ((screenSize.height - 200) / side >= 32) {
+      tileSize = 32;
+    } else if ((screenSize.height - 200) / side >= 24) {
+      tileSize = 24;
+    } else {
+      tileSize = 16;
+    }
+    System.out.println(
+        "Screen resolution: " + screenSize.width + "x" + screenSize.height
+            + ", Tile size set to: " + tileSize);
+  }
+
   @Override
   public Dimension getPreferredSize() {
-    int max = 400;
-    Dimension parent = getParent() != null
-        ? getParent().getSize()
-        : new Dimension(max, max);
-    int size = Math.min(Math.min(parent.width, parent.height), max);
-    return new Dimension(size, size);
+    return new Dimension(side * tileSize, side * tileSize);
+  }
+
+  @Override
+  public Dimension getMinimumSize() {
+    return getPreferredSize();
+  }
+
+  @Override
+  public Dimension getMaximumSize() {
+    return getPreferredSize();
   }
 
   @Override
   public void doLayout() {
     // Ensure each button is square and fills the available square area
-    int size = Math.min(getWidth(), getHeight());
-    int tileSize = size / side;
     for (int i = 0; i < side; i++) {
       for (int j = 0; j < side; j++) {
         JButton btn = tileButtons[i][j];
         btn.setBounds(j * tileSize, i * tileSize, tileSize, tileSize);
       }
     }
+    System.out.println("MapDrawPanel > Panel size: " + getWidth() + "x" + getHeight());
+    System.out.println("MapDrawPanel > Preferred size: " + getPreferredSize().width + "x" + getPreferredSize().height);
   }
 
 }
