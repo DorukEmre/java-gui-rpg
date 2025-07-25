@@ -366,15 +366,13 @@ public class GameEngine {
     // Create the map with border
     for (int x = 0; x < mapSize + 2; x++) {
       for (int y = 0; y < mapSize + 2; y++) {
-        String type = "Grass";
-        String symbol = ".";
+        Tile.Type type = Tile.Type.GRASS;
         Boolean visible = false;
         if (x == 0 || x == mapSize + 1 || y == 0 || y == mapSize + 1) {
-          type = "Border";
-          symbol = "#";
+          type = Tile.Type.BORDER;
           visible = true;
         }
-        map[y][x] = TileFactory.createTile(x, y, type, symbol, visible);
+        map[y][x] = TileFactory.createTile(x, y, type, visible);
       }
     }
 
@@ -471,12 +469,12 @@ public class GameEngine {
 
     // Check if target tile is an Enemy or a border
     Tile targetTile = map[newY + 1][newX + 1];
-    if (targetTile.getType().equals("Enemy")) { // fight
+    if (targetTile.getType() == Tile.Type.ENEMY) { // fight
       targetTile.setVisible(true);
       setFightTiles(currentHeroTile, targetTile);
       setCurrentStep(Step.ENEMY_ENCOUNTER);
 
-    } else if (targetTile.getType().equals("Border")) { // victory
+    } else if (targetTile.getType() == Tile.Type.BORDER) { // victory
       setInitialHeroState(hero); // Replace with current hero state
       HeroStorage.saveToDatabase(this);
       setCurrentStep(Step.VICTORY_MISSION);

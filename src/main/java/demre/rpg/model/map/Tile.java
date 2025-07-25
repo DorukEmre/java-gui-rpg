@@ -5,6 +5,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public class Tile {
+  public enum Type {
+    GRASS, BORDER, HERO, ENEMY
+  }
 
   @Min(0)
   private final int x;
@@ -12,8 +15,8 @@ public class Tile {
   @Min(0)
   private final int y;
 
-  @NotBlank
-  private String type; // e.g., "Grass", "Border", "Hero", "Enemy"
+  @NotNull
+  private Type type;
 
   @NotBlank
   private String symbol; // e.g., ".", "#", "@", "X"
@@ -23,7 +26,7 @@ public class Tile {
 
   // Constructors
 
-  public Tile(int x, int y, String type, String symbol, Boolean isVisible) {
+  public Tile(int x, int y, Type type, String symbol, Boolean isVisible) {
     this.x = x;
     this.y = y;
     this.type = type;
@@ -41,7 +44,7 @@ public class Tile {
     return y;
   }
 
-  public String getType() {
+  public Type getType() {
     return type;
   }
 
@@ -55,7 +58,7 @@ public class Tile {
 
   // Setters
 
-  public void setType(String type) {
+  public void setType(Type type) {
     this.type = type;
   }
 
@@ -68,18 +71,18 @@ public class Tile {
   }
 
   public void assignHero() {
-    this.type = "Hero";
+    this.type = Type.HERO;
     this.symbol = "@";
     this.isVisible = true;
   }
 
   public void assignGrass() {
-    this.type = "Grass";
+    this.type = Type.GRASS;
     this.symbol = ".";
   }
 
   public void assignEnemy() {
-    this.type = "Enemy";
+    this.type = Type.ENEMY;
     this.symbol = "X";
   }
 }

@@ -15,17 +15,25 @@ public class TileFactory {
   private static final Validator validator = factory.getValidator();
 
   public static Tile createTile(
-      int x, int y, String type, String symbol, Boolean isVisible) {
-    Tile tile = new Tile(x, y, type, symbol, isVisible);
+      int x, int y, Tile.Type type, Boolean isVisible) {
+    Tile tile = new Tile(x, y, type, getSymbol(type), isVisible);
     validateTile(tile);
     return tile;
   }
 
-  public static Tile createTile(
-      int x, int y, String type, String symbol) {
-    Tile tile = createTile(x, y, type, symbol, false);
-    validateTile(tile);
-    return tile;
+  private static String getSymbol(Tile.Type type) {
+    switch (type) {
+      case HERO:
+        return "@";
+      case ENEMY:
+        return "X";
+      case BORDER:
+        return "#";
+      case GRASS:
+        return ".";
+      default:
+        throw new IllegalArgumentException("Unknown tile type: " + type);
+    }
   }
 
   private static void validateTile(Tile tile) {
