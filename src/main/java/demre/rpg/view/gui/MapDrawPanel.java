@@ -80,6 +80,7 @@ public class MapDrawPanel extends JPanel {
   }
 
   private void enableTile(JButton tileButton, String direction) {
+    // Enable the tile button and set its action
     tileButton.setEnabled(true);
     tileButton.setBackground(new Color(255, 230, 240));
     tileButton.addActionListener(e -> {
@@ -107,9 +108,6 @@ public class MapDrawPanel extends JPanel {
     } else {
       tileSize = 16;
     }
-    System.out.println(
-        "Screen resolution: " + screenSize.width + "x" + screenSize.height
-            + ", Tile size set to: " + tileSize);
   }
 
   @Override
@@ -125,19 +123,6 @@ public class MapDrawPanel extends JPanel {
   @Override
   public Dimension getMaximumSize() {
     return getPreferredSize();
-  }
-
-  @Override
-  public void doLayout() {
-    // Ensure each button is square and fills the available square area
-    for (int i = 0; i < side; i++) {
-      for (int j = 0; j < side; j++) {
-        JButton btn = tileButtons[i][j];
-        btn.setBounds(j * tileSize, i * tileSize, tileSize, tileSize);
-      }
-    }
-    System.out.println("MapDrawPanel > Panel size: " + getWidth() + "x" + getHeight());
-    System.out.println("MapDrawPanel > Preferred size: " + getPreferredSize().width + "x" + getPreferredSize().height);
   }
 
 }

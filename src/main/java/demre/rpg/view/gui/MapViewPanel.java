@@ -38,9 +38,14 @@ public class MapViewPanel extends JPanel {
     // preferredSize.height + 30));
 
     add(scrollPane);
+    add(Box.createVerticalStrut(10));
 
+    // Add panel with text instructions
+    JPanel instructionPanel = createInstructionsPanel();
+    add(instructionPanel);
+    // Add panel with directions buttons
     JPanel directionPanel = createDirectionPanel();
-    add(Box.createVerticalStrut(20));
+    add(Box.createVerticalStrut(10));
     add(directionPanel);
 
     SwingUtilities.invokeLater(() -> centerMapOnHero(scrollPane, mapDrawPanel));
@@ -81,48 +86,6 @@ public class MapViewPanel extends JPanel {
     // Set initial text
     updateSizeLabel.run();
 
-    // add(Box.createVerticalStrut(20));
-
-    // GameEngine.Step step = gameEngine.getStep();
-    // if (step == GameEngine.Step.INVALID_ACTION) {
-    // JLabel invalidActionLabel = new JLabel("Invalid action. Please try again.");
-    // invalidActionLabel.setFont(new Font("Serif", Font.PLAIN, 16));
-    // invalidActionLabel.setAlignmentX(CENTER_ALIGNMENT);
-    // add(invalidActionLabel);
-    // add(Box.createVerticalStrut(20));
-    // } else if (step == GameEngine.Step.ENEMY_FIGHT_SUCCESS) {
-    // JLabel fightSuccessLabel = new JLabel("You defeated the enemy!");
-    // fightSuccessLabel.setFont(new Font("Serif", Font.PLAIN, 16));
-    // fightSuccessLabel.setAlignmentX(CENTER_ALIGNMENT);
-    // add(fightSuccessLabel);
-    // add(Box.createVerticalStrut(20));
-    // } else if (step == GameEngine.Step.LEVEL_UP) {
-    // JLabel levelUpLabel = new JLabel("You defeated the enemy and leveled up!");
-    // levelUpLabel.setFont(new Font("Serif", Font.PLAIN, 16));
-    // levelUpLabel.setAlignmentX(CENTER_ALIGNMENT);
-    // add(levelUpLabel);
-    // add(Box.createVerticalStrut(20));
-    // JLabel levelInfoLabel = new JLabel("You are now level "
-    // + gameEngine.getHero().getLevel() + " with "
-    // + gameEngine.getHero().getExperience() + " experience points.");
-    // levelInfoLabel.setFont(new Font("Serif", Font.PLAIN, 16));
-    // levelInfoLabel.setAlignmentX(CENTER_ALIGNMENT);
-    // add(levelInfoLabel);
-    // add(Box.createVerticalStrut(20));
-    // } else if (step == GameEngine.Step.ENEMY_RUN_SUCCESS) {
-    // JLabel runSuccessLabel = new JLabel("You successfully ran away from the
-    // enemy!");
-    // runSuccessLabel.setFont(new Font("Serif", Font.PLAIN, 16));
-    // runSuccessLabel.setAlignmentX(CENTER_ALIGNMENT);
-    // add(runSuccessLabel);
-    // add(Box.createVerticalStrut(20));
-    // }
-    // JLabel actionPromptLabel = new JLabel(
-    // "(N)orth, (S)outh, (E)ast, (W)est, (i)nfo or 'exit'.");
-    // actionPromptLabel.setFont(new Font("Serif", Font.PLAIN, 16));
-    // actionPromptLabel.setAlignmentX(CENTER_ALIGNMENT);
-    // add(actionPromptLabel);
-    // add(Box.createVerticalGlue());
   }
 
   private JPanel createDirectionPanel() {
@@ -184,6 +147,70 @@ public class MapViewPanel extends JPanel {
     });
 
     return button;
+  }
+
+  private JPanel createInstructionsPanel() {
+    JPanel instructionPanel = new JPanel();
+    instructionPanel.setLayout(
+        new BoxLayout(instructionPanel, BoxLayout.Y_AXIS));
+    instructionPanel.setAlignmentX(CENTER_ALIGNMENT);
+
+    GameEngine.Step step = gameEngine.getStep();
+    if (step == GameEngine.Step.INVALID_ACTION) {
+      JLabel invalidActionLabel = new JLabel(
+          "Invalid action. Please try again.");
+      formatLabel(invalidActionLabel);
+      add(invalidActionLabel);
+
+    } else if (step == GameEngine.Step.ENEMY_FIGHT_SUCCESS) {
+      JLabel fightSuccessLabel = new JLabel(
+          "You defeated the enemy!");
+      formatLabel(fightSuccessLabel);
+      add(fightSuccessLabel);
+
+    } else if (step == GameEngine.Step.LEVEL_UP) {
+      JLabel levelUpLabel = new JLabel(
+          "You defeated the enemy and leveled up!");
+      formatLabel(levelUpLabel);
+      add(levelUpLabel);
+
+      add(Box.createVerticalStrut(5));
+
+      JLabel levelInfoLabel = new JLabel(
+          "You are now level "
+              + gameEngine.getHero().getLevel() + " with "
+              + gameEngine.getHero().getExperience() + " experience points.");
+      formatLabel(levelInfoLabel);
+      add(levelInfoLabel);
+
+    } else if (step == GameEngine.Step.ENEMY_RUN_SUCCESS) {
+      JLabel runSuccessLabel = new JLabel(
+          "You successfully ran away from the enemy!");
+      formatLabel(runSuccessLabel);
+      add(runSuccessLabel);
+    }
+
+    // JLabel instructionsLabel = new JLabel(
+    // "<html>Use the buttons to move your hero.<br>Click on the map to interact
+    // with it.</html>");
+    // instructionsLabel.setFont(new Font("Serif", Font.PLAIN, 16));
+    // instructionsLabel.setAlignmentX(CENTER_ALIGNMENT);
+    // instructionPanel.add(instructionsLabel);
+
+    JLabel actionPromptLabel = new JLabel(
+        "(N)orth, (S)outh, (E)ast, (W)est, (i)nfo or 'exit'.");
+    actionPromptLabel.setFont(new Font("Serif", Font.PLAIN, 16));
+    actionPromptLabel.setAlignmentX(CENTER_ALIGNMENT);
+    add(actionPromptLabel);
+
+    return instructionPanel;
+  }
+
+  private void formatLabel(JLabel label) {
+    label.setFont(new Font("Serif", Font.PLAIN, 16));
+    label.setAlignmentX(CENTER_ALIGNMENT);
+    // label.setHorizontalAlignment(JLabel.CENTER);
+    // label.setVerticalAlignment(JLabel.CENTER);
   }
 
   private void centerMapOnHero(JScrollPane scrollPane, MapDrawPanel mapDrawPanel) {
