@@ -53,7 +53,7 @@ public class Main {
    * 
    * @param message the error message to print
    */
-  private static void errorAndExit(Exception e, String message) {
+  public static void errorAndExit(Exception e, String message) {
     e.printStackTrace();
     System.err.println("\u001B[31mError:\u001B[0m " + message);
     System.exit(1);

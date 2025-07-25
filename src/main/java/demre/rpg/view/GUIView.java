@@ -1,17 +1,22 @@
 package demre.rpg.view;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Window;
 
+import demre.rpg.Main;
 import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
 import demre.rpg.model.GameEngineListener;
 import demre.rpg.view.gui.HeroInfoPanel;
+import demre.rpg.view.gui.MapViewPanel;
 import demre.rpg.view.gui.SelectHeroPanel;
 import demre.rpg.view.gui.SplashScreenPanel;
 
@@ -33,20 +38,26 @@ public class GUIView
 
   @Override
   public void onStepChanged(GameEngine.Step newStep) {
-    switch (newStep) {
-      case SPLASH_SCREEN -> splashScreen();
-      case SELECT_HERO, INVALID_HERO_SELECTION -> selectHero();
-      case CREATE_HERO, INVALID_HERO_CREATION -> createHero();
-      case INFO, NEW_MISSION -> showHeroInfo();
-      case PLAYING, INVALID_ACTION, ENEMY_FIGHT_SUCCESS, LEVEL_UP, ENEMY_RUN_SUCCESS -> showMap();
-      case ENEMY_ENCOUNTER, ENEMY_INVALID_ACTION -> showEnemyEncounter();
-      case ENEMY_RUN_FAILURE -> showEnemyRunFailure();
-      case ITEM_FOUND, ITEM_FOUND_AND_LEVEL_UP, ITEM_INVALID_ACTION -> showItemFound();
-      case VICTORY_MISSION, VICTORY_INVALID_ACTION -> showVictoryScreen();
-      case GAME_OVER, GAME_OVER_INVALID_ACTION -> showGameOver();
-      case EXIT_GAME -> cleanup();
-      default -> {
+
+    try {
+      switch (newStep) {
+        case SPLASH_SCREEN -> splashScreen();
+        case SELECT_HERO, INVALID_HERO_SELECTION -> selectHero();
+        case CREATE_HERO, INVALID_HERO_CREATION -> createHero();
+        case INFO, NEW_MISSION -> showHeroInfo();
+        case PLAYING, INVALID_ACTION, ENEMY_FIGHT_SUCCESS, LEVEL_UP, ENEMY_RUN_SUCCESS -> showMap();
+        case ENEMY_ENCOUNTER, ENEMY_INVALID_ACTION -> showEnemyEncounter();
+        case ENEMY_RUN_FAILURE -> showEnemyRunFailure();
+        case ITEM_FOUND, ITEM_FOUND_AND_LEVEL_UP, ITEM_INVALID_ACTION -> showItemFound();
+        case VICTORY_MISSION, VICTORY_INVALID_ACTION -> showVictoryScreen();
+        case GAME_OVER, GAME_OVER_INVALID_ACTION -> showGameOver();
+        case EXIT_GAME -> cleanup();
+        default -> {
+        }
       }
+    } catch (Exception e) {
+      dispose();
+      Main.errorAndExit(e, e.getMessage());
     }
   }
 
@@ -119,6 +130,8 @@ public class GUIView
   @Override
   public void showMap() {
     System.out.println("GUIView > Showing game map...");
+
+    showStage("map", new MapViewPanel(controller, gameEngine));
   }
 
   @Override
@@ -150,6 +163,15 @@ public class GUIView
   public void cleanup() {
     System.out.println("GUIView > Cleaning up resources...");
     dispose();
+  }
+
+  public static void windowDispose(Component component) {
+    if (component != null) {
+      Window window = SwingUtilities.getWindowAncestor(component);
+      if (window != null) {
+        window.dispose();
+      }
+    }
   }
 
 }
