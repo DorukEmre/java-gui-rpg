@@ -23,9 +23,11 @@ public class ScrollMapPanel extends JScrollPane {
         || step == GameEngine.Step.ENEMY_FIGHT_SUCCESS
         || step == GameEngine.Step.LEVEL_UP
         || step == GameEngine.Step.ENEMY_RUN_SUCCESS) {
-      this.mapDrawPanel = new MapDrawPanel(controller, gameEngine, true);
+      this.mapDrawPanel = new MapDrawPanel(
+          controller, gameEngine, true);
     } else {
-      this.mapDrawPanel = new MapDrawPanel(controller, gameEngine, false);
+      this.mapDrawPanel = new MapDrawPanel(
+          controller, gameEngine, false);
     }
 
     setViewportView(this.mapDrawPanel);
@@ -53,11 +55,6 @@ public class ScrollMapPanel extends JScrollPane {
 
     getViewport().setViewPosition(new java.awt.Point(scrollX, scrollY));
 
-    System.out.println("MapViewPanel > Centering map on hero at: " + heroX + ", " + heroY);
-    System.out.println("MapViewPanel > Hero position in pixels: " + heroPx + ", " + heroPy);
-    System.out.println("MapViewPanel > Scroll position set to: " + scrollX + ", " + scrollY);
-    System.out.println("MapViewPanel > Viewport size: " + viewWidth + "x" + viewHeight);
-    System.out.println("MapViewPanel > Map size: " + mapDrawPanel.getWidth() + "x" + mapDrawPanel.getHeight());
   }
 
 }

@@ -13,6 +13,7 @@ import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
 
 public class GameOverPanel extends JPanel {
+  private JButton defaultButton;
 
   public GameOverPanel(GameController controller, GameEngine gameEngine) {
 
@@ -61,6 +62,16 @@ public class GameOverPanel extends JPanel {
     add(choice);
 
     add(Box.createVerticalGlue());
+
+    defaultButton = (JButton) choice.getComponent(0);
+  }
+
+  @Override
+  public void addNotify() {
+    super.addNotify();
+    if (getRootPane() != null) {
+      getRootPane().setDefaultButton(defaultButton);
+    }
   }
 
 }

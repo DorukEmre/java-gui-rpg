@@ -32,7 +32,7 @@ public class MapViewPanel extends JPanel {
         || step == GameEngine.Step.ENEMY_FIGHT_SUCCESS
         || step == GameEngine.Step.LEVEL_UP
         || step == GameEngine.Step.ENEMY_RUN_SUCCESS) {
-      instructionsPanel = new MapControlPanel(controller, gameEngine);
+      instructionsPanel = new PlayerControlPanel(controller, gameEngine);
     } else if (step == GameEngine.Step.ENEMY_ENCOUNTER
         || step == GameEngine.Step.ENEMY_INVALID_ACTION
         || step == GameEngine.Step.ENEMY_RUN_FAILURE) {

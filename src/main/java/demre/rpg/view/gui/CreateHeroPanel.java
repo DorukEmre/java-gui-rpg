@@ -15,6 +15,8 @@ import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
 
 public class CreateHeroPanel extends JPanel {
+  private JButton defaultButton;
+  private JTextField focusField;
 
   public CreateHeroPanel(GameController controller, GameEngine gameEngine) {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -123,5 +125,18 @@ public class CreateHeroPanel extends JPanel {
     add(buttonPanel);
 
     add(Box.createVerticalGlue());
+
+    defaultButton = createButton;
+    focusField = heroNameField;
   }
+
+  @Override
+  public void addNotify() {
+    super.addNotify();
+    if (getRootPane() != null) {
+      getRootPane().setDefaultButton(defaultButton);
+    }
+    focusField.requestFocusInWindow();
+  }
+
 }

@@ -16,6 +16,7 @@ import demre.rpg.model.GameEngine;
 import demre.rpg.model.characters.Hero;
 
 public class HeroInfoPanel extends JPanel {
+  private JButton defaultButton;
 
   public HeroInfoPanel(GameController controller, GameEngine gameEngine) {
     Hero hero = gameEngine.getHero();
@@ -49,5 +50,15 @@ public class HeroInfoPanel extends JPanel {
         e -> controller.onShowHeroInfoContinue("continue"));
     add(nextButton);
 
+    defaultButton = nextButton;
   }
+
+  @Override
+  public void addNotify() {
+    super.addNotify();
+    if (getRootPane() != null) {
+      getRootPane().setDefaultButton(defaultButton);
+    }
+  }
+
 }

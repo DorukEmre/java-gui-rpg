@@ -16,6 +16,7 @@ import demre.rpg.model.GameEngine;
 import demre.rpg.model.characters.Hero;
 
 public class SelectHeroPanel extends JPanel {
+  private JButton defaultButton;
 
   public SelectHeroPanel(GameController controller, GameEngine gameEngine) {
     List<Hero> heroes = gameEngine.getHeroes();
@@ -88,6 +89,16 @@ public class SelectHeroPanel extends JPanel {
         e -> controller.onSelectHeroContinue("new"));
     add(newHeroButton);
     add(Box.createVerticalGlue());
+
+    defaultButton = newHeroButton;
+  }
+
+  @Override
+  public void addNotify() {
+    super.addNotify();
+    if (getRootPane() != null) {
+      getRootPane().setDefaultButton(defaultButton);
+    }
   }
 
 }

@@ -20,12 +20,12 @@ import demre.rpg.view.GUIView;
 /**
  * Controls the character on the map.
  */
-public class MapControlPanel extends JPanel {
+public class PlayerControlPanel extends JPanel {
   private final GameController controller;
   private final GameEngine gameEngine;
   private Hero hero;
 
-  public MapControlPanel(GameController controller, GameEngine gameEngine) {
+  public PlayerControlPanel(GameController controller, GameEngine gameEngine) {
     this.controller = controller;
     this.gameEngine = gameEngine;
     this.hero = gameEngine.getHero();

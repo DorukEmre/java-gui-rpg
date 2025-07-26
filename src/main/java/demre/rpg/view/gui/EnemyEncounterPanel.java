@@ -14,6 +14,7 @@ import demre.rpg.model.GameEngine;
 public class EnemyEncounterPanel extends JPanel {
   private final GameController controller;
   private final GameEngine gameEngine;
+  private JButton defaultButton;
 
   public EnemyEncounterPanel(GameController controller, GameEngine gameEngine) {
     this.controller = controller;
@@ -90,8 +91,18 @@ public class EnemyEncounterPanel extends JPanel {
       button.addActionListener(
           e -> controller.onEnemyEncounterContinue("Run"));
       actionPanel.add(button);
+      defaultButton = button; // Default button for Enter key
     }
 
     return actionPanel;
   }
+
+  @Override
+  public void addNotify() {
+    super.addNotify();
+    if (getRootPane() != null) {
+      getRootPane().setDefaultButton(defaultButton);
+    }
+  }
+
 }

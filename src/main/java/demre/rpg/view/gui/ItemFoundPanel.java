@@ -17,6 +17,7 @@ import demre.rpg.model.items.Item;
 public class ItemFoundPanel extends JPanel {
   private final GameController controller;
   private final GameEngine gameEngine;
+  private JButton defaultButton;
 
   public ItemFoundPanel(GameController controller, GameEngine gameEngine) {
     this.controller = controller;
@@ -108,8 +109,18 @@ public class ItemFoundPanel extends JPanel {
       button.addActionListener(
           e -> controller.onItemFoundContinue("Leave"));
       actionPanel.add(button);
+      defaultButton = button; // Default button for Enter key
     }
 
     return actionPanel;
   }
+
+  @Override
+  public void addNotify() {
+    super.addNotify();
+    if (getRootPane() != null) {
+      getRootPane().setDefaultButton(defaultButton);
+    }
+  }
+
 }
