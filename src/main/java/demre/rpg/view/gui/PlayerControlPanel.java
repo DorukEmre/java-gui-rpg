@@ -4,12 +4,17 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
 
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 
 import demre.rpg.Main;
 import demre.rpg.controller.GameController;
@@ -164,7 +169,17 @@ public class PlayerControlPanel extends JPanel {
     JButton eastButton = newDirectionButton("E");
     JButton westButton = newDirectionButton("W");
 
-    // Add buttons in compass arrangement
+    // Bind buttons to keys
+    bindButtonToKey(
+        directionPanel, northButton, KeyStroke.getKeyStroke("UP"));
+    bindButtonToKey(
+        directionPanel, southButton, KeyStroke.getKeyStroke("DOWN"));
+    bindButtonToKey(
+        directionPanel, westButton, KeyStroke.getKeyStroke("LEFT"));
+    bindButtonToKey(
+        directionPanel, eastButton, KeyStroke.getKeyStroke("RIGHT"));
+
+    // Add buttons in a grid
     directionPanel.add(dummy1); // (0,0)
     directionPanel.add(northButton); // (0,1)
     directionPanel.add(dummy2); // (0,2)
@@ -206,6 +221,24 @@ public class PlayerControlPanel extends JPanel {
     });
 
     return button;
+  }
+
+  private void bindButtonToKey(
+      JPanel panel, JButton button, KeyStroke keyStroke) {
+
+    InputMap im = panel.getInputMap(JPanel.WHEN_IN_FOCUSED_WINDOW);
+    ActionMap am = panel.getActionMap();
+
+    String actionName = "move_" + keyStroke.toString();
+
+    im.put(keyStroke, actionName);
+    am.put(actionName, new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        button.doClick();
+      }
+    });
+
   }
 
 }
