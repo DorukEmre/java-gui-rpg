@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import demre.rpg.Main;
 import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
+import demre.rpg.model.characters.Hero;
 import demre.rpg.view.GUIView;
 
 /**
@@ -22,17 +23,19 @@ import demre.rpg.view.GUIView;
 public class MapControlPanel extends JPanel {
   private final GameController controller;
   private final GameEngine gameEngine;
+  private Hero hero;
 
   public MapControlPanel(GameController controller, GameEngine gameEngine) {
     this.controller = controller;
     this.gameEngine = gameEngine;
+    this.hero = gameEngine.getHero();
 
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
     // Add components for controlling the map view
     add(createInstructionsPanel());
     add(Box.createVerticalStrut(10));
-    add(createDirectionPanel());
+    add(createCharacterControlPanel());
   }
 
   private JPanel createInstructionsPanel() {
@@ -61,8 +64,8 @@ public class MapControlPanel extends JPanel {
 
       JLabel levelInfoLabel = createLabel(
           "You are now level "
-              + gameEngine.getHero().getLevel() + " with "
-              + gameEngine.getHero().getExperience() + " experience points.");
+              + hero.getLevel() + " with "
+              + hero.getExperience() + " experience points.");
       add(levelInfoLabel);
 
     } else if (step == GameEngine.Step.ENEMY_RUN_SUCCESS) {
@@ -81,6 +84,65 @@ public class MapControlPanel extends JPanel {
     label.setAlignmentX(CENTER_ALIGNMENT);
 
     return label;
+  }
+
+  private JPanel createCharacterControlPanel() {
+    JPanel controlPanel = new JPanel();
+    controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.X_AXIS));
+    controlPanel.setAlignmentX(CENTER_ALIGNMENT);
+
+    // Add basic hero info
+    JPanel heroInfoPanel = createBasicHeroInfoPanel();
+    controlPanel.add(heroInfoPanel);
+
+    controlPanel.add(Box.createHorizontalStrut(100));
+
+    // Add direction buttons
+    JPanel directionPanel = createDirectionPanel();
+    controlPanel.add(directionPanel);
+
+    controlPanel.add(Box.createHorizontalStrut(100));
+
+    // Add info button
+    JButton continueButton = new JButton("Info");
+    continueButton.addActionListener(e -> {
+      try {
+        controller.onMapInputContinue("Info");
+      } catch (Exception ex) {
+        GUIView.windowDispose(continueButton);
+        Main.errorAndExit(ex, ex.getMessage());
+      }
+    });
+    controlPanel.add(continueButton);
+
+    return controlPanel;
+  }
+
+  private JPanel createBasicHeroInfoPanel() {
+    JPanel heroInfoPanel = new JPanel();
+    heroInfoPanel.setLayout(new BoxLayout(heroInfoPanel, BoxLayout.Y_AXIS));
+    heroInfoPanel.setAlignmentX(CENTER_ALIGNMENT);
+
+    {
+      JLabel label = new JLabel(hero.getName());
+      label.setFont(new Font("Serif", Font.BOLD, 16));
+      label.setAlignmentX(CENTER_ALIGNMENT);
+      heroInfoPanel.add(label);
+    }
+    {
+      JLabel label = new JLabel(hero.getHeroClass());
+      label.setFont(new Font("Serif", Font.BOLD, 16));
+      label.setAlignmentX(CENTER_ALIGNMENT);
+      heroInfoPanel.add(label);
+    }
+    {
+      JLabel label = new JLabel(
+          "Level: " + hero.getLevel() + ", Exp: " + hero.getExperience());
+      label.setAlignmentX(CENTER_ALIGNMENT);
+      heroInfoPanel.add(label);
+    }
+
+    return heroInfoPanel;
   }
 
   private JPanel createDirectionPanel() {
