@@ -43,60 +43,44 @@ public class MapControlPanel extends JPanel {
 
     GameEngine.Step step = gameEngine.getStep();
     if (step == GameEngine.Step.INVALID_ACTION) {
-      JLabel invalidActionLabel = new JLabel(
+      JLabel invalidActionLabel = createLabel(
           "Invalid action. Please try again.");
-      formatLabel(invalidActionLabel);
       add(invalidActionLabel);
 
     } else if (step == GameEngine.Step.ENEMY_FIGHT_SUCCESS) {
-      JLabel fightSuccessLabel = new JLabel(
+      JLabel fightSuccessLabel = createLabel(
           "You defeated the enemy!");
-      formatLabel(fightSuccessLabel);
       add(fightSuccessLabel);
 
     } else if (step == GameEngine.Step.LEVEL_UP) {
-      JLabel levelUpLabel = new JLabel(
+      JLabel levelUpLabel = createLabel(
           "You defeated the enemy and leveled up!");
-      formatLabel(levelUpLabel);
       add(levelUpLabel);
 
       add(Box.createVerticalStrut(5));
 
-      JLabel levelInfoLabel = new JLabel(
+      JLabel levelInfoLabel = createLabel(
           "You are now level "
               + gameEngine.getHero().getLevel() + " with "
               + gameEngine.getHero().getExperience() + " experience points.");
-      formatLabel(levelInfoLabel);
       add(levelInfoLabel);
 
     } else if (step == GameEngine.Step.ENEMY_RUN_SUCCESS) {
-      JLabel runSuccessLabel = new JLabel(
+      JLabel runSuccessLabel = createLabel(
           "You successfully ran away from the enemy!");
-      formatLabel(runSuccessLabel);
       add(runSuccessLabel);
     }
-
-    // JLabel instructionsLabel = new JLabel(
-    // "<html>Use the buttons to move your hero.<br>Click on the map to interact
-    // with it.</html>");
-    // instructionsLabel.setFont(new Font("Serif", Font.PLAIN, 16));
-    // instructionsLabel.setAlignmentX(CENTER_ALIGNMENT);
-    // instructionPanel.add(instructionsLabel);
-
-    JLabel actionPromptLabel = new JLabel(
-        "(N)orth, (S)outh, (E)ast, (W)est, (i)nfo or 'exit'.");
-    actionPromptLabel.setFont(new Font("Serif", Font.PLAIN, 16));
-    actionPromptLabel.setAlignmentX(CENTER_ALIGNMENT);
-    add(actionPromptLabel);
 
     return instructionPanel;
   }
 
-  private void formatLabel(JLabel label) {
+  private JLabel createLabel(String text) {
+    JLabel label = new JLabel(text);
+
     label.setFont(new Font("Serif", Font.PLAIN, 16));
     label.setAlignmentX(CENTER_ALIGNMENT);
-    // label.setHorizontalAlignment(JLabel.CENTER);
-    // label.setVerticalAlignment(JLabel.CENTER);
+
+    return label;
   }
 
   private JPanel createDirectionPanel() {
