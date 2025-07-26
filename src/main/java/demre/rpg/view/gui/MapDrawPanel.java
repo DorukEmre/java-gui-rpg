@@ -25,7 +25,9 @@ public class MapDrawPanel extends JPanel {
   private final GameController controller;
   protected int tileSize;
 
-  public MapDrawPanel(GameController controller, GameEngine gameEngine) {
+  public MapDrawPanel(
+      GameController controller, GameEngine gameEngine, boolean isInteractive) {
+
     this.controller = controller;
     System.out.println("MapDrawPanel > Initialising map panel...");
 
@@ -67,15 +69,17 @@ public class MapDrawPanel extends JPanel {
     tileButtons[heroY][heroX].setEnabled(true);
     tileButtons[heroY][heroX].setBackground(Color.pink);
 
-    // Enable tiles around Hero
-    if (heroX > 0)
-      enableTile(tileButtons[heroY][heroX - 1], "West");
-    if (heroX < side - 1)
-      enableTile(tileButtons[heroY][heroX + 1], "East");
-    if (heroY > 0)
-      enableTile(tileButtons[heroY - 1][heroX], "North");
-    if (heroY < side - 1)
-      enableTile(tileButtons[heroY + 1][heroX], "South");
+    // Enable tiles around Hero if map is interactive
+    if (isInteractive) {
+      if (heroX > 0)
+        enableTile(tileButtons[heroY][heroX - 1], "West");
+      if (heroX < side - 1)
+        enableTile(tileButtons[heroY][heroX + 1], "East");
+      if (heroY > 0)
+        enableTile(tileButtons[heroY - 1][heroX], "North");
+      if (heroY < side - 1)
+        enableTile(tileButtons[heroY + 1][heroX], "South");
+    }
 
   }
 

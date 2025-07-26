@@ -16,12 +16,22 @@ public class ScrollMapPanel extends JScrollPane {
     super();
 
     this.gameEngine = gameEngine;
-    this.mapDrawPanel = new MapDrawPanel(controller, gameEngine);
+
+    GameEngine.Step step = gameEngine.getStep();
+    if (step == GameEngine.Step.PLAYING
+        || step == GameEngine.Step.INVALID_ACTION
+        || step == GameEngine.Step.ENEMY_FIGHT_SUCCESS
+        || step == GameEngine.Step.LEVEL_UP
+        || step == GameEngine.Step.ENEMY_RUN_SUCCESS) {
+      this.mapDrawPanel = new MapDrawPanel(controller, gameEngine, true);
+    } else {
+      this.mapDrawPanel = new MapDrawPanel(controller, gameEngine, false);
+    }
 
     setViewportView(this.mapDrawPanel);
 
     System.out.println(
-        "ScrollMapPanel > Initialising scrollable map view panel...");
+        "ScrollMapPanel > Initialised scrollable map view panel.");
   }
 
   protected void centerMapOnHero() {
