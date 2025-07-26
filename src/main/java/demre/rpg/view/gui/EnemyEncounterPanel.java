@@ -82,10 +82,10 @@ public class EnemyEncounterPanel extends JPanel {
       actionPanel.add(button);
     }
 
+    actionPanel.add(Box.createHorizontalStrut(10));
+
     if (step == GameEngine.Step.ENEMY_ENCOUNTER
         || step == GameEngine.Step.ENEMY_INVALID_ACTION) {
-
-      actionPanel.add(Box.createHorizontalStrut(10));
 
       JButton button = new JButton("Run");
       button.addActionListener(
