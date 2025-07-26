@@ -15,10 +15,12 @@ import demre.rpg.Main;
 import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
 import demre.rpg.model.GameEngineListener;
+import demre.rpg.view.gui.GameOverPanel;
 import demre.rpg.view.gui.HeroInfoPanel;
 import demre.rpg.view.gui.MapViewPanel;
 import demre.rpg.view.gui.SelectHeroPanel;
 import demre.rpg.view.gui.SplashScreenPanel;
+import demre.rpg.view.gui.VictoryScreenPanel;
 
 public class GUIView
     extends javax.swing.JFrame
@@ -139,22 +141,27 @@ public class GUIView
 
   @Override
   public void showEnemyEncounter() {
-    System.out.println("GUIView > Displaying enemy encounter...");
+    // Not used in GUIView
   }
 
   @Override
   public void showItemFound() {
-    System.out.println("GUIView > Displaying item found...");
+    // Not used in GUIView
   }
 
   @Override
   public void showVictoryScreen() {
     System.out.println("GUIView > Displaying victory screen...");
+
+    showStage("victory",
+        new VictoryScreenPanel(controller, gameEngine));
   }
 
   @Override
   public void showGameOver() {
     System.out.println("GUIView > Displaying game over screen...");
+
+    showStage("gameOver", new GameOverPanel(controller, gameEngine));
   }
 
   @Override

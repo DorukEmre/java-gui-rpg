@@ -17,6 +17,7 @@ public class MapViewPanel extends JPanel {
     // this.controller = controller;
     // this.gameEngine = gameEngine;
     GameEngine.Step step = gameEngine.getStep();
+    System.out.println("MapViewPanel > Game step: " + step);
 
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
