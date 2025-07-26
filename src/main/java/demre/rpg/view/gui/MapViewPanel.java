@@ -36,10 +36,10 @@ public class MapViewPanel extends JPanel {
         || step == GameEngine.Step.ENEMY_INVALID_ACTION
         || step == GameEngine.Step.ENEMY_RUN_FAILURE) {
       instructionsPanel = new EnemyEncounterPanel(controller, gameEngine);
-      // } else if (step == GameEngine.Step.ITEM_FOUND
-      // || step == GameEngine.Step.ITEM_FOUND_AND_LEVEL_UP
-      // || step == GameEngine.Step.ITEM_INVALID_ACTION) {
-      // instructionsPanel = new ItemFoundPanel(controller, gameEngine);
+    } else if (step == GameEngine.Step.ITEM_FOUND
+        || step == GameEngine.Step.ITEM_FOUND_AND_LEVEL_UP
+        || step == GameEngine.Step.ITEM_INVALID_ACTION) {
+      instructionsPanel = new ItemFoundPanel(controller, gameEngine);
     } else {
       instructionsPanel = new JPanel(); // Fallback empty panel
     }
