@@ -1,7 +1,10 @@
 package demre.rpg.view.gui;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Font;
+
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
@@ -16,12 +19,9 @@ public class MapViewPanel extends JPanel {
     GameEngine.Step step = gameEngine.getStep();
     System.out.println("MapViewPanel > Game step: " + step);
 
-    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    setLayout(new BorderLayout(0, 20));
 
     JScrollPane scrollableMap = new ScrollMapPanel(controller, gameEngine);
-
-    add(scrollableMap);
-    add(Box.createVerticalStrut(10));
 
     JPanel instructionsPanel;
     if (step == GameEngine.Step.PLAYING
@@ -41,8 +41,18 @@ public class MapViewPanel extends JPanel {
     } else {
       instructionsPanel = new JPanel(); // Fallback empty panel
     }
-    add(instructionsPanel);
 
+    // add(scrollableMap);
+    // add(Box.createVerticalStrut(10));
+    // add(instructionsPanel);
+
+    // Set fixed height for instructionsPanel
+    instructionsPanel.setPreferredSize(new Dimension(0, 140));
+
+    add(scrollableMap, BorderLayout.CENTER);
+    add(instructionsPanel, BorderLayout.SOUTH);
+
+    // Center the map on the hero
     SwingUtilities.invokeLater(
         () -> ((ScrollMapPanel) scrollableMap).centerMapOnHero());
 
@@ -50,27 +60,24 @@ public class MapViewPanel extends JPanel {
     // JLabel sizeLabel = new JLabel();
     // sizeLabel.setFont(new Font("Serif", Font.PLAIN, 16));
     // sizeLabel.setAlignmentX(CENTER_ALIGNMENT);
-    // add(sizeLabel);
+    // // add(sizeLabel);
+    // add(sizeLabel, java.awt.BorderLayout.NORTH);
 
     // // Helper to update the label
     // Runnable updateSizeLabel = () -> sizeLabel.setText(
-    // "Map size: " + mapDrawPanel.getWidth() + "x" + mapDrawPanel.getHeight() +
-    // ", ScrollPane size: " + scrollPane.getWidth() + "x" + scrollPane.getHeight()
-    // +
-    // ", DirectionPanel size: " + directionPanel.getWidth() + "x" +
-    // directionPanel.getHeight());
+    // "ScrollPane size: " + scrollableMap.getWidth()
+    // + "x" + scrollableMap.getHeight()
+    // + ", Instructions size: " + instructionsPanel.getWidth()
+    // + "x" + instructionsPanel.getHeight());
+
     // // Add listeners to update the label on resize
-    // scrollPane.addComponentListener(new java.awt.event.ComponentAdapter() {
+    // scrollableMap.addComponentListener(new java.awt.event.ComponentAdapter() {
     // public void componentResized(java.awt.event.ComponentEvent e) {
     // updateSizeLabel.run();
     // }
     // });
-    // mapDrawPanel.addComponentListener(new java.awt.event.ComponentAdapter() {
-    // public void componentResized(java.awt.event.ComponentEvent e) {
-    // updateSizeLabel.run();
-    // }
-    // });
-    // directionPanel.addComponentListener(new java.awt.event.ComponentAdapter() {
+    // instructionsPanel.addComponentListener(new java.awt.event.ComponentAdapter()
+    // {
     // public void componentResized(java.awt.event.ComponentEvent e) {
     // updateSizeLabel.run();
     // }

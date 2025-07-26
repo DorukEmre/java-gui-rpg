@@ -60,6 +60,8 @@ public class ItemFoundPanel extends JPanel {
       instructionPanel.add(label1);
     }
 
+    instructionPanel.add(Box.createVerticalStrut(10));
+
     {
       JLabel label1 = createLabel(
           "You found an item. " + gameEngine.getItemFound());

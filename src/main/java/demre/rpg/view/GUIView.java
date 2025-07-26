@@ -74,12 +74,12 @@ public class GUIView
     setTitle("RPG Game");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setLayout(new BorderLayout());
-    // setSize(800, 600);
+    setSize(800, 600);
     setMinimumSize(new Dimension(600, 400));
 
     // Make window full screen
     setExtendedState(JFrame.MAXIMIZED_BOTH);
-    setUndecorated(true);
+    // setUndecorated(true); // Removes title bar
 
     // Create content panel to display different views
     cardLayout = new CardLayout();

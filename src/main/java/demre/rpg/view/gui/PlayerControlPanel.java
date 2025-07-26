@@ -136,13 +136,14 @@ public class PlayerControlPanel extends JPanel {
     }
     {
       JLabel label = new JLabel(hero.getHeroClass());
-      label.setFont(new Font("Serif", Font.BOLD, 16));
+      label.setFont(new Font("Arial", Font.BOLD, 14));
       label.setAlignmentX(CENTER_ALIGNMENT);
       heroInfoPanel.add(label);
     }
     {
       JLabel label = new JLabel(
           "Level: " + hero.getLevel() + ", Exp: " + hero.getExperience());
+      label.setFont(new Font("Arial", Font.BOLD, 14));
       label.setAlignmentX(CENTER_ALIGNMENT);
       heroInfoPanel.add(label);
     }
