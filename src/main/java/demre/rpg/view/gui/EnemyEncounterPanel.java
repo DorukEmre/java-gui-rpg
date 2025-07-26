@@ -91,8 +91,12 @@ public class EnemyEncounterPanel extends JPanel {
       button.addActionListener(
           e -> controller.onEnemyEncounterContinue("Run"));
       actionPanel.add(button);
-      defaultButton = button; // Default button for Enter key
     }
+
+    if (step == GameEngine.Step.ENEMY_RUN_FAILURE)
+      defaultButton = (JButton) actionPanel.getComponent(0); // Fight button
+    else
+      defaultButton = (JButton) actionPanel.getComponent(2); // Run button
 
     return actionPanel;
   }
