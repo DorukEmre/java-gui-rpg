@@ -10,12 +10,9 @@ import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
 
 public class MapViewPanel extends JPanel {
-  // private final GameController controller;
-  // private final GameEngine gameEngine;
 
   public MapViewPanel(GameController controller, GameEngine gameEngine) {
-    // this.controller = controller;
-    // this.gameEngine = gameEngine;
+
     GameEngine.Step step = gameEngine.getStep();
     System.out.println("MapViewPanel > Game step: " + step);
 
