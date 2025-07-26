@@ -45,10 +45,13 @@ public class GUIView
         case SELECT_HERO, INVALID_HERO_SELECTION -> selectHero();
         case CREATE_HERO, INVALID_HERO_CREATION -> createHero();
         case INFO, NEW_MISSION -> showHeroInfo();
-        case PLAYING, INVALID_ACTION, ENEMY_FIGHT_SUCCESS, LEVEL_UP, ENEMY_RUN_SUCCESS -> showMap();
-        case ENEMY_ENCOUNTER, ENEMY_INVALID_ACTION -> showEnemyEncounter();
-        case ENEMY_RUN_FAILURE -> showEnemyRunFailure();
-        case ITEM_FOUND, ITEM_FOUND_AND_LEVEL_UP, ITEM_INVALID_ACTION -> showItemFound();
+        case PLAYING, INVALID_ACTION, ENEMY_FIGHT_SUCCESS, LEVEL_UP,
+            ENEMY_RUN_SUCCESS ->
+          showMap();
+        case ENEMY_ENCOUNTER, ENEMY_INVALID_ACTION -> showMap();
+        case ENEMY_RUN_FAILURE -> showMap();
+        case ITEM_FOUND, ITEM_FOUND_AND_LEVEL_UP, ITEM_INVALID_ACTION ->
+          showMap();
         case VICTORY_MISSION, VICTORY_INVALID_ACTION -> showVictoryScreen();
         case GAME_OVER, GAME_OVER_INVALID_ACTION -> showGameOver();
         case EXIT_GAME -> cleanup();
