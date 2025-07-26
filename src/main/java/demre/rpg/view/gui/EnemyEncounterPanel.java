@@ -74,20 +74,22 @@ public class EnemyEncounterPanel extends JPanel {
 
     GameEngine.Step step = gameEngine.getStep();
 
-    JButton fightButton = new JButton("Fight");
-    fightButton.addActionListener(
-        e -> controller.onEnemyEncounterContinue("Fight"));
-    actionPanel.add(fightButton);
+    {
+      JButton button = new JButton("Fight");
+      button.addActionListener(
+          e -> controller.onEnemyEncounterContinue("Fight"));
+      actionPanel.add(button);
+    }
 
     if (step == GameEngine.Step.ENEMY_ENCOUNTER
         || step == GameEngine.Step.ENEMY_INVALID_ACTION) {
 
       actionPanel.add(Box.createHorizontalStrut(10));
 
-      JButton runButton = new JButton("Run");
-      runButton.addActionListener(
+      JButton button = new JButton("Run");
+      button.addActionListener(
           e -> controller.onEnemyEncounterContinue("Run"));
-      actionPanel.add(runButton);
+      actionPanel.add(button);
     }
 
     return actionPanel;
