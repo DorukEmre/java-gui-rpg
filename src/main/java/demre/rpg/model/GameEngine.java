@@ -384,7 +384,7 @@ public class GameEngine {
     for (Villain villain : villains) {
       Tile enemyTile = map[villain.getYCoord() + 1][villain.getXCoord() + 1];
       enemyTile.assignEnemy();
-      enemyTile.setVisible(true);
+      // enemyTile.setVisible(true);
     }
   }
 
@@ -638,9 +638,11 @@ public class GameEngine {
     System.out.println("GameEngine > Running from enemy...");
     // 50% chance to run away
     if (Math.random() < 0.5) {
-      System.out.println("GameEngine > Hero successfully ran away!");
+      System.out.println("GameEngine > Hero run away - SUCCESS");
       setCurrentStep(Step.ENEMY_RUN_SUCCESS);
+      return;
     }
+    System.out.println("GameEngine > Hero run away - FAILURE");
     setCurrentStep(Step.ENEMY_RUN_FAILURE);
   }
 
