@@ -4,7 +4,7 @@ public class Armor extends Item {
   // increases defense
 
   public Armor(String name, int modifier) {
-    super("Armor", name, modifier);
+    super(Type.ARMOR, name, modifier);
   }
 
 }

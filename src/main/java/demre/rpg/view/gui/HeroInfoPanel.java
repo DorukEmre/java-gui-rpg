@@ -3,8 +3,6 @@ package demre.rpg.view.gui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -12,7 +10,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 
 import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
@@ -40,12 +37,9 @@ public class HeroInfoPanel extends JPanel {
     add(new JLabel("Attack:     " + hero.getAttack()));
     add(new JLabel("Defense:    " + hero.getDefense()));
     add(new JLabel("Hit Points: " + hero.getHitPoints()));
-    add(new JLabel("Weapon:     " + hero.getWeapon().getName() +
-        " +" + hero.getWeapon().getModifier()));
-    add(new JLabel("Armor:      " + hero.getArmor().getName() +
-        " +" + hero.getArmor().getModifier()));
-    add(new JLabel("Helm:       " + hero.getHelm().getName() +
-        " +" + hero.getHelm().getModifier()));
+    add(new JLabel("Weapon:     " + hero.getWeapon().getFormattedName()));
+    add(new JLabel("Armor:      " + hero.getArmor().getFormattedName()));
+    add(new JLabel("Helm:       " + hero.getHelm().getFormattedName()));
 
     add(Box.createRigidArea(new Dimension(0, 20)));
 

@@ -669,12 +669,13 @@ public class GameEngine {
   public void keepItem() {
     // Replace the item in the hero's inventory
     Item item = getItemFound();
+
     if (item != null) {
-      if (item.getType().equals("Weapon")) {
+      if (item.getType() == Item.Type.WEAPON) {
         hero.setWeapon((Weapon) item);
-      } else if (item.getType().equals("Armor")) {
+      } else if (item.getType() == Item.Type.ARMOR) {
         hero.setArmor((Armor) item);
-      } else if (item.getType().equals("Helm")) {
+      } else if (item.getType() == Item.Type.HELM) {
         hero.setHelm((Helm) item);
       }
       setItemFound(null);

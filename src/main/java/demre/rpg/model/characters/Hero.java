@@ -107,12 +107,9 @@ public abstract class Hero extends AbstractCharacter {
         ", attack=" + getAttack() +
         ", defense=" + getDefense() +
         ", hp=" + getHitPoints() +
-        ", weapon=" + getWeapon().getName() +
-        ", +" + getWeapon().getModifier() +
-        ", armor=" + getArmor().getName() +
-        ", +" + getArmor().getModifier() +
-        ", helm=" + getHelm().getName() +
-        ", +" + getHelm().getModifier() +
+        ", weapon=" + getWeapon().getFormattedName() +
+        ", armor=" + getArmor().getFormattedName() +
+        ", helm=" + getHelm().getFormattedName() +
         ", at (" + getXCoord() + ", " + getYCoord() + ")" +
         '}';
   }

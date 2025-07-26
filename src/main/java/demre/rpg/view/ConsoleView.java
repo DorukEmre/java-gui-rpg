@@ -7,6 +7,7 @@ import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
 import demre.rpg.model.GameEngineListener;
 import demre.rpg.model.characters.Hero;
+import demre.rpg.model.items.Item;
 import demre.rpg.model.map.Tile;
 import demre.rpg.view.console.AsciiArt;
 
@@ -152,12 +153,9 @@ public class ConsoleView
       System.out.println("Attack:\t\t" + hero.getAttack());
       System.out.println("Defense:\t" + hero.getDefense());
       System.out.println("Hit Points:\t" + hero.getHitPoints());
-      System.out.println("Weapon:\t\t" + hero.getWeapon().getName() +
-          " +" + hero.getWeapon().getModifier());
-      System.out.println("Armor:\t\t" + hero.getArmor().getName() +
-          " +" + hero.getArmor().getModifier());
-      System.out.println("Helm:\t\t" + hero.getHelm().getName() +
-          " +" + hero.getHelm().getModifier());
+      System.out.println("Weapon:\t\t" + hero.getWeapon().getFormattedName());
+      System.out.println("Armor:\t\t" + hero.getArmor().getFormattedName());
+      System.out.println("Helm:\t\t" + hero.getHelm().getFormattedName());
 
       System.out.println("\nPress Enter to continue...");
       String input = scanner.nextLine();
@@ -275,29 +273,43 @@ public class ConsoleView
   public void showItemFound() {
     System.out.println("ConsoleView > Item found screen...");
 
-    GameEngine.Step step = gameEngine.getStep();
-
     try {
+      GameEngine.Step step = gameEngine.getStep();
+      Hero hero = gameEngine.getHero();
+      Item.Type foundItemType = gameEngine.getItemFound().getType();
+
       clearConsole();
       drawMap();
+
       if (step == GameEngine.Step.ITEM_INVALID_ACTION) {
         System.out.println("Invalid action. Please try again.");
+
       } else if (step == GameEngine.Step.ITEM_FOUND_AND_LEVEL_UP) {
         System.out.println("You defeated the enemy and leveled up!");
-        System.out.println("You are now level "
-            + gameEngine.getHero().getLevel() + " with "
-            + gameEngine.getHero().getExperience() + " experience points.");
+        System.out.println(
+            "You are now level " + hero.getLevel() + " with "
+                + hero.getExperience() + " experience points.");
+
       } else if (step == GameEngine.Step.ITEM_FOUND) {
         System.out.println("You defeated the enemy!");
       }
+
       System.out.println("You found an item. " + gameEngine.getItemFound());
-      System.out.println("Your current items are: "
-          + gameEngine.getHero().getWeapon() + ", "
-          + gameEngine.getHero().getArmor() + ", "
-          + gameEngine.getHero().getHelm());
+
+      if (foundItemType == Item.Type.WEAPON) {
+        System.out.println("Your current weapon is: "
+            + hero.getWeapon().getFormattedName());
+      } else if (foundItemType == Item.Type.ARMOR) {
+        System.out.println("Your current armor is: "
+            + hero.getArmor().getFormattedName());
+      } else if (foundItemType == Item.Type.HELM) {
+        System.out.println("Your current helm is: "
+            + hero.getHelm().getFormattedName());
+      }
       System.out.println("(k)eep or (l)eave");
       String item_choice = scanner.nextLine();
       controller.onItemFoundContinue(item_choice);
+
     } catch (Exception e) {
       throw new RuntimeException(
           "Error during item found: " + e.getMessage());
