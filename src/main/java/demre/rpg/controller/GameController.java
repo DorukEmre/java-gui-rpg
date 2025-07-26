@@ -43,12 +43,16 @@ public class GameController {
     }
   }
 
-  public void onCreateHeroContinue(String heroName, String heroClass) {
+  public void onCreateHeroContinue(String heroName, String heroClass, Boolean goBack) {
     System.out.println("GameController > Hero creation input: " + heroName);
 
     if (handleExitOrViewChange(heroClass, false))
       return;
 
+    if (goBack || heroClass.equalsIgnoreCase("back")) {
+      gameEngine.setCurrentStep(Step.SELECT_HERO);
+      return;
+    }
     if (gameEngine.isValidHeroName(heroName)
         && gameEngine.isValidHeroClass(heroClass)) {
       gameEngine.createHero(heroName, heroClass);

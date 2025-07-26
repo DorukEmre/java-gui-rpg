@@ -129,7 +129,7 @@ public class ConsoleView
           "3. Mage - A master of magic, +10% chance to find items");
       String heroClass = scanner.nextLine();
 
-      controller.onCreateHeroContinue(heroName, heroClass);
+      controller.onCreateHeroContinue(heroName, heroClass, false);
 
     } catch (Exception e) {
       throw new RuntimeException(

@@ -15,6 +15,7 @@ import demre.rpg.Main;
 import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
 import demre.rpg.model.GameEngineListener;
+import demre.rpg.view.gui.CreateHeroPanel;
 import demre.rpg.view.gui.GameOverPanel;
 import demre.rpg.view.gui.HeroInfoPanel;
 import demre.rpg.view.gui.MapViewPanel;
@@ -73,8 +74,12 @@ public class GUIView
     setTitle("RPG Game");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setLayout(new BorderLayout());
-    setSize(800, 600);
+    // setSize(800, 600);
     setMinimumSize(new Dimension(600, 400));
+
+    // Make window full screen
+    setExtendedState(JFrame.MAXIMIZED_BOTH);
+    setUndecorated(true);
 
     // Create content panel to display different views
     cardLayout = new CardLayout();
@@ -122,6 +127,9 @@ public class GUIView
   @Override
   public void createHero() {
     System.out.println("GUIView > Displaying hero creation screen...");
+
+    showStage(
+        "createHero", new CreateHeroPanel(controller, gameEngine));
   }
 
   @Override
@@ -153,8 +161,8 @@ public class GUIView
   public void showVictoryScreen() {
     System.out.println("GUIView > Displaying victory screen...");
 
-    showStage("victory",
-        new VictoryScreenPanel(controller, gameEngine));
+    showStage(
+        "victory", new VictoryScreenPanel(controller, gameEngine));
   }
 
   @Override
