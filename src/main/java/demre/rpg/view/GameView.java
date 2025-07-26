@@ -14,8 +14,6 @@ public interface GameView {
 
   void showEnemyEncounter();
 
-  void showEnemyRunFailure();
-
   void showItemFound();
 
   void showVictoryScreen();

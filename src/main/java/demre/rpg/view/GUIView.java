@@ -48,8 +48,8 @@ public class GUIView
         case PLAYING, INVALID_ACTION, ENEMY_FIGHT_SUCCESS, LEVEL_UP,
             ENEMY_RUN_SUCCESS ->
           showMap();
-        case ENEMY_ENCOUNTER, ENEMY_INVALID_ACTION -> showMap();
-        case ENEMY_RUN_FAILURE -> showMap();
+        case ENEMY_ENCOUNTER, ENEMY_INVALID_ACTION, ENEMY_RUN_FAILURE ->
+          showMap();
         case ITEM_FOUND, ITEM_FOUND_AND_LEVEL_UP, ITEM_INVALID_ACTION ->
           showMap();
         case VICTORY_MISSION, VICTORY_INVALID_ACTION -> showVictoryScreen();
@@ -140,11 +140,6 @@ public class GUIView
   @Override
   public void showEnemyEncounter() {
     System.out.println("GUIView > Displaying enemy encounter...");
-  }
-
-  @Override
-  public void showEnemyRunFailure() {
-    System.out.println("GUIView > Displaying enemy run failure...");
   }
 
   @Override

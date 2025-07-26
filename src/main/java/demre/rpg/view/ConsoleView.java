@@ -32,10 +32,13 @@ public class ConsoleView
       case SELECT_HERO, INVALID_HERO_SELECTION -> selectHero();
       case CREATE_HERO, INVALID_HERO_CREATION -> createHero();
       case INFO, NEW_MISSION -> showHeroInfo();
-      case PLAYING, INVALID_ACTION, ENEMY_FIGHT_SUCCESS, LEVEL_UP, ENEMY_RUN_SUCCESS -> showMap();
-      case ENEMY_ENCOUNTER, ENEMY_INVALID_ACTION -> showEnemyEncounter();
-      case ENEMY_RUN_FAILURE -> showEnemyRunFailure();
-      case ITEM_FOUND, ITEM_FOUND_AND_LEVEL_UP, ITEM_INVALID_ACTION -> showItemFound();
+      case PLAYING, INVALID_ACTION, ENEMY_FIGHT_SUCCESS, LEVEL_UP,
+          ENEMY_RUN_SUCCESS ->
+        showMap();
+      case ENEMY_ENCOUNTER, ENEMY_INVALID_ACTION, ENEMY_RUN_FAILURE ->
+        showEnemyEncounter();
+      case ITEM_FOUND, ITEM_FOUND_AND_LEVEL_UP, ITEM_INVALID_ACTION ->
+        showItemFound();
       case VICTORY_MISSION, VICTORY_INVALID_ACTION -> showVictoryScreen();
       case GAME_OVER, GAME_OVER_INVALID_ACTION -> showGameOver();
       case EXIT_GAME -> cleanup();
@@ -170,11 +173,12 @@ public class ConsoleView
   public void showMap() {
     System.out.println("ConsoleView > Showing game map...");
 
-    GameEngine.Step step = gameEngine.getStep();
-
     try {
+      GameEngine.Step step = gameEngine.getStep();
+
       clearConsole();
       drawMap();
+
       if (step == GameEngine.Step.INVALID_ACTION) {
         System.out.println("Invalid action. Please try again.");
       } else if (step == GameEngine.Step.ENEMY_FIGHT_SUCCESS) {
@@ -237,32 +241,33 @@ public class ConsoleView
   @Override
   public void showEnemyEncounter() {
     System.out.println("ConsoleView > Enemy encounter screen...");
+
     try {
+      GameEngine.Step step = gameEngine.getStep();
+
       clearConsole();
       drawMap();
-      System.out.println("You encounter an enemy!");
-      System.out.println("(f)ight or (r)un");
-      String enemy_choice = scanner.nextLine();
-      controller.onEnemyEncounterContinue(enemy_choice);
+
+      if (step == GameEngine.Step.ENEMY_INVALID_ACTION) {
+        System.out.println("Invalid action. Please try again.");
+      }
+      if (step == GameEngine.Step.ENEMY_ENCOUNTER
+          || step == GameEngine.Step.ENEMY_INVALID_ACTION) {
+        System.out.println("You encounter an enemy!");
+        System.out.println("(f)ight or (r)un");
+        String enemy_choice = scanner.nextLine();
+        controller.onEnemyEncounterContinue(enemy_choice);
+
+      } else if (step == GameEngine.Step.ENEMY_RUN_FAILURE) {
+        System.out.println("You failed to run away from the enemy!");
+        System.out.println("You have to fight. Press Enter.");
+        scanner.nextLine();
+        controller.onEnemyEncounterContinue("fight");
+
+      }
     } catch (Exception e) {
       throw new RuntimeException(
           "Error during enemy encounter: " + e.getMessage());
-    }
-  }
-
-  @Override
-  public void showEnemyRunFailure() {
-    System.out.println("ConsoleView > Enemy run failure screen...");
-    try {
-      clearConsole();
-      drawMap();
-      System.out.println("You failed to run away from the enemy!");
-      System.out.println("You have to fight. Press Enter.");
-      scanner.nextLine();
-      controller.onEnemyEncounterContinue("fight");
-    } catch (Exception e) {
-      throw new RuntimeException(
-          "Error during enemy run failure: " + e.getMessage());
     }
   }
 
