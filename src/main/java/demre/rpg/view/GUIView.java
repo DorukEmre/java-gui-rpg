@@ -2,6 +2,8 @@ package demre.rpg.view;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
@@ -88,12 +90,21 @@ public class GUIView
 
     // Add button to switch to console view
     JPanel bottomPanel = new JPanel();
-    JButton switchButton = new JButton("Switch to Console View");
-    bottomPanel.add(switchButton);
+    bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
 
-    // Add listeners
+    bottomPanel.add(Box.createHorizontalGlue());
+
+    JButton switchButton = new JButton("Switch to Console View");
     switchButton.addActionListener(
         e -> controller.switchView("console"));
+
+    JButton exitButton = new JButton("Exit");
+    exitButton.addActionListener(
+        e -> controller.exitGame());
+
+    bottomPanel.add(switchButton);
+    bottomPanel.add(Box.createHorizontalStrut(10));
+    bottomPanel.add(exitButton);
 
     add(contentPanel, BorderLayout.CENTER);
     add(bottomPanel, BorderLayout.SOUTH);

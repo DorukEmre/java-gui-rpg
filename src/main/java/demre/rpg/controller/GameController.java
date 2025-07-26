@@ -171,4 +171,9 @@ public class GameController {
 
     gameEngine.setGameView(newGameView);
   }
+
+  public void exitGame() {
+    System.out.println("GameController > Exiting game.");
+    gameEngine.exitGame();
+  }
 }
