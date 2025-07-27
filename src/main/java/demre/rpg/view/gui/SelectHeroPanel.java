@@ -10,6 +10,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import demre.rpg.Main;
 import demre.rpg.controller.GameController;
@@ -51,16 +52,14 @@ public class SelectHeroPanel extends JPanel {
     // Title label
     JLabel selectHeroTitle = new JLabel("Select Your Hero");
     selectHeroTitle.setFont(new Font("Serif", Font.BOLD, 24));
-    selectHeroTitle.setAlignmentX(CENTER_ALIGNMENT);
+    // selectHeroTitle.setAlignmentX(CENTER_ALIGNMENT);
     contentPanel.add(selectHeroTitle);
 
     contentPanel.add(Box.createVerticalStrut(20));
 
-    // heroes = new ArrayList<>(); // for testing
-
     JPanel heroesList = new JPanel();
     heroesList.setLayout(new BoxLayout(heroesList, BoxLayout.Y_AXIS));
-    heroesList.setAlignmentX(LEFT_ALIGNMENT);
+    // heroesList.setAlignmentX(LEFT_ALIGNMENT);
 
     // List heroes as buttons
     for (int i = 0; i < heroes.size(); i++) {
@@ -81,8 +80,10 @@ public class SelectHeroPanel extends JPanel {
 
       // Create label (right)
       JLabel heroStats = new JLabel(
-          hero.getName() + " (" + hero.getHeroClass() + ")"
-              + " Level: " + hero.getLevel() + " XP: " + hero.getExperience());
+          hero.getName() + " - " + hero.getHeroClass()
+              + ". Level: " + hero.getLevel() + ", XP: " + hero.getExperience()
+              + ", ATT: " + hero.getAttack() + ", DEF: " + hero.getDefense()
+              + ", HP: " + hero.getHitPoints());
       heroStats.setFont(new Font("Serif", Font.PLAIN, 16));
 
       // Create horizontal panel for button + label
@@ -96,7 +97,10 @@ public class SelectHeroPanel extends JPanel {
       heroesList.add(heroLine);
     }
 
-    contentPanel.add(heroesList);
+    // Make the list scrollable
+    JScrollPane scrollPane = new JScrollPane(heroesList);
+    // scrollPane.setAlignmentX(LEFT_ALIGNMENT);
+    contentPanel.add(scrollPane);
 
     contentPanel.add(Box.createVerticalStrut(20));
 
@@ -109,13 +113,13 @@ public class SelectHeroPanel extends JPanel {
           "Or create a new hero:");
     }
     newHeroTitle.setFont(new Font("Serif", Font.BOLD, 24));
-    newHeroTitle.setAlignmentX(CENTER_ALIGNMENT);
+    // newHeroTitle.setAlignmentX(CENTER_ALIGNMENT);
     contentPanel.add(newHeroTitle);
 
     contentPanel.add(Box.createVerticalStrut(20));
 
     JButton newHeroButton = new JButton("New Hero");
-    newHeroButton.setAlignmentX(CENTER_ALIGNMENT);
+    // newHeroButton.setAlignmentX(CENTER_ALIGNMENT);
     newHeroButton.addActionListener(e -> {
       try {
         controller.onSelectHeroContinue("new");
