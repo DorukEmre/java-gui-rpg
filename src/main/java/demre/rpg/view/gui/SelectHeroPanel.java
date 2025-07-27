@@ -1,5 +1,6 @@
 package demre.rpg.view.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.Insets;
 import java.util.List;
@@ -10,28 +11,50 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import demre.rpg.Main;
 import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
 import demre.rpg.model.characters.Hero;
+import demre.rpg.view.GUIView;
 
 public class SelectHeroPanel extends JPanel {
+  private final GameController controller;
+  private final GameEngine gameEngine;
   private JButton defaultButton;
 
   public SelectHeroPanel(GameController controller, GameEngine gameEngine) {
+    this.controller = controller;
+    this.gameEngine = gameEngine;
+
+    setLayout(new BorderLayout());
+
+    // Hero selection panel
+    JPanel contentPanel = createContentPanel();
+
+    // Delete/populate heroes in database panel
+    JPanel databasePanel = createDatabasePanel();
+
+    add(contentPanel, BorderLayout.CENTER);
+    add(databasePanel, BorderLayout.SOUTH);
+
+  }
+
+  private JPanel createContentPanel() {
     List<Hero> heroes = gameEngine.getHeroes();
 
-    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    JPanel contentPanel = new JPanel();
+    contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 
-    add(Box.createVerticalGlue());
-    add(Box.createVerticalStrut(10));
+    contentPanel.add(Box.createVerticalGlue());
+    contentPanel.add(Box.createVerticalStrut(10));
 
     // Title label
     JLabel selectHeroTitle = new JLabel("Select Your Hero");
     selectHeroTitle.setFont(new Font("Serif", Font.BOLD, 24));
     selectHeroTitle.setAlignmentX(CENTER_ALIGNMENT);
-    add(selectHeroTitle);
+    contentPanel.add(selectHeroTitle);
 
-    add(Box.createVerticalStrut(20));
+    contentPanel.add(Box.createVerticalStrut(20));
 
     // heroes = new ArrayList<>(); // for testing
 
@@ -47,8 +70,14 @@ public class SelectHeroPanel extends JPanel {
       JButton heroButton = new JButton(i + 1 + ". ");
       heroButton.setMargin(new Insets(5, 8, 5, 6));
       String indexStr = i + 1 + "";
-      heroButton.addActionListener(
-          e -> controller.onSelectHeroContinue(indexStr));
+      heroButton.addActionListener(e -> {
+        try {
+          controller.onSelectHeroContinue(indexStr);
+        } catch (Exception ex) {
+          GUIView.windowDispose(heroButton);
+          Main.errorAndExit(ex, ex.getMessage());
+        }
+      });
 
       // Create label (right)
       JLabel heroStats = new JLabel(
@@ -67,9 +96,9 @@ public class SelectHeroPanel extends JPanel {
       heroesList.add(heroLine);
     }
 
-    add(heroesList);
+    contentPanel.add(heroesList);
 
-    add(Box.createVerticalStrut(20));
+    contentPanel.add(Box.createVerticalStrut(20));
 
     JLabel newHeroTitle;
     if (heroes == null || heroes.isEmpty()) {
@@ -81,20 +110,63 @@ public class SelectHeroPanel extends JPanel {
     }
     newHeroTitle.setFont(new Font("Serif", Font.BOLD, 24));
     newHeroTitle.setAlignmentX(CENTER_ALIGNMENT);
-    add(newHeroTitle);
+    contentPanel.add(newHeroTitle);
 
-    add(Box.createVerticalStrut(20));
+    contentPanel.add(Box.createVerticalStrut(20));
 
     JButton newHeroButton = new JButton("New Hero");
     newHeroButton.setAlignmentX(CENTER_ALIGNMENT);
-    newHeroButton.addActionListener(
-        e -> controller.onSelectHeroContinue("new"));
-    add(newHeroButton);
+    newHeroButton.addActionListener(e -> {
+      try {
+        controller.onSelectHeroContinue("new");
+      } catch (Exception ex) {
+        GUIView.windowDispose(newHeroButton);
+        Main.errorAndExit(ex, ex.getMessage());
+      }
+    });
+    contentPanel.add(newHeroButton);
 
-    add(Box.createVerticalStrut(10));
-    add(Box.createVerticalGlue());
+    contentPanel.add(Box.createVerticalStrut(10));
+    contentPanel.add(Box.createVerticalGlue());
 
     defaultButton = newHeroButton;
+
+    return contentPanel;
+  }
+
+  private JPanel createDatabasePanel() {
+    JPanel databasePanel = new JPanel();
+    databasePanel.setLayout(new BoxLayout(databasePanel, BoxLayout.X_AXIS));
+
+    JButton deleteHeroesButton = new JButton("Delete All Heroes");
+    deleteHeroesButton.addActionListener(e -> {
+      try {
+        controller.onDatabaseAction("deleteAll");
+      } catch (Exception ex) {
+        GUIView.windowDispose(deleteHeroesButton);
+        Main.errorAndExit(ex, ex.getMessage());
+      }
+    });
+
+    JButton generateHeroesButton = new JButton("Generate Heroes (lvl 1-10)");
+    generateHeroesButton.addActionListener(e -> {
+      try {
+        controller.onDatabaseAction("generate");
+      } catch (Exception ex) {
+        GUIView.windowDispose(generateHeroesButton);
+        Main.errorAndExit(ex, ex.getMessage());
+      }
+    });
+
+    databasePanel.add(deleteHeroesButton);
+
+    databasePanel.add(Box.createHorizontalStrut(10));
+
+    databasePanel.add(generateHeroesButton);
+
+    databasePanel.add(Box.createHorizontalGlue());
+
+    return databasePanel;
   }
 
   @Override

@@ -6,6 +6,7 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import jakarta.validation.ConstraintViolation;
+
 import demre.rpg.model.characters.AbstractCharacter;
 import demre.rpg.model.characters.Hero;
 import demre.rpg.model.characters.Mage;
@@ -34,6 +35,17 @@ public class CharacterFactory {
   private static final String[] HELM_TYPES = {
       "Colander", "Mask", "Bucket", "Flower Pot", "Wig", "Lamp Shade",
       "Fish Bowl", "Ice Cream Cone", "Traffic Cone",
+  };
+  private static final String[] HERO_NAMES = {
+      "Hilda", "Bob", "Clara", "Fred", "Gary", "Vera", "Dave", "Bella",
+      "Ian", "Nancy", "Hank", "Alice", "Charlie", "Grace", "Victor",
+      "Olivia", "Jack", "Mia", "Leo", "Sophie", "Max", "Lily", "Oscar",
+  };
+
+  private static final String[] HERO_QUALIFIERS = {
+      "Heroic", "Brave", "Courageous", "Fearless", "Gallant", "Valiant",
+      "Daring", "Bold", "Intrepid", "Noble", "Adventurous", "Chivalrous",
+      "Vigorous", "Unyielding", "Unflinching", "Unwavering"
   };
 
   private CharacterFactory() {
@@ -118,6 +130,34 @@ public class CharacterFactory {
         generateHelmName(), helmModifier, x, y));
   }
 
+  public Hero generateHero(int level) {
+    String[] classes = { "Mage", "Warrior", "Rogue" };
+    String heroClass = classes[(int) (Math.random() * classes.length)];
+    String name = generateHeroName();
+    int experience = (level == 1)
+        ? 0
+        : (level - 1) * 1000 + (level - 2) * (level - 2) * 450;
+    int attack = 5 + generateBonus(level, 0);
+    int defense = 5 + generateBonus(level, 0);
+    int hitPoints = 20 + generateBonus(level, 4);
+
+    return newHero(heroClass, name, level, experience,
+        attack, defense, hitPoints,
+        generateWeaponName(), generateItemModifier(level),
+        generateArmorName(), generateItemModifier(level),
+        generateHelmName(), generateItemModifier(level));
+  }
+
+  private String generateHeroName() {
+    String name = "This is over twenty characters";
+    while (name.length() > 20) {
+      name = HERO_NAMES[(int) (Math.random() * HERO_NAMES.length)]
+          + " the "
+          + HERO_QUALIFIERS[(int) (Math.random() * HERO_QUALIFIERS.length)];
+    }
+    return name;
+  }
+
   private String generateWeaponName() {
     return (ADJECTIVES[(int) (Math.random() * ADJECTIVES.length)] + " "
         + WEAPON_TYPES[(int) (Math.random() * WEAPON_TYPES.length)]);
@@ -131,6 +171,21 @@ public class CharacterFactory {
   private String generateHelmName() {
     return (ADJECTIVES[(int) (Math.random() * ADJECTIVES.length)] + " "
         + HELM_TYPES[(int) (Math.random() * HELM_TYPES.length)]);
+  }
+
+  private int generateItemModifier(int level) {
+    return (level + ((int) (Math.random() * 3)) - 1); // level +/- 1
+  }
+
+  private int generateBonus(int level, int offset) {
+    int bonus = 0;
+
+    for (int i = 0; i < level; i++) {
+      // add (0-2 + offset) per level
+      bonus += (int) (Math.random() * 3) + offset;
+    }
+
+    return bonus;
   }
 
   private void validateCharacter(AbstractCharacter character) {

@@ -25,11 +25,17 @@ public class GameController {
     gameEngine.setCurrentStep(Step.SELECT_HERO);
   }
 
-  public void onSelectHeroContinue(String input) {
+  public void onSelectHeroContinue(String input) throws IOException {
     System.out.println("GameController > Hero selection input: " + input);
 
     if (handleExitOrViewChange(input, false))
       return;
+
+    if (input.equalsIgnoreCase("deleteAll")
+        || input.equalsIgnoreCase("generate")) {
+      onDatabaseAction(input);
+      return;
+    }
 
     if (gameEngine.isValidHeroSelection(input)) {
       gameEngine.selectHero(input);
@@ -151,6 +157,18 @@ public class GameController {
       gameEngine.setCurrentStep(Step.NEW_MISSION);
     } else {
       gameEngine.setCurrentStep(Step.GAME_OVER_INVALID_ACTION);
+    }
+  }
+
+  public void onDatabaseAction(String input) throws IOException {
+    System.out.println("GameController > Database action input: " + input);
+
+    if (input.equalsIgnoreCase("deleteAll")) {
+      gameEngine.deleteAllHeroes();
+      gameEngine.setCurrentStep(Step.SELECT_HERO);
+    } else if (input.equalsIgnoreCase("generate")) {
+      gameEngine.generateHeroes();
+      gameEngine.setCurrentStep(Step.SELECT_HERO);
     }
   }
 

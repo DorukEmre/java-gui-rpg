@@ -223,10 +223,7 @@ public class GameEngine {
 
     addListener((GameEngineListener) gameView);
 
-    HeroLoader.loadHeroesFromDatabase(this);
-
-    System.out.println("GameEngine > Initialised heroes: "
-        + (heroes != null ? heroes.size() : 0));
+    loadHeroes();
   }
 
   // Listeners
@@ -237,6 +234,54 @@ public class GameEngine {
 
   public void removeListener(GameEngineListener listener) {
     listeners.remove(listener);
+  }
+
+  // Database operations
+
+  public void loadHeroes() throws IOException {
+    System.out.println("GameEngine > Loading heroes from database...");
+
+    if (heroes != null) {
+      heroes.clear();
+    }
+
+    HeroLoader.loadHeroesFromDatabase(this);
+
+    if (heroes == null) {
+      heroes = new ArrayList<>();
+    }
+
+    System.out.println("GameEngine > Heroes loaded: "
+        + (heroes != null ? heroes.size() : 0));
+  }
+
+  public void saveHeroToDatabase() throws IOException {
+    System.out.println("GameEngine > Saving hero to database...");
+
+    if (hero == null) {
+      throw new IllegalStateException("No hero to save.");
+    }
+
+    HeroStorage.saveToDatabase(this);
+  }
+
+  public void deleteAllHeroes() throws IOException {
+    System.out.println("GameEngine > Deleting all heroes from database...");
+
+    HeroStorage.deleteAllHeroes();
+    heroes.clear();
+    selectedHeroIndex = null;
+    hero = null;
+    initialHeroState = null;
+
+    System.out.println("GameEngine > All heroes deleted.");
+  }
+
+  public void generateHeroes() throws IOException {
+    System.out.println("GameEngine > Generating heroes...");
+
+    HeroStorage.generateHeroes(this, 10);
+    loadHeroes();
   }
 
   //
@@ -255,8 +300,10 @@ public class GameEngine {
   public void exitGame() {
     System.out.println("GameEngine > Exiting game...");
     setCurrentStep(Step.EXIT_GAME);
-    // HeroStorage.saveToDatabase(this);
+    // saveHeroToDatabase();
   }
+
+  //
 
   public boolean isValidHeroSelection(String selection) {
     if (heroes == null || heroes.size() == 0) {
@@ -351,8 +398,13 @@ public class GameEngine {
     hero.setYCoord(side / 2);
 
     generateVillains();
+
+    // make copy of villains and sort villains by level
+    List<Villain> villainsCopy = new ArrayList<>(villains);
+    villainsCopy.sort(
+        (v1, v2) -> Integer.compare(v1.getLevel(), v2.getLevel()));
     // list all villains
-    for (Villain villain : villains) {
+    for (Villain villain : villainsCopy) {
       System.out.println(villain.toString());
     }
     System.out.println(hero.toString());
@@ -392,7 +444,10 @@ public class GameEngine {
 
     CharacterFactory factory = CharacterFactory.getInstance();
 
+    villains.clear();
+    // Villain coordinates should be unique
     Set<Point> coords = new HashSet<>();
+
     // Add hero coordinates to the set
     coords.add(new Point(hero.getXCoord(), hero.getYCoord()));
 
@@ -476,7 +531,7 @@ public class GameEngine {
 
     } else if (targetTile.getType() == Tile.Type.BORDER) { // victory
       setInitialHeroState(hero); // Replace with current hero state
-      HeroStorage.saveToDatabase(this);
+      saveHeroToDatabase();
       setCurrentStep(Step.VICTORY_MISSION);
 
     } else { // move
@@ -538,7 +593,7 @@ public class GameEngine {
         experienceReward = (int) (experienceReward * 0.25);
       }
       hero.addExperience(experienceReward);
-      levelUp = hero.checkLevelUp(prevExperience);
+      levelUp = hero.checkAndApplyLevelUp(prevExperience);
 
       // Assign the hero to the enemy tile and grass to the hero
       enemyTile.assignHero();

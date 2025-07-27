@@ -61,7 +61,7 @@ public abstract class Hero extends AbstractCharacter {
     this.experience += experience;
   }
 
-  public Boolean checkLevelUp(int prevExperience) {
+  public Boolean checkAndApplyLevelUp(int prevExperience) {
     // Level 1 - 1000 XP
     // Level 2 - 2450 XP
     // Level 3 - 4800 XP
