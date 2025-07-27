@@ -1,7 +1,6 @@
 package demre.rpg.view.gui;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -51,44 +50,36 @@ public class PlayerControlPanel extends JPanel {
 
     GameEngine.Step step = gameEngine.getStep();
     if (step == GameEngine.Step.INVALID_ACTION) {
-      JLabel invalidActionLabel = createLabel(
-          "Invalid action. Please try again.");
+      JLabel invalidActionLabel = GUIUtils.createInfo(
+          "Invalid action. Please try again.", 16);
       add(invalidActionLabel);
 
     } else if (step == GameEngine.Step.ENEMY_FIGHT_SUCCESS) {
-      JLabel fightSuccessLabel = createLabel(
-          "You defeated the enemy!");
+      JLabel fightSuccessLabel = GUIUtils.createLabel(
+          "You defeated the enemy!", 16);
       add(fightSuccessLabel);
 
     } else if (step == GameEngine.Step.LEVEL_UP) {
-      JLabel levelUpLabel = createLabel(
-          "You defeated the enemy and leveled up!");
+      JLabel levelUpLabel = GUIUtils.createLabel(
+          "You defeated the enemy and leveled up!", 16);
       add(levelUpLabel);
 
       add(Box.createVerticalStrut(5));
 
-      JLabel levelInfoLabel = createLabel(
+      JLabel levelInfoLabel = GUIUtils.createLabel(
           "You are now level "
               + hero.getLevel() + " with "
-              + hero.getExperience() + " experience points.");
+              + hero.getExperience() + " experience points.",
+          16);
       add(levelInfoLabel);
 
     } else if (step == GameEngine.Step.ENEMY_RUN_SUCCESS) {
-      JLabel runSuccessLabel = createLabel(
-          "You successfully ran away from the enemy!");
+      JLabel runSuccessLabel = GUIUtils.createLabel(
+          "You successfully ran away from the enemy!", 16);
       add(runSuccessLabel);
     }
 
     return instructionPanel;
-  }
-
-  private JLabel createLabel(String text) {
-    JLabel label = new JLabel(text);
-
-    label.setFont(new Font("Serif", Font.PLAIN, 16));
-    label.setAlignmentX(CENTER_ALIGNMENT);
-
-    return label;
   }
 
   private JPanel createCharacterControlPanel() {
@@ -129,22 +120,16 @@ public class PlayerControlPanel extends JPanel {
     heroInfoPanel.setAlignmentX(CENTER_ALIGNMENT);
 
     {
-      JLabel label = new JLabel(hero.getName());
-      label.setFont(new Font("Serif", Font.BOLD, 16));
-      label.setAlignmentX(CENTER_ALIGNMENT);
+      JLabel label = GUIUtils.createTitle(hero.getName(), 16);
       heroInfoPanel.add(label);
     }
     {
-      JLabel label = new JLabel(hero.getHeroClass());
-      label.setFont(new Font("Arial", Font.BOLD, 14));
-      label.setAlignmentX(CENTER_ALIGNMENT);
+      JLabel label = GUIUtils.createSubTitle(hero.getHeroClass(), 14);
       heroInfoPanel.add(label);
     }
     {
-      JLabel label = new JLabel(
-          "Level: " + hero.getLevel() + ", Exp: " + hero.getExperience());
-      label.setFont(new Font("Arial", Font.BOLD, 14));
-      label.setAlignmentX(CENTER_ALIGNMENT);
+      JLabel label = GUIUtils.createSubTitle(
+          "Level: " + hero.getLevel() + ", Exp: " + hero.getExperience(), 14);
       heroInfoPanel.add(label);
     }
 

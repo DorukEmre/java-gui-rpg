@@ -1,8 +1,6 @@
 
 package demre.rpg.view.gui;
 
-import java.awt.Font;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -21,16 +19,15 @@ public class GameOverPanel extends JPanel {
 
     add(Box.createVerticalGlue());
 
-    JLabel titleLabel = new JLabel("You died!");
-    titleLabel.setFont(new Font("Serif", Font.BOLD, 48));
-    titleLabel.setAlignmentX(CENTER_ALIGNMENT);
+    JLabel titleLabel = GUIUtils.createTitle(
+        "You died!", 48);
     add(titleLabel);
+
     add(Box.createVerticalStrut(20));
 
     if (gameEngine.getStep() == GameEngine.Step.GAME_OVER_INVALID_ACTION) {
-      JLabel label2 = new JLabel("Invalid action. Please try again!");
-      label2.setFont(new Font("Serif", Font.PLAIN, 18));
-      label2.setAlignmentX(CENTER_ALIGNMENT);
+      JLabel label2 = GUIUtils.createInfo(
+          "Invalid action. Please try again!", 18);
       add(label2);
     }
 

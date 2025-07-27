@@ -1,8 +1,6 @@
 
 package demre.rpg.view.gui;
 
-import java.awt.Font;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -41,30 +39,31 @@ public class ItemFoundPanel extends JPanel {
     Item.Type foundItemType = gameEngine.getItemFound().getType();
 
     if (step == GameEngine.Step.ITEM_INVALID_ACTION) {
-      JLabel label = createLabel(
-          "Invalid action. Please try again.");
+      JLabel label = GUIUtils.createInfo(
+          "Invalid action. Please try again.", 16);
       instructionPanel.add(label);
 
     } else if (step == GameEngine.Step.ITEM_FOUND_AND_LEVEL_UP) {
-      JLabel label1 = createLabel(
-          "You defeated the enemy and leveled up!");
+      JLabel label1 = GUIUtils.createLabel(
+          "You defeated the enemy and leveled up!", 16);
       instructionPanel.add(label1);
-      JLabel label2 = createLabel(
+      JLabel label2 = GUIUtils.createLabel(
           "You are now level " + hero.getLevel() + " with "
-              + hero.getExperience() + " experience points.");
+              + hero.getExperience() + " experience points.",
+          16);
       instructionPanel.add(label2);
 
     } else if (step == GameEngine.Step.ITEM_FOUND) {
-      JLabel label1 = createLabel(
-          "You defeated the enemy!");
+      JLabel label1 = GUIUtils.createLabel(
+          "You defeated the enemy!", 16);
       instructionPanel.add(label1);
     }
 
     instructionPanel.add(Box.createVerticalStrut(10));
 
     {
-      JLabel label1 = createLabel(
-          "You found an item. " + gameEngine.getItemFound());
+      JLabel label1 = GUIUtils.createLabel(
+          "You found an item. " + gameEngine.getItemFound(), 16);
       instructionPanel.add(label1);
 
       String text = "";
@@ -75,21 +74,12 @@ public class ItemFoundPanel extends JPanel {
       } else if (foundItemType == Item.Type.HELM) {
         text = "Your current helm is: " + hero.getHelm().getFormattedName();
       }
-      JLabel label2 = createLabel(text);
+      JLabel label2 = GUIUtils.createLabel(text, 16);
       instructionPanel.add(label2);
 
     }
 
     return instructionPanel;
-  }
-
-  private JLabel createLabel(String text) {
-    JLabel label = new JLabel(text);
-
-    label.setFont(new Font("Serif", Font.PLAIN, 16));
-    label.setAlignmentX(CENTER_ALIGNMENT);
-
-    return label;
   }
 
   private JPanel createActionButtonsPanel() {

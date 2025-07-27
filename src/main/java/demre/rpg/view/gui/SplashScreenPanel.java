@@ -1,7 +1,5 @@
 package demre.rpg.view.gui;
 
-import java.awt.Font;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -16,9 +14,8 @@ public class SplashScreenPanel extends JPanel {
   public SplashScreenPanel(GameController controller) {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-    JLabel welcomeLabel = new JLabel("Welcome to the Game!", JLabel.CENTER);
-    welcomeLabel.setFont(new Font("Serif", Font.BOLD, 24));
-    welcomeLabel.setAlignmentX(CENTER_ALIGNMENT);
+    JLabel welcomeLabel = GUIUtils.createTitle(
+        "Welcome to the Game!", 24);
 
     JButton startButton = new JButton("Start Game");
     startButton.setAlignmentX(CENTER_ALIGNMENT);

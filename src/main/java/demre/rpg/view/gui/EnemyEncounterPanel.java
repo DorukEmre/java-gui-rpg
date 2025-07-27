@@ -1,7 +1,5 @@
 package demre.rpg.view.gui;
 
-import java.awt.Font;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -36,36 +34,27 @@ public class EnemyEncounterPanel extends JPanel {
     GameEngine.Step step = gameEngine.getStep();
 
     if (step == GameEngine.Step.ENEMY_INVALID_ACTION) {
-      JLabel label = createLabel(
-          "Invalid action. Please try again.");
+      JLabel label = GUIUtils.createInfo(
+          "Invalid action. Please try again.", 16);
       instructionPanel.add(label);
 
     }
     if (step == GameEngine.Step.ENEMY_ENCOUNTER
         || step == GameEngine.Step.ENEMY_INVALID_ACTION) {
-      JLabel label = createLabel(
-          "You encounter an enemy!");
+      JLabel label = GUIUtils.createLabel(
+          "You encounter an enemy!", 16);
       instructionPanel.add(label);
 
     } else if (step == GameEngine.Step.ENEMY_RUN_FAILURE) {
-      JLabel label1 = createLabel(
-          "You failed to run away from the enemy!");
+      JLabel label1 = GUIUtils.createLabel(
+          "You failed to run away from the enemy!", 16);
       instructionPanel.add(label1);
-      JLabel label2 = createLabel(
-          "You have to fight.");
+      JLabel label2 = GUIUtils.createLabel(
+          "You have to fight.", 16);
       instructionPanel.add(label2);
     }
 
     return instructionPanel;
-  }
-
-  private JLabel createLabel(String text) {
-    JLabel label = new JLabel(text);
-
-    label.setFont(new Font("Serif", Font.PLAIN, 16));
-    label.setAlignmentX(CENTER_ALIGNMENT);
-
-    return label;
   }
 
   private JPanel createActionButtonsPanel() {

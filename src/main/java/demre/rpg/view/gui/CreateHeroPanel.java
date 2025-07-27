@@ -24,26 +24,21 @@ public class CreateHeroPanel extends JPanel {
 
     add(Box.createVerticalGlue());
 
-    JLabel titleLabel = new JLabel("Create Your Hero");
-    titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-    titleLabel.setAlignmentX(CENTER_ALIGNMENT);
+    JLabel titleLabel = GUIUtils.createTitle(
+        "Create Your Hero", 24);
     add(titleLabel);
 
     add(Box.createVerticalStrut(20));
 
     if (gameEngine.getStep() == GameEngine.Step.INVALID_HERO_CREATION) {
       {
-        JLabel errorLabel = new JLabel(
-            "Invalid hero creation. Please try again.");
-        errorLabel.setFont(new Font("Arial", Font.ITALIC, 14));
-        errorLabel.setAlignmentX(CENTER_ALIGNMENT);
+        JLabel errorLabel = GUIUtils.createInfo(
+            "Invalid hero creation. Please try again.", 16);
         add(errorLabel);
       }
       {
-        JLabel errorLabel = new JLabel(
-            "Hero name must be 3-20 characters long and can only contain alphanumeric characters and spaces.\n");
-        errorLabel.setFont(new Font("Arial", Font.ITALIC, 14));
-        errorLabel.setAlignmentX(CENTER_ALIGNMENT);
+        JLabel errorLabel = GUIUtils.createInfo(
+            "Hero name must be 3-20 characters long and can only contain alphanumeric characters and spaces.", 16);
         add(errorLabel);
         add(Box.createVerticalStrut(20));
       }
@@ -51,48 +46,56 @@ public class CreateHeroPanel extends JPanel {
     }
 
     // Enter hero name
-    JLabel nameLabel = new JLabel("Enter hero name (3-20 characters):");
-    nameLabel.setAlignmentX(CENTER_ALIGNMENT);
+    JLabel nameLabel = GUIUtils.createSubTitle(
+        "Enter hero name:", 18);
     add(nameLabel);
+    add(Box.createVerticalStrut(10));
 
     JTextField heroNameField = new JTextField(20);
     heroNameField.setMaximumSize(heroNameField.getPreferredSize());
-    heroNameField.setFont(new Font("Arial", Font.PLAIN, 14));
+    heroNameField.setFont(new Font("Arial", Font.PLAIN, 18));
     heroNameField.setAlignmentX(CENTER_ALIGNMENT);
-    heroNameField.setToolTipText("Enter hero name (3-20 characters)");
+    heroNameField.setToolTipText(
+        "Hero name must be 3-20 characters long and can only contain alphanumeric characters and spaces.");
     add(heroNameField);
 
     add(Box.createVerticalStrut(20));
 
     // Select Hero Class
-    JLabel classLabel = new JLabel("Select Hero Class:");
-    classLabel.setAlignmentX(CENTER_ALIGNMENT);
+    JLabel classLabel = GUIUtils.createSubTitle(
+        "Select Hero Class:", 18);
     add(classLabel);
+
+    JPanel classPanel = new JPanel();
+    classPanel.setLayout(new BoxLayout(classPanel, BoxLayout.Y_AXIS));
+    classPanel.setAlignmentX(CENTER_ALIGNMENT);
 
     JRadioButton warriorButton = new JRadioButton(
         "Warrior - A strong fighter, +10% experience gain");
     warriorButton.setFont(new Font("Serif", Font.PLAIN, 16));
-    warriorButton.setAlignmentX(CENTER_ALIGNMENT);
+    warriorButton.setAlignmentX(LEFT_ALIGNMENT);
     warriorButton.setSelected(true);
 
     JRadioButton rogueButton = new JRadioButton(
         "Rogue - A stealthy assassin, +10% chance to dodge attacks");
     rogueButton.setFont(new Font("Serif", Font.PLAIN, 16));
-    rogueButton.setAlignmentX(CENTER_ALIGNMENT);
+    rogueButton.setAlignmentX(LEFT_ALIGNMENT);
 
     JRadioButton mageButton = new JRadioButton(
         "Mage - A master of magic, +10% chance to find items");
     mageButton.setFont(new Font("Serif", Font.PLAIN, 16));
-    mageButton.setAlignmentX(CENTER_ALIGNMENT);
+    mageButton.setAlignmentX(LEFT_ALIGNMENT);
 
     ButtonGroup group = new ButtonGroup();
     group.add(warriorButton);
     group.add(rogueButton);
     group.add(mageButton);
 
-    add(warriorButton);
-    add(mageButton);
-    add(rogueButton);
+    classPanel.add(warriorButton);
+    classPanel.add(mageButton);
+    classPanel.add(rogueButton);
+
+    add(classPanel);
 
     add(Box.createVerticalStrut(20));
 
@@ -102,7 +105,6 @@ public class CreateHeroPanel extends JPanel {
     buttonPanel.setAlignmentX(CENTER_ALIGNMENT);
 
     JButton cancelButton = new JButton("Go back");
-    cancelButton.setAlignmentX(CENTER_ALIGNMENT);
     cancelButton.addActionListener(e -> {
       controller.onCreateHeroContinue(
           "", "", true);
@@ -112,7 +114,6 @@ public class CreateHeroPanel extends JPanel {
     buttonPanel.add(Box.createHorizontalStrut(10));
 
     JButton createButton = new JButton("Create Hero");
-    createButton.setAlignmentX(CENTER_ALIGNMENT);
     createButton.addActionListener(e -> {
       String heroClass = warriorButton.isSelected()
           ? "Warrior"

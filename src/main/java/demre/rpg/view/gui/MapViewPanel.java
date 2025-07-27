@@ -47,7 +47,7 @@ public class MapViewPanel extends JPanel {
     // add(instructionsPanel);
 
     // Set fixed height for instructionsPanel
-    instructionsPanel.setPreferredSize(new Dimension(0, 140));
+    instructionsPanel.setPreferredSize(new Dimension(0, 150));
 
     add(scrollableMap, BorderLayout.CENTER);
     add(instructionsPanel, BorderLayout.SOUTH);

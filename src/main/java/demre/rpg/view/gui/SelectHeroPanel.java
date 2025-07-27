@@ -1,7 +1,6 @@
 package demre.rpg.view.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Font;
 import java.awt.Insets;
 import java.util.List;
 
@@ -50,76 +49,78 @@ public class SelectHeroPanel extends JPanel {
     contentPanel.add(Box.createVerticalStrut(10));
 
     // Title label
-    JLabel selectHeroTitle = new JLabel("Select Your Hero");
-    selectHeroTitle.setFont(new Font("Serif", Font.BOLD, 24));
-    // selectHeroTitle.setAlignmentX(CENTER_ALIGNMENT);
+    JLabel selectHeroTitle = GUIUtils.createTitle(
+        "Select Your Hero", 24);
     contentPanel.add(selectHeroTitle);
 
     contentPanel.add(Box.createVerticalStrut(20));
 
     JPanel heroesList = new JPanel();
     heroesList.setLayout(new BoxLayout(heroesList, BoxLayout.Y_AXIS));
-    // heroesList.setAlignmentX(LEFT_ALIGNMENT);
 
-    // List heroes as buttons
-    for (int i = 0; i < heroes.size(); i++) {
-      Hero hero = heroes.get(i);
+    if (heroes == null || heroes.isEmpty()) {
+      JLabel noHeroLabel = GUIUtils.createLabel(
+          "No heroes available.", 16);
+      heroesList.add(noHeroLabel);
 
-      // Create button (left)
-      JButton heroButton = new JButton(i + 1 + ". ");
-      heroButton.setMargin(new Insets(5, 8, 5, 6));
-      String indexStr = i + 1 + "";
-      heroButton.addActionListener(e -> {
-        try {
-          controller.onSelectHeroContinue(indexStr);
-        } catch (Exception ex) {
-          GUIView.windowDispose(heroButton);
-          Main.errorAndExit(ex, ex.getMessage());
-        }
-      });
+    } else {
+      // List heroes as buttons
+      for (int i = 0; i < heroes.size(); i++) {
+        Hero hero = heroes.get(i);
 
-      // Create label (right)
-      JLabel heroStats = new JLabel(
-          hero.getName() + " - " + hero.getHeroClass()
-              + ". Level: " + hero.getLevel() + ", XP: " + hero.getExperience()
-              + ", ATT: " + hero.getAttack() + ", DEF: " + hero.getDefense()
-              + ", HP: " + hero.getHitPoints());
-      heroStats.setFont(new Font("Serif", Font.PLAIN, 16));
+        // Create button (left)
+        JButton heroButton = new JButton(i + 1 + ". ");
+        heroButton.setMargin(new Insets(5, 8, 5, 6));
+        String indexStr = i + 1 + "";
+        heroButton.addActionListener(e -> {
+          try {
+            controller.onSelectHeroContinue(indexStr);
+          } catch (Exception ex) {
+            GUIView.windowDispose(heroButton);
+            Main.errorAndExit(ex, ex.getMessage());
+          }
+        });
 
-      // Create horizontal panel for button + label
-      JPanel heroLine = new JPanel();
-      heroLine.setLayout(new BoxLayout(heroLine, BoxLayout.X_AXIS));
-      heroLine.setAlignmentX(LEFT_ALIGNMENT);
-      heroLine.add(heroButton);
-      heroLine.add(Box.createHorizontalStrut(20));
-      heroLine.add(heroStats);
+        // Create label (right)
+        JLabel heroStats = GUIUtils.createLabel(
+            hero.getName() + " - " + hero.getHeroClass()
+                + ". Level: " + hero.getLevel() + ", XP: " + hero.getExperience()
+                + ", ATT: " + hero.getAttack() + ", DEF: " + hero.getDefense()
+                + ", HP: " + hero.getHitPoints(),
+            16);
 
-      heroesList.add(heroLine);
+        // Create horizontal panel for button + label
+        JPanel heroLine = new JPanel();
+        heroLine.setLayout(new BoxLayout(heroLine, BoxLayout.X_AXIS));
+        heroLine.setAlignmentX(LEFT_ALIGNMENT);
+
+        heroLine.add(Box.createHorizontalStrut(20));
+        heroLine.add(heroButton);
+        heroLine.add(Box.createHorizontalStrut(20));
+        heroLine.add(heroStats);
+
+        heroesList.add(heroLine);
+      }
     }
 
     // Make the list scrollable
     JScrollPane scrollPane = new JScrollPane(heroesList);
-    // scrollPane.setAlignmentX(LEFT_ALIGNMENT);
     contentPanel.add(scrollPane);
 
     contentPanel.add(Box.createVerticalStrut(20));
 
-    JLabel newHeroTitle;
-    if (heroes == null || heroes.isEmpty()) {
-      newHeroTitle = new JLabel(
-          "No heroes available. Create a new hero.");
-    } else {
-      newHeroTitle = new JLabel(
-          "Or create a new hero:");
-    }
-    newHeroTitle.setFont(new Font("Serif", Font.BOLD, 24));
-    // newHeroTitle.setAlignmentX(CENTER_ALIGNMENT);
+    JLabel newHeroTitle = (heroes == null || heroes.isEmpty())
+        ? (newHeroTitle = GUIUtils.createTitle(
+            "Create a new hero", 24))
+        : (newHeroTitle = GUIUtils.createTitle(
+            "Or create a new hero", 24));
+
     contentPanel.add(newHeroTitle);
 
     contentPanel.add(Box.createVerticalStrut(20));
 
     JButton newHeroButton = new JButton("New Hero");
-    // newHeroButton.setAlignmentX(CENTER_ALIGNMENT);
+    newHeroButton.setAlignmentX(CENTER_ALIGNMENT);
     newHeroButton.addActionListener(e -> {
       try {
         controller.onSelectHeroContinue("new");

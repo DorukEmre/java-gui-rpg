@@ -1,10 +1,5 @@
 package demre.rpg.view.gui;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -22,33 +17,54 @@ public class HeroInfoPanel extends JPanel {
     Hero hero = gameEngine.getHero();
 
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-    setBackground(Color.WHITE);
+    setAlignmentX(CENTER_ALIGNMENT);
 
-    JLabel titleLabel = new JLabel("Hero Information");
-    titleLabel.setFont(new Font("Serif", Font.BOLD, 18));
-    titleLabel.setAlignmentX(CENTER_ALIGNMENT);
+    add(Box.createVerticalGlue());
+
+    // Title label
+    JLabel titleLabel = GUIUtils.createTitle(
+        "Hero Information", 24);
     add(titleLabel);
-    add(Box.createRigidArea(new Dimension(0, 10)));
 
-    add(new JLabel("Name:       " + hero.getName()));
-    add(new JLabel("Class:      " + hero.getClass().getSimpleName()));
-    add(new JLabel("Level:      " + hero.getLevel()));
-    add(new JLabel("Experience: " + hero.getExperience()));
-    add(new JLabel("Attack:     " + hero.getAttack()));
-    add(new JLabel("Defense:    " + hero.getDefense()));
-    add(new JLabel("Hit Points: " + hero.getHitPoints()));
-    add(new JLabel("Weapon:     " + hero.getWeapon().getFormattedName()));
-    add(new JLabel("Armor:      " + hero.getArmor().getFormattedName()));
-    add(new JLabel("Helm:       " + hero.getHelm().getFormattedName()));
+    add(Box.createVerticalStrut(20));
 
-    add(Box.createRigidArea(new Dimension(0, 20)));
+    // Hero stats panel
+    JPanel statsPanel = new JPanel();
+    statsPanel.setLayout(new BoxLayout(statsPanel, BoxLayout.Y_AXIS));
+    statsPanel.setAlignmentX(CENTER_ALIGNMENT);
 
+    statsPanel.add(GUIUtils.createList(
+        "Name:       " + hero.getName(), 18));
+    statsPanel.add(GUIUtils.createList(
+        "Class:      " + hero.getClass().getSimpleName(), 18));
+    statsPanel.add(GUIUtils.createList(
+        "Level:      " + hero.getLevel(), 18));
+    statsPanel.add(GUIUtils.createList(
+        "Experience: " + hero.getExperience(), 18));
+    statsPanel.add(GUIUtils.createList(
+        "Attack:     " + hero.getAttack(), 18));
+    statsPanel.add(GUIUtils.createList(
+        "Defense:    " + hero.getDefense(), 18));
+    statsPanel.add(GUIUtils.createList(
+        "Hit Points: " + hero.getHitPoints(), 18));
+    statsPanel.add(GUIUtils.createList(
+        "Weapon:     " + hero.getWeapon().getFormattedName(), 18));
+    statsPanel.add(GUIUtils.createList(
+        "Armor:      " + hero.getArmor().getFormattedName(), 18));
+    statsPanel.add(GUIUtils.createList(
+        "Helm:       " + hero.getHelm().getFormattedName(), 18));
+
+    add(statsPanel);
+
+    add(Box.createVerticalStrut(40));
+
+    // Next button
     JButton nextButton = new JButton("Next");
-    nextButton.setAlignmentX(CENTER_ALIGNMENT);
     nextButton.addActionListener(
         e -> controller.onShowHeroInfoContinue("continue"));
     add(nextButton);
+
+    add(Box.createVerticalGlue());
 
     defaultButton = nextButton;
   }

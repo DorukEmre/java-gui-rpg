@@ -1,7 +1,5 @@
 package demre.rpg.view.gui;
 
-import java.awt.Font;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -20,21 +18,19 @@ public class VictoryScreenPanel extends JPanel {
 
     add(Box.createVerticalGlue());
 
-    JLabel titleLabel = new JLabel("Congratulations!");
-    titleLabel.setFont(new Font("Serif", Font.BOLD, 24));
-    titleLabel.setAlignmentX(CENTER_ALIGNMENT);
+    JLabel titleLabel = GUIUtils.createTitle(
+        "Congratulations!", 24);
     add(titleLabel);
+
     add(Box.createVerticalStrut(20));
 
-    JLabel label1 = new JLabel("You have successfully completed the mission!");
-    label1.setFont(new Font("Serif", Font.PLAIN, 18));
-    label1.setAlignmentX(CENTER_ALIGNMENT);
+    JLabel label1 = GUIUtils.createLabel(
+        "You have successfully completed the mission!", 18);
     add(label1);
 
     if (gameEngine.getStep() == GameEngine.Step.VICTORY_INVALID_ACTION) {
-      JLabel label2 = new JLabel("Invalid action. Please try again!");
-      label2.setFont(new Font("Serif", Font.PLAIN, 18));
-      label2.setAlignmentX(CENTER_ALIGNMENT);
+      JLabel label2 = GUIUtils.createInfo(
+          "Invalid action. Please try again!", 18);
       add(label2);
     }
 
