@@ -3,6 +3,8 @@ package demre.rpg.view.gui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
 
@@ -27,20 +29,23 @@ public class MapDrawPanel extends JPanel {
 
   public MapDrawPanel(
       GameController controller, GameEngine gameEngine, boolean isInteractive) {
-
-    this.controller = controller;
     System.out.println("MapDrawPanel > Initialising map panel...");
 
+    this.controller = controller;
     this.side = gameEngine.getMapSize() + 2;
-    seTileSize();
+    this.tileSize = calculateTileSize();
+    this.tileButtons = new JButton[side][side];
+
+    System.out.println(
+        "MapDrawPanel > Map size: " + side + "x" + side
+            + ", Dimension(side * tileSize): " + (side * tileSize));
+
+    setLayout(new GridBagLayout());
+
+    JPanel gridPanel = new JPanel(null);
+    gridPanel.setPreferredSize(new Dimension(side * tileSize, side * tileSize));
+
     Tile[][] map = gameEngine.getMap();
-    int heroX = gameEngine.getHero().getXCoord() + 1;
-    int heroY = gameEngine.getHero().getYCoord() + 1;
-
-    System.out.println("MapDrawPanel > Map size: " + side + "x" + side);
-
-    setLayout(null); // Manual layout
-    tileButtons = new JButton[side][side];
 
     // Create map tiles
     for (int y = 0; y < side; y++) {
@@ -61,11 +66,13 @@ public class MapDrawPanel extends JPanel {
         tileButton.setBounds(x * tileSize, y * tileSize, tileSize, tileSize);
 
         tileButtons[y][x] = tileButton;
-        add(tileButton);
+        gridPanel.add(tileButton);
       }
     }
 
     // Enable Hero tile
+    int heroX = gameEngine.getHero().getXCoord() + 1;
+    int heroY = gameEngine.getHero().getYCoord() + 1;
     tileButtons[heroY][heroX].setEnabled(true);
     tileButtons[heroY][heroX].setBackground(Color.pink);
 
@@ -81,12 +88,23 @@ public class MapDrawPanel extends JPanel {
         enableTile(tileButtons[heroY + 1][heroX], "South");
     }
 
+    // Center the gridPanel
+    add(gridPanel, new GridBagConstraints());
+
   }
+
+  // Getters
+
+  protected int getTileSize() {
+    return tileSize;
+  }
+
+  // Methods
 
   private void enableTile(JButton tileButton, String direction) {
     // Enable the tile button and set its action
     tileButton.setEnabled(true);
-    tileButton.setBackground(new Color(255, 230, 240));
+    tileButton.setBackground(new Color(255, 230, 240)); // Light pink background
     tileButton.addActionListener(e -> {
       try {
         controller.onMapInputContinue(direction);
@@ -97,12 +115,9 @@ public class MapDrawPanel extends JPanel {
     });
   }
 
-  protected int getTileSize() {
-    return tileSize;
-  }
-
-  private void seTileSize() {
-    // Set tile size based on screen resolution
+  private int calculateTileSize() {
+    // Calculate tile size based on screen resolution
+    int tileSize;
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
     if ((screenSize.height - 200) / side >= 32) {
@@ -112,21 +127,8 @@ public class MapDrawPanel extends JPanel {
     } else {
       tileSize = 16;
     }
-  }
 
-  @Override
-  public Dimension getPreferredSize() {
-    return new Dimension(side * tileSize, side * tileSize);
-  }
-
-  @Override
-  public Dimension getMinimumSize() {
-    return getPreferredSize();
-  }
-
-  @Override
-  public Dimension getMaximumSize() {
-    return getPreferredSize();
+    return tileSize;
   }
 
 }
