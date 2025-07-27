@@ -64,7 +64,7 @@ public class PlayerControlPanel extends JPanel {
           "You defeated the enemy and leveled up!", 16);
       add(levelUpLabel);
 
-      add(Box.createVerticalStrut(5));
+      add(Box.createVerticalStrut(2));
 
       JLabel levelInfoLabel = GUIUtils.createLabel(
           "You are now level "
@@ -100,7 +100,7 @@ public class PlayerControlPanel extends JPanel {
     controlPanel.add(Box.createHorizontalStrut(100));
 
     // Add info button
-    JButton continueButton = new JButton("Info");
+    JButton continueButton = GUIUtils.createButton("Info");
     continueButton.addActionListener(e -> {
       try {
         controller.onMapInputContinue("Info");
@@ -180,7 +180,7 @@ public class PlayerControlPanel extends JPanel {
   }
 
   private JButton newDummyButton() {
-    JButton button = new JButton();
+    JButton button = GUIUtils.createButton("");
     button.setPreferredSize(new Dimension(32, 32));
     button.setMargin(new Insets(0, 0, 0, 0));
     button.setEnabled(false);
@@ -191,7 +191,7 @@ public class PlayerControlPanel extends JPanel {
   }
 
   private JButton newDirectionButton(String direction) {
-    JButton button = new JButton(direction);
+    JButton button = GUIUtils.createButton(direction);
     button.setPreferredSize(new Dimension(32, 32));
     button.setMinimumSize(new Dimension(32, 32));
     button.setMaximumSize(new Dimension(32, 32));

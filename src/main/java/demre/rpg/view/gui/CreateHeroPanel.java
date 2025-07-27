@@ -104,7 +104,7 @@ public class CreateHeroPanel extends JPanel {
     buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
     buttonPanel.setAlignmentX(CENTER_ALIGNMENT);
 
-    JButton cancelButton = new JButton("Go back");
+    JButton cancelButton = GUIUtils.createButton("Go back");
     cancelButton.addActionListener(e -> {
       controller.onCreateHeroContinue(
           "", "", true);
@@ -113,7 +113,7 @@ public class CreateHeroPanel extends JPanel {
 
     buttonPanel.add(Box.createHorizontalStrut(10));
 
-    JButton createButton = new JButton("Create Hero");
+    JButton createButton = GUIUtils.createButton("Create Hero");
     createButton.addActionListener(e -> {
       String heroClass = warriorButton.isSelected()
           ? "Warrior"

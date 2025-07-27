@@ -59,7 +59,7 @@ public class HeroInfoPanel extends JPanel {
     add(Box.createVerticalStrut(40));
 
     // Next button
-    JButton nextButton = new JButton("Next");
+    JButton nextButton = GUIUtils.createButton("Next");
     nextButton.addActionListener(
         e -> controller.onShowHeroInfoContinue("continue"));
     add(nextButton);

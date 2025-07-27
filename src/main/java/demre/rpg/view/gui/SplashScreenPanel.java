@@ -17,7 +17,7 @@ public class SplashScreenPanel extends JPanel {
     JLabel welcomeLabel = GUIUtils.createTitle(
         "Welcome to the Game!", 24);
 
-    JButton startButton = new JButton("Start Game");
+    JButton startButton = GUIUtils.createButton("Start Game");
     startButton.setAlignmentX(CENTER_ALIGNMENT);
     startButton.addActionListener(
         e -> controller.onSplashScreenContinue("continue"));

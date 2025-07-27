@@ -2,6 +2,7 @@ package demre.rpg.view.gui;
 
 import java.awt.Font;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
 
 public class GUIUtils {
@@ -15,15 +16,6 @@ public class GUIUtils {
     return label;
   }
 
-  protected static JLabel createLabel(String text, int fontSize) {
-    JLabel label = new JLabel(text);
-
-    label.setFont(new Font("Serif", Font.PLAIN, fontSize));
-    label.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-
-    return label;
-  }
-
   protected static JLabel createLabel(String text, int fontSize, int style) {
     JLabel label = new JLabel(text);
 
@@ -31,6 +23,10 @@ public class GUIUtils {
     label.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 
     return label;
+  }
+
+  protected static JLabel createLabel(String text, int fontSize) {
+    return createLabel(text, fontSize, Font.PLAIN);
   }
 
   protected static JLabel createList(String text, int fontSize) {
@@ -58,5 +54,15 @@ public class GUIUtils {
     label.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 
     return label;
+  }
+
+  protected static JButton createButton(String text, int fontSize) {
+    JButton button = new JButton(text);
+    button.setFont(button.getFont().deriveFont((float) fontSize));
+    return button;
+  }
+
+  public static JButton createButton(String text) {
+    return createButton(text, 16);
   }
 }

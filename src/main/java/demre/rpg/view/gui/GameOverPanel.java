@@ -39,7 +39,7 @@ public class GameOverPanel extends JPanel {
     choice.setAlignmentX(CENTER_ALIGNMENT);
 
     {
-      JButton button = new JButton("Try again");
+      JButton button = GUIUtils.createButton("Try again");
       button.setAlignmentX(CENTER_ALIGNMENT);
       button.addActionListener(
           e -> controller.onGameOverContinue("try"));
@@ -49,7 +49,7 @@ public class GameOverPanel extends JPanel {
     choice.add(Box.createHorizontalStrut(20));
 
     {
-      JButton button = new JButton("Exit");
+      JButton button = GUIUtils.createButton("Exit");
       button.setAlignmentX(CENTER_ALIGNMENT);
       button.addActionListener(
           e -> controller.onGameOverContinue("exit"));

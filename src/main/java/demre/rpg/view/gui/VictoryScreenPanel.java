@@ -42,7 +42,7 @@ public class VictoryScreenPanel extends JPanel {
     choice.setAlignmentX(CENTER_ALIGNMENT);
 
     {
-      JButton button = new JButton("Next mission");
+      JButton button = GUIUtils.createButton("Next mission");
       button.setAlignmentX(CENTER_ALIGNMENT);
       button.addActionListener(
           e -> controller.onVictoryScreenContinue("next"));
@@ -52,7 +52,7 @@ public class VictoryScreenPanel extends JPanel {
     choice.add(Box.createHorizontalStrut(20));
 
     {
-      JButton button = new JButton("Exit");
+      JButton button = GUIUtils.createButton("Exit");
       button.setAlignmentX(CENTER_ALIGNMENT);
       button.addActionListener(
           e -> controller.onVictoryScreenContinue("exit"));

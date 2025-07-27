@@ -69,7 +69,7 @@ public class SelectHeroPanel extends JPanel {
         Hero hero = heroes.get(i);
 
         // Create button (left)
-        JButton heroButton = new JButton(i + 1 + ". ");
+        JButton heroButton = GUIUtils.createButton(i + 1 + ". ");
         heroButton.setMargin(new Insets(5, 8, 5, 6));
         String indexStr = i + 1 + "";
         heroButton.addActionListener(e -> {
@@ -119,7 +119,7 @@ public class SelectHeroPanel extends JPanel {
 
     contentPanel.add(Box.createVerticalStrut(20));
 
-    JButton newHeroButton = new JButton("New Hero");
+    JButton newHeroButton = GUIUtils.createButton("New Hero");
     newHeroButton.setAlignmentX(CENTER_ALIGNMENT);
     newHeroButton.addActionListener(e -> {
       try {
@@ -143,7 +143,7 @@ public class SelectHeroPanel extends JPanel {
     JPanel databasePanel = new JPanel();
     databasePanel.setLayout(new BoxLayout(databasePanel, BoxLayout.X_AXIS));
 
-    JButton deleteHeroesButton = new JButton("Delete All Heroes");
+    JButton deleteHeroesButton = GUIUtils.createButton("Delete All Heroes");
     deleteHeroesButton.addActionListener(e -> {
       try {
         controller.onDatabaseAction("deleteAll");
@@ -153,7 +153,7 @@ public class SelectHeroPanel extends JPanel {
       }
     });
 
-    JButton generateHeroesButton = new JButton("Generate Heroes (lvl 1-10)");
+    JButton generateHeroesButton = GUIUtils.createButton("Generate Heroes (lvl 1-10)");
     generateHeroesButton.addActionListener(e -> {
       try {
         controller.onDatabaseAction("generate");

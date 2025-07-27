@@ -18,6 +18,7 @@ import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
 import demre.rpg.model.GameEngineListener;
 import demre.rpg.view.gui.CreateHeroPanel;
+import demre.rpg.view.gui.GUIUtils;
 import demre.rpg.view.gui.GameOverPanel;
 import demre.rpg.view.gui.HeroInfoPanel;
 import demre.rpg.view.gui.MapViewPanel;
@@ -94,11 +95,11 @@ public class GUIView
 
     bottomPanel.add(Box.createHorizontalGlue());
 
-    JButton switchButton = new JButton("Switch to Console View");
+    JButton switchButton = GUIUtils.createButton("Switch to Console View");
     switchButton.addActionListener(
         e -> controller.switchView("console"));
 
-    JButton exitButton = new JButton("Exit");
+    JButton exitButton = GUIUtils.createButton("Exit");
     exitButton.addActionListener(
         e -> controller.exitGame());
 

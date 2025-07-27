@@ -88,7 +88,7 @@ public class ItemFoundPanel extends JPanel {
     actionPanel.setAlignmentX(CENTER_ALIGNMENT);
 
     {
-      JButton button = new JButton("Keep");
+      JButton button = GUIUtils.createButton("Keep");
       button.addActionListener(
           e -> controller.onItemFoundContinue("Keep"));
       actionPanel.add(button);
@@ -97,7 +97,7 @@ public class ItemFoundPanel extends JPanel {
     {
       actionPanel.add(Box.createHorizontalStrut(10));
 
-      JButton button = new JButton("Leave");
+      JButton button = GUIUtils.createButton("Leave");
       button.addActionListener(
           e -> controller.onItemFoundContinue("Leave"));
       actionPanel.add(button);
