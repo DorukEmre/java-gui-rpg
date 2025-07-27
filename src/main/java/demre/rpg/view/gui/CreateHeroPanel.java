@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 
 import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
@@ -92,8 +93,8 @@ public class CreateHeroPanel extends JPanel {
     group.add(mageButton);
 
     classPanel.add(warriorButton);
-    classPanel.add(mageButton);
     classPanel.add(rogueButton);
+    classPanel.add(mageButton);
 
     add(classPanel);
 
@@ -105,6 +106,8 @@ public class CreateHeroPanel extends JPanel {
     buttonPanel.setAlignmentX(CENTER_ALIGNMENT);
 
     JButton cancelButton = GUIUtils.createButton("Go back");
+    GUIUtils.bindButtonToKey(
+        buttonPanel, cancelButton, KeyStroke.getKeyStroke("ESCAPE"));
     cancelButton.addActionListener(e -> {
       controller.onCreateHeroContinue(
           "", "", true);

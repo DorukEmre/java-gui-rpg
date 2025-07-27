@@ -6,6 +6,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 
 import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
@@ -89,6 +90,8 @@ public class ItemFoundPanel extends JPanel {
 
     {
       JButton button = GUIUtils.createButton("Keep");
+      GUIUtils.bindButtonToKey(
+          actionPanel, button, KeyStroke.getKeyStroke("K"));
       button.addActionListener(
           e -> controller.onItemFoundContinue("Keep"));
       actionPanel.add(button);
@@ -98,6 +101,8 @@ public class ItemFoundPanel extends JPanel {
       actionPanel.add(Box.createHorizontalStrut(10));
 
       JButton button = GUIUtils.createButton("Leave");
+      GUIUtils.bindButtonToKey(
+          actionPanel, button, KeyStroke.getKeyStroke("L"));
       button.addActionListener(
           e -> controller.onItemFoundContinue("Leave"));
       actionPanel.add(button);

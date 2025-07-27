@@ -1,9 +1,15 @@
 package demre.rpg.view.gui;
 
 import java.awt.Font;
+import java.awt.event.ActionEvent;
 
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 
 public class GUIUtils {
 
@@ -64,5 +70,23 @@ public class GUIUtils {
 
   public static JButton createButton(String text) {
     return createButton(text, 16);
+  }
+
+  protected static void bindButtonToKey(
+      JPanel panel, JButton button, KeyStroke keyStroke) {
+
+    InputMap im = panel.getInputMap(JPanel.WHEN_IN_FOCUSED_WINDOW);
+    ActionMap am = panel.getActionMap();
+
+    String actionName = "move_" + keyStroke.toString();
+
+    im.put(keyStroke, actionName);
+    am.put(actionName, new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        button.doClick();
+      }
+    });
+
   }
 }

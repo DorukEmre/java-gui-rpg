@@ -6,6 +6,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 
 import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
@@ -41,6 +42,8 @@ public class GameOverPanel extends JPanel {
     {
       JButton button = GUIUtils.createButton("Try again");
       button.setAlignmentX(CENTER_ALIGNMENT);
+      GUIUtils.bindButtonToKey(
+          choice, button, KeyStroke.getKeyStroke("T"));
       button.addActionListener(
           e -> controller.onGameOverContinue("try"));
       choice.add(button);
@@ -51,6 +54,8 @@ public class GameOverPanel extends JPanel {
     {
       JButton button = GUIUtils.createButton("Exit");
       button.setAlignmentX(CENTER_ALIGNMENT);
+      GUIUtils.bindButtonToKey(
+          choice, button, KeyStroke.getKeyStroke("X"));
       button.addActionListener(
           e -> controller.onGameOverContinue("exit"));
       choice.add(button);

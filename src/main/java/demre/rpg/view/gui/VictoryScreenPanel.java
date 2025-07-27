@@ -5,6 +5,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 
 import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
@@ -44,6 +45,8 @@ public class VictoryScreenPanel extends JPanel {
     {
       JButton button = GUIUtils.createButton("Next mission");
       button.setAlignmentX(CENTER_ALIGNMENT);
+      GUIUtils.bindButtonToKey(
+          choice, button, KeyStroke.getKeyStroke("N"));
       button.addActionListener(
           e -> controller.onVictoryScreenContinue("next"));
       choice.add(button);
@@ -54,6 +57,8 @@ public class VictoryScreenPanel extends JPanel {
     {
       JButton button = GUIUtils.createButton("Exit");
       button.setAlignmentX(CENTER_ALIGNMENT);
+      GUIUtils.bindButtonToKey(
+          choice, button, KeyStroke.getKeyStroke("X"));
       button.addActionListener(
           e -> controller.onVictoryScreenContinue("exit"));
       choice.add(button);

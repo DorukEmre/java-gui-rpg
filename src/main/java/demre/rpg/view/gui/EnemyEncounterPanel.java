@@ -5,6 +5,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 
 import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
@@ -66,6 +67,8 @@ public class EnemyEncounterPanel extends JPanel {
 
     {
       JButton button = GUIUtils.createButton("Fight");
+      GUIUtils.bindButtonToKey(
+          actionPanel, button, KeyStroke.getKeyStroke("F"));
       button.addActionListener(
           e -> controller.onEnemyEncounterContinue("Fight"));
       actionPanel.add(button);
@@ -77,6 +80,8 @@ public class EnemyEncounterPanel extends JPanel {
         || step == GameEngine.Step.ENEMY_INVALID_ACTION) {
 
       JButton button = GUIUtils.createButton("Run");
+      GUIUtils.bindButtonToKey(
+          actionPanel, button, KeyStroke.getKeyStroke("R"));
       button.addActionListener(
           e -> controller.onEnemyEncounterContinue("Run"));
       actionPanel.add(button);

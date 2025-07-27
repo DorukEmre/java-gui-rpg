@@ -3,13 +3,9 @@ package demre.rpg.view.gui;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
 
-import javax.swing.AbstractAction;
-import javax.swing.ActionMap;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -100,16 +96,19 @@ public class PlayerControlPanel extends JPanel {
     controlPanel.add(Box.createHorizontalStrut(100));
 
     // Add info button
-    JButton continueButton = GUIUtils.createButton("Info");
-    continueButton.addActionListener(e -> {
+    JButton infoButton = GUIUtils.createButton("Info");
+    infoButton.addActionListener(e -> {
       try {
         controller.onMapInputContinue("Info");
       } catch (Exception ex) {
-        GUIView.windowDispose(continueButton);
+        GUIView.windowDispose(infoButton);
         Main.errorAndExit(ex, ex.getMessage());
       }
     });
-    controlPanel.add(continueButton);
+    GUIUtils.bindButtonToKey(
+        controlPanel, infoButton, KeyStroke.getKeyStroke("I"));
+
+    controlPanel.add(infoButton);
 
     return controlPanel;
   }
@@ -156,13 +155,13 @@ public class PlayerControlPanel extends JPanel {
     JButton westButton = newDirectionButton("W");
 
     // Bind buttons to keys
-    bindButtonToKey(
+    GUIUtils.bindButtonToKey(
         directionPanel, northButton, KeyStroke.getKeyStroke("UP"));
-    bindButtonToKey(
+    GUIUtils.bindButtonToKey(
         directionPanel, southButton, KeyStroke.getKeyStroke("DOWN"));
-    bindButtonToKey(
+    GUIUtils.bindButtonToKey(
         directionPanel, westButton, KeyStroke.getKeyStroke("LEFT"));
-    bindButtonToKey(
+    GUIUtils.bindButtonToKey(
         directionPanel, eastButton, KeyStroke.getKeyStroke("RIGHT"));
 
     // Add buttons in a grid
@@ -207,24 +206,6 @@ public class PlayerControlPanel extends JPanel {
     });
 
     return button;
-  }
-
-  private void bindButtonToKey(
-      JPanel panel, JButton button, KeyStroke keyStroke) {
-
-    InputMap im = panel.getInputMap(JPanel.WHEN_IN_FOCUSED_WINDOW);
-    ActionMap am = panel.getActionMap();
-
-    String actionName = "move_" + keyStroke.toString();
-
-    im.put(keyStroke, actionName);
-    am.put(actionName, new AbstractAction() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        button.doClick();
-      }
-    });
-
   }
 
 }
