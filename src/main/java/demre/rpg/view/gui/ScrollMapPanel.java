@@ -1,5 +1,7 @@
 package demre.rpg.view.gui;
 
+import java.awt.Point;
+
 import javax.swing.JScrollPane;
 
 import demre.rpg.controller.GameController;
@@ -13,8 +15,6 @@ public class ScrollMapPanel extends JScrollPane {
   private final MapDrawPanel mapDrawPanel;
 
   public ScrollMapPanel(GameController controller, GameEngine gameEngine) {
-    super();
-
     this.gameEngine = gameEngine;
 
     GameEngine.Step step = gameEngine.getStep();
@@ -53,7 +53,7 @@ public class ScrollMapPanel extends JScrollPane {
     scrollX = Math.max(0, scrollX);
     scrollY = Math.max(0, scrollY);
 
-    getViewport().setViewPosition(new java.awt.Point(scrollX, scrollY));
+    getViewport().setViewPosition(new Point(scrollX, scrollY));
 
   }
 
