@@ -58,6 +58,8 @@ public class CharacterFactory {
     return instance;
   }
 
+  // Hero methods
+
   public Hero newHero(String heroClass, String name,
       int level, int experience, int attack, int defense, int hitPoints,
       String weaponName, int weaponModifier,
@@ -102,35 +104,8 @@ public class CharacterFactory {
         generateHelmName(), helmModifier));
   }
 
-  public Villain newVillain(int level, int attack, int defense, int hitPoints,
-      String weaponName, int weaponModifier,
-      String armorName, int armorModifier,
-      String helmName, int helmModifier,
-      int x, int y) {
-
-    Villain newVillain = new Villain(attack, defense, hitPoints, level,
-        ItemFactory.createWeapon(weaponName, weaponModifier),
-        ItemFactory.createArmor(armorName, armorModifier),
-        ItemFactory.createHelm(helmName, helmModifier), x, y);
-
-    validateCharacter(newVillain);
-
-    return newVillain;
-  }
-
-  public Villain newVillain(int level, int attack, int defense, int hitPoints,
-      int weaponModifier,
-      int armorModifier,
-      int helmModifier,
-      int x, int y) {
-
-    return (newVillain(level, attack, defense, hitPoints,
-        generateWeaponName(), weaponModifier,
-        generateArmorName(), armorModifier,
-        generateHelmName(), helmModifier, x, y));
-  }
-
   public Hero generateHero(int level) {
+
     String[] classes = { "Mage", "Warrior", "Rogue" };
     String heroClass = classes[(int) (Math.random() * classes.length)];
     String name = generateHeroName();
@@ -147,6 +122,39 @@ public class CharacterFactory {
         generateArmorName(), generateItemModifier(level),
         generateHelmName(), generateItemModifier(level));
   }
+
+  // Villain methods
+
+  public Villain newVillain(int level, int attack, int defense, int hitPoints,
+      String weaponName, int weaponModifier,
+      String armorName, int armorModifier,
+      String helmName, int helmModifier,
+      int x, int y) {
+
+    Villain newVillain = new Villain(attack, defense, hitPoints, level,
+        ItemFactory.createWeapon(weaponName, weaponModifier),
+        ItemFactory.createArmor(armorName, armorModifier),
+        ItemFactory.createHelm(helmName, helmModifier), x, y);
+
+    validateCharacter(newVillain);
+
+    return newVillain;
+  }
+
+  public Villain generateVillain(int level, int x, int y) {
+
+    int attack = 5 + generateBonus(level, 0);
+    int defense = 5 + generateBonus(level, 0);
+    int hitPoints = 10 + generateBonus(level, 4);
+
+    return newVillain(level, attack, defense, hitPoints,
+        generateWeaponName(), generateItemModifier(level),
+        generateArmorName(), generateItemModifier(level),
+        generateHelmName(), generateItemModifier(level),
+        x, y);
+  }
+
+  // Helper methods
 
   private String generateHeroName() {
     String name = "This is over twenty characters";

@@ -466,26 +466,15 @@ public class GameEngine {
       }
 
       // Enemy level = hero level +/- 1
-      int level = hero.getLevel() + getOffset(3, -1);
+      int level = hero.getLevel() + (int) (Math.random() * 3) - 1;
       if (level < 1) {
         level = 1;
       }
-      int attack = getOffset(3, 4) + level; // 4-6 + level
-      int defense = getOffset(3, 4) + level; // 4-6 + level
-      // hp: 8-12 + level + (4-6) * level
-      int hp = getOffset(4, 8) + level
-          + getOffset(3, 4) * level;
 
-      Villain villain = factory.newVillain(level, attack, defense, hp,
-          level + getOffset(3, -1), level + getOffset(3, -1),
-          level + getOffset(3, -1), x, y);
+      Villain villain = factory.generateVillain(level, x, y);
       villains.add(villain);
     }
 
-  }
-
-  private int getOffset(int max, int base) {
-    return ((int) (Math.random() * max) + base);
   }
 
   public boolean isValidDirection(String input) {
