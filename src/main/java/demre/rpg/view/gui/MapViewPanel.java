@@ -2,9 +2,7 @@ package demre.rpg.view.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Font;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
@@ -42,10 +40,6 @@ public class MapViewPanel extends JPanel {
       instructionsPanel = new JPanel(); // Fallback empty panel
     }
 
-    // add(scrollableMap);
-    // add(Box.createVerticalStrut(10));
-    // add(instructionsPanel);
-
     // Set fixed height for instructionsPanel
     instructionsPanel.setPreferredSize(new Dimension(0, 150));
 
@@ -55,41 +49,6 @@ public class MapViewPanel extends JPanel {
     // Center the map on the hero
     SwingUtilities.invokeLater(
         () -> ((ScrollMapPanel) scrollableMap).centerMapOnHero());
-
-    // Add label with mapDrawPanel size, scrollPane size, and directionPanel size
-    // JLabel sizeLabel = new JLabel();
-    // sizeLabel.setFont(new Font("Serif", Font.PLAIN, 16));
-    // sizeLabel.setAlignmentX(CENTER_ALIGNMENT);
-    // // add(sizeLabel);
-    // add(sizeLabel, java.awt.BorderLayout.NORTH);
-
-    // // Helper to update the label
-    // Runnable updateSizeLabel = () -> sizeLabel.setText(
-    // "ScrollPane size: " + scrollableMap.getWidth()
-    // + "x" + scrollableMap.getHeight()
-    // + ", Instructions size: " + instructionsPanel.getWidth()
-    // + "x" + instructionsPanel.getHeight());
-
-    // // Add listeners to update the label on resize
-    // scrollableMap.addComponentListener(new java.awt.event.ComponentAdapter() {
-    // public void componentResized(java.awt.event.ComponentEvent e) {
-    // updateSizeLabel.run();
-    // }
-    // });
-    // instructionsPanel.addComponentListener(new java.awt.event.ComponentAdapter()
-    // {
-    // public void componentResized(java.awt.event.ComponentEvent e) {
-    // updateSizeLabel.run();
-    // }
-    // });
-    // this.addComponentListener(new java.awt.event.ComponentAdapter() {
-    // public void componentResized(java.awt.event.ComponentEvent e) {
-    // updateSizeLabel.run();
-    // }
-    // });
-
-    // // Set initial text
-    // updateSizeLabel.run();
 
   }
 
