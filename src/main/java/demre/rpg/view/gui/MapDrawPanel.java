@@ -8,6 +8,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
@@ -27,6 +28,16 @@ public class MapDrawPanel extends JPanel {
   private final GameController controller;
   protected int tileSize;
 
+  // Tile icons
+  // private final ImageIcon heroIcon = new ImageIcon(
+  // getClass().getResource("/icons/heroFrontAttacking96.png"));
+  // private final ImageIcon enemyIcon = new ImageIcon(
+  // getClass().getResource("/icons/monster96.png"));
+  // private final ImageIcon grassIcon = new ImageIcon(
+  // getClass().getResource("/icons/grass.png"));
+  // private final ImageIcon borderIcon = new ImageIcon(
+  // getClass().getResource("/icons/border.png"));
+
   public MapDrawPanel(
       GameController controller, GameEngine gameEngine, boolean isInteractive) {
     System.out.println("MapDrawPanel > Initialising map panel...");
@@ -35,6 +46,11 @@ public class MapDrawPanel extends JPanel {
     this.side = gameEngine.getMapSize() + 2;
     this.tileSize = calculateTileSize();
     this.tileButtons = new JButton[side][side];
+
+    ImageIcon heroIcon = loadAndScaleIcon(
+        "/icons/heroFrontAttacking96.png", tileSize);
+    ImageIcon enemyIcon = loadAndScaleIcon(
+        "/icons/monster96.png", tileSize);
 
     System.out.println(
         "MapDrawPanel > Map size: " + side + "x" + side
@@ -54,11 +70,26 @@ public class MapDrawPanel extends JPanel {
         JButton tileButton = new JButton();
 
         if (tile.isVisible()) {
-          tileButton.setText(tile.getSymbol());
+          // Set icon based on tile type
+          switch (tile.getType()) {
+            case HERO:
+              tileButton.setIcon(heroIcon);
+              break;
+            case ENEMY:
+              tileButton.setIcon(enemyIcon);
+              break;
+            // case GRASS:
+            // tileButton.setIcon(grassIcon);
+            // break;
+            // case BORDER:
+            // tileButton.setIcon(borderIcon);
+            // break;
+            default:
+              tileButton.setText(".");
+          }
         } else {
           tileButton.setText(" ");
         }
-
         tileButton.setEnabled(tile.isVisible());
         tileButton.setFont(new Font("Monospaced", Font.PLAIN, 16));
         tileButton.setFocusable(false);
@@ -129,6 +160,13 @@ public class MapDrawPanel extends JPanel {
     }
 
     return tileSize;
+  }
+
+  private ImageIcon loadAndScaleIcon(String path, int size) {
+    java.net.URL imgURL = getClass().getResource(path);
+    if (imgURL == null)
+      return null;
+    return new ImageIcon(new ImageIcon(imgURL).getImage().getScaledInstance(size, size, java.awt.Image.SCALE_SMOOTH));
   }
 
 }
