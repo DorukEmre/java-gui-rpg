@@ -1,7 +1,7 @@
 package demre.rpg.view.gui;
 
-import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Insets;
 import java.util.List;
 
 import javax.swing.Box;
@@ -9,7 +9,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 
 import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
@@ -23,71 +22,76 @@ public class SelectHeroPanel extends JPanel {
 
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-    // Title label
-    JLabel selectHeroLabel = new JLabel("Select Your Hero", JLabel.CENTER);
-    selectHeroLabel.setFont(new Font("Serif", Font.BOLD, 24));
-    selectHeroLabel.setAlignmentX(LEFT_ALIGNMENT);
     add(Box.createVerticalGlue());
-    add(selectHeroLabel);
+    add(Box.createVerticalStrut(10));
+
+    // Title label
+    JLabel selectHeroTitle = new JLabel("Select Your Hero");
+    selectHeroTitle.setFont(new Font("Serif", Font.BOLD, 24));
+    selectHeroTitle.setAlignmentX(CENTER_ALIGNMENT);
+    add(selectHeroTitle);
+
     add(Box.createVerticalStrut(20));
 
     // heroes = new ArrayList<>(); // for testing
+
+    JPanel heroesList = new JPanel();
+    heroesList.setLayout(new BoxLayout(heroesList, BoxLayout.Y_AXIS));
+    heroesList.setAlignmentX(LEFT_ALIGNMENT);
 
     // List heroes as buttons
     for (int i = 0; i < heroes.size(); i++) {
       Hero hero = heroes.get(i);
 
       // Create button (left)
-      JButton heroButton = new JButton(
-          "<html>" + hero.getName() + "<br>" + hero.getHeroClass() + "</html>");
-      heroButton.setAlignmentX(LEFT_ALIGNMENT);
-      int buttonHeight = heroButton.getPreferredSize().height;
-      heroButton.setPreferredSize(new Dimension(160, buttonHeight));
-      heroButton.setMaximumSize(new Dimension(160, buttonHeight));
-      heroButton.setMinimumSize(new Dimension(160, buttonHeight));
-      heroButton.setHorizontalAlignment(SwingConstants.CENTER);
-      heroButton.setVerticalAlignment(SwingConstants.CENTER);
-
+      JButton heroButton = new JButton(i + 1 + ". ");
+      heroButton.setMargin(new Insets(5, 8, 5, 6));
       String indexStr = i + 1 + "";
       heroButton.addActionListener(
           e -> controller.onSelectHeroContinue(indexStr));
 
       // Create label (right)
-      JLabel statsLabel = new JLabel(
-          "Level: " + hero.getLevel() + "  XP: " + hero.getExperience());
-      statsLabel.setFont(new Font("Serif", Font.PLAIN, 16));
-      statsLabel.setAlignmentY(CENTER_ALIGNMENT);
+      JLabel heroStats = new JLabel(
+          hero.getName() + " (" + hero.getHeroClass() + ")"
+              + " Level: " + hero.getLevel() + " XP: " + hero.getExperience());
+      heroStats.setFont(new Font("Serif", Font.PLAIN, 16));
 
       // Create horizontal panel for button + label
-      JPanel heroPanel = new JPanel();
-      heroPanel.setLayout(new BoxLayout(heroPanel, BoxLayout.X_AXIS));
-      heroPanel.setAlignmentX(LEFT_ALIGNMENT);
-      heroPanel.add(heroButton);
-      heroPanel.add(Box.createHorizontalStrut(20));
-      heroPanel.add(statsLabel);
+      JPanel heroLine = new JPanel();
+      heroLine.setLayout(new BoxLayout(heroLine, BoxLayout.X_AXIS));
+      heroLine.setAlignmentX(LEFT_ALIGNMENT);
+      heroLine.add(heroButton);
+      heroLine.add(Box.createHorizontalStrut(20));
+      heroLine.add(heroStats);
 
-      add(heroPanel);
+      heroesList.add(heroLine);
     }
+
+    add(heroesList);
 
     add(Box.createVerticalStrut(20));
 
-    JLabel newHeroLabel;
+    JLabel newHeroTitle;
     if (heroes == null || heroes.isEmpty()) {
-      newHeroLabel = new JLabel(
-          "No heroes available. Create a new hero.", JLabel.CENTER);
+      newHeroTitle = new JLabel(
+          "No heroes available. Create a new hero.");
     } else {
-      newHeroLabel = new JLabel(
-          "Or create a new hero:", JLabel.CENTER);
+      newHeroTitle = new JLabel(
+          "Or create a new hero:");
     }
-    newHeroLabel.setAlignmentX(LEFT_ALIGNMENT);
-    add(newHeroLabel);
-    add(Box.createVerticalStrut(5));
+    newHeroTitle.setFont(new Font("Serif", Font.BOLD, 24));
+    newHeroTitle.setAlignmentX(CENTER_ALIGNMENT);
+    add(newHeroTitle);
+
+    add(Box.createVerticalStrut(20));
 
     JButton newHeroButton = new JButton("New Hero");
-    newHeroButton.setAlignmentX(LEFT_ALIGNMENT);
+    newHeroButton.setAlignmentX(CENTER_ALIGNMENT);
     newHeroButton.addActionListener(
         e -> controller.onSelectHeroContinue("new"));
     add(newHeroButton);
+
+    add(Box.createVerticalStrut(10));
     add(Box.createVerticalGlue());
 
     defaultButton = newHeroButton;
