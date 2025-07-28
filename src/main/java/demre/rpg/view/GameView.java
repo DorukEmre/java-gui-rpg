@@ -12,10 +12,6 @@ public interface GameView {
 
   void showMap();
 
-  void showEnemyEncounter();
-
-  void showItemFound();
-
   void showVictoryScreen();
 
   void showGameOver();

@@ -160,16 +160,6 @@ public class GUIView
   }
 
   @Override
-  public void showEnemyEncounter() {
-    // Not used in GUIView
-  }
-
-  @Override
-  public void showItemFound() {
-    // Not used in GUIView
-  }
-
-  @Override
   public void showVictoryScreen() {
     System.out.println("GUIView > Displaying victory screen...");
 
