@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
 
@@ -48,9 +49,9 @@ public class MapDrawPanel extends JPanel {
     this.tileButtons = new JButton[side][side];
 
     ImageIcon heroIcon = loadAndScaleIcon(
-        "/icons/heroFrontAttacking96.png", tileSize);
+        "/icons/heroFront82.png", tileSize);
     ImageIcon enemyIcon = loadAndScaleIcon(
-        "/icons/monster96.png", tileSize);
+        "/icons/monster85.png", tileSize);
 
     System.out.println(
         "MapDrawPanel > Map size: " + side + "x" + side
@@ -163,10 +164,9 @@ public class MapDrawPanel extends JPanel {
   }
 
   private ImageIcon loadAndScaleIcon(String path, int size) {
-    java.net.URL imgURL = getClass().getResource(path);
-    if (imgURL == null)
-      return null;
-    return new ImageIcon(new ImageIcon(imgURL).getImage().getScaledInstance(size, size, java.awt.Image.SCALE_SMOOTH));
+    Image image = new ImageIcon(getClass().getResource(path)).getImage();
+
+    return new ImageIcon(image.getScaledInstance(size, size, Image.SCALE_SMOOTH));
   }
 
 }
