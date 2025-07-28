@@ -58,6 +58,7 @@ public class GameEngine {
   private Tile[] fightTiles; // Tiles involved in a fight, Hero at 0, Enemy at 1
   private Tile[] moveTiles; // Tiles involved in a move, Hero at 0, Target at 1
   private boolean isMoving; // True if last action is a move
+  private Direction moveDirection; // Direction of the last move action
   private int mapSize = 9; // Level 1 map size
   private Item itemFound;
 
@@ -127,6 +128,10 @@ public class GameEngine {
     return moveTiles;
   }
 
+  public Direction getMoveDirection() {
+    return moveDirection;
+  }
+
   public Item getItemFound() {
     return itemFound;
   }
@@ -192,14 +197,17 @@ public class GameEngine {
     this.fightTiles[1] = enemyTile;
   }
 
-  public void setMoveTiles(Tile fromTile, Tile targetTile, boolean isMoving) {
+  public void setMoveTiles(Tile fromTile, Tile targetTile) {
     this.moveTiles[0] = fromTile;
     this.moveTiles[1] = targetTile;
-    this.isMoving = isMoving;
   }
 
   public void setIsMoving(boolean isMoving) {
     this.isMoving = isMoving;
+  }
+
+  public void setMoveDirection(Direction direction) {
+    this.moveDirection = direction;
   }
 
   public void setItemFound(Item item) {
@@ -539,6 +547,7 @@ public class GameEngine {
     if (targetTile.getType() == Tile.Type.ENEMY) { // fight
       targetTile.setVisible(true);
       setFightTiles(currentHeroTile, targetTile);
+      setMoveDirection(direction);
       setCurrentStep(Step.ENEMY_ENCOUNTER);
 
     } else if (targetTile.getType() == Tile.Type.BORDER) { // victory
@@ -547,7 +556,9 @@ public class GameEngine {
       setCurrentStep(Step.VICTORY_MISSION);
 
     } else { // move
-      setMoveTiles(currentHeroTile, targetTile, true);
+      setMoveTiles(currentHeroTile, targetTile);
+      setIsMoving(true);
+      setMoveDirection(direction);
       currentHeroTile.assignGrass();
       hero.setXCoord(newX);
       hero.setYCoord(newY);

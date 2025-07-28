@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import demre.rpg.Main;
 import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
+import demre.rpg.model.GameEngine.Direction;
 import demre.rpg.model.map.Tile;
 import demre.rpg.view.GUIView;
 
@@ -18,20 +19,32 @@ public class ButtonsMap {
   private JButton[][] buttonsMap;
   private int tileSize;
 
-  private ImageIcon heroIcon;
+  private ImageIcon heroFrontIcon;
+  private ImageIcon heroBackIcon;
+  private ImageIcon heroLeftIcon;
+  private ImageIcon heroRightIcon;
   private ImageIcon enemyIcon;
   private ImageIcon grassIcon;
   private ImageIcon borderIcon;
+  private ImageIcon fogIcon;
 
   // Tile icons
-  private final Image heroImage = new ImageIcon(
+  private final Image heroFront = new ImageIcon(
       getClass().getResource("/icons/heroFront82.png")).getImage();
+  private final Image heroBack = new ImageIcon(
+      getClass().getResource("/icons/heroBack82.png")).getImage();
+  private final Image heroLeft = new ImageIcon(
+      getClass().getResource("/icons/heroLeft82.png")).getImage();
+  private final Image heroRight = new ImageIcon(
+      getClass().getResource("/icons/heroRight82.png")).getImage();
   private final Image enemyImage = new ImageIcon(
       getClass().getResource("/icons/monster85.png")).getImage();
   private final Image grassImage = new ImageIcon(
-      getClass().getResource("/icons/green96.png")).getImage();
+      getClass().getResource("/icons/grass96.png")).getImage();
   private final Image borderImage = new ImageIcon(
-      getClass().getResource("/icons/yellow96.png")).getImage();
+      getClass().getResource("/icons/border96.png")).getImage();
+  private final Image fogImage = new ImageIcon(
+      getClass().getResource("/icons/fog96.png")).getImage();
 
   // Constructors
 
@@ -148,9 +161,20 @@ public class ButtonsMap {
   // Icons
 
   protected void setHeroButton(JButton button) {
-    button.setIcon(heroIcon);
+    Direction direction = gameEngine.getMoveDirection();
+    if (direction == Direction.NORTH) {
+      button.setIcon(heroBackIcon);
+    } else if (direction == Direction.SOUTH) {
+      button.setIcon(heroFrontIcon);
+    } else if (direction == Direction.WEST) {
+      button.setIcon(heroLeftIcon);
+    } else if (direction == Direction.EAST) {
+      button.setIcon(heroRightIcon);
+    } else {
+      button.setIcon(heroFrontIcon); // Default icon
+    }
     button.setText("");
-    button.setBackground(Color.pink);
+    button.setBackground(new Color(250, 218, 128)); // Light yellow background
     button.setEnabled(true);
   }
 
@@ -173,15 +197,20 @@ public class ButtonsMap {
   }
 
   protected void setFogButton(JButton button) {
-    button.setText(" ");
+    button.setIcon(fogIcon);
+    button.setText("");
   }
 
   private void initialiseScaledIcons() {
 
-    this.heroIcon = createScaledIcon(heroImage, tileSize);
+    this.heroFrontIcon = createScaledIcon(heroFront, tileSize);
+    this.heroBackIcon = createScaledIcon(heroBack, tileSize);
+    this.heroLeftIcon = createScaledIcon(heroLeft, tileSize);
+    this.heroRightIcon = createScaledIcon(heroRight, tileSize);
     this.enemyIcon = createScaledIcon(enemyImage, tileSize);
     this.grassIcon = createScaledIcon(grassImage, tileSize);
     this.borderIcon = createScaledIcon(borderImage, tileSize);
+    this.fogIcon = createScaledIcon(fogImage, tileSize);
   }
 
   private ImageIcon createScaledIcon(Image image, int size) {
