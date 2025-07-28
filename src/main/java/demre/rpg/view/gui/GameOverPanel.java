@@ -1,8 +1,11 @@
 
 package demre.rpg.view.gui;
 
+import java.awt.Image;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -14,12 +17,21 @@ import demre.rpg.model.GameEngine;
 public class GameOverPanel extends JPanel {
   private JButton defaultButton;
 
+  private JLabel heroLabel;
+  private JLabel enemyLabel;
+
+  private final ImageIcon heroImage = new ImageIcon(
+      getClass().getResource("/icons/heroDeadRotated.png"));
+  private final ImageIcon enemyImage = new ImageIcon(
+      getClass().getResource("/icons/monster.png"));
+
   public GameOverPanel(GameController controller, GameEngine gameEngine) {
 
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
     add(Box.createVerticalGlue());
 
+    // Add messages
     JLabel titleLabel = GUIUtils.createTitle(
         "You died!", 48);
     add(titleLabel);
@@ -34,7 +46,24 @@ public class GameOverPanel extends JPanel {
 
     add(Box.createVerticalStrut(20));
 
-    // Add panel with choice buttons
+    // Add images
+    JPanel imagePanel = new JPanel();
+    imagePanel.setLayout(new BoxLayout(imagePanel, BoxLayout.X_AXIS));
+    imagePanel.setAlignmentX(CENTER_ALIGNMENT);
+
+    enemyLabel = new JLabel(enemyImage);
+    imagePanel.add(enemyLabel);
+
+    imagePanel.add(Box.createHorizontalStrut(20));
+
+    heroLabel = new JLabel(heroImage);
+    imagePanel.add(heroLabel);
+
+    add(imagePanel);
+
+    add(Box.createVerticalStrut(20));
+
+    // Add buttons
     JPanel choice = new JPanel();
     choice.setLayout(new BoxLayout(choice, BoxLayout.X_AXIS));
     choice.setAlignmentX(CENTER_ALIGNMENT);
@@ -73,6 +102,18 @@ public class GameOverPanel extends JPanel {
     super.addNotify();
     if (getRootPane() != null) {
       getRootPane().setDefaultButton(defaultButton);
+
+      // Get current window height
+      int windowHeight = getRootPane().getHeight();
+      int imgSize = windowHeight / 2;
+
+      // Scale and set icons
+      heroLabel.setIcon(new ImageIcon(
+          heroImage.getImage().getScaledInstance(
+              imgSize, -1, Image.SCALE_SMOOTH)));
+      enemyLabel.setIcon(new ImageIcon(
+          enemyImage.getImage().getScaledInstance(
+              imgSize, -1, Image.SCALE_SMOOTH)));
     }
   }
 
