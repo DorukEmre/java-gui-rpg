@@ -1,19 +1,15 @@
 package demre.rpg.view.gui;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import demre.rpg.Main;
 import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
 import demre.rpg.model.map.Tile;
@@ -24,128 +20,93 @@ import demre.rpg.view.GUIView;
  * It shows the tiles of the map and allows interaction with them.
  */
 public class MapDrawPanel extends JPanel {
+  private final GameEngine gameEngine;
   private final int side;
-  private final JButton[][] tileButtons;
-  private final GameController controller;
-  protected int tileSize;
-
-  // Tile icons
-  // private final ImageIcon heroIcon = new ImageIcon(
-  // getClass().getResource("/icons/heroFrontAttacking96.png"));
-  // private final ImageIcon enemyIcon = new ImageIcon(
-  // getClass().getResource("/icons/monster96.png"));
-  // private final ImageIcon grassIcon = new ImageIcon(
-  // getClass().getResource("/icons/grass.png"));
-  // private final ImageIcon borderIcon = new ImageIcon(
-  // getClass().getResource("/icons/border.png"));
+  private final ButtonsMap tileButtonsMap;
 
   public MapDrawPanel(
-      GameController controller, GameEngine gameEngine, boolean isInteractive) {
+      GUIView guiView,
+      GameController controller,
+      GameEngine gameEngine, boolean isInteractive) {
     System.out.println("MapDrawPanel > Initialising map panel...");
 
-    this.controller = controller;
+    this.tileButtonsMap = guiView.tileButtonsMap;
+    this.gameEngine = gameEngine;
     this.side = gameEngine.getMapSize() + 2;
-    this.tileSize = calculateTileSize();
-    this.tileButtons = new JButton[side][side];
 
-    ImageIcon heroIcon = loadAndScaleIcon(
-        "/icons/heroFront82.png", tileSize);
-    ImageIcon enemyIcon = loadAndScaleIcon(
-        "/icons/monster85.png", tileSize);
+    createTileButtonsMap(isInteractive);
 
-    System.out.println(
-        "MapDrawPanel > Map size: " + side + "x" + side
-            + ", Dimension(side * tileSize): " + (side * tileSize));
+  }
 
+  private void createTileButtonsMap(boolean isInteractive) {
+
+    int tileSize = calculateTileSize();
+
+    tileButtonsMap.setButtonsMap(side);
+    tileButtonsMap.setTileSize(tileSize);
+
+    this.removeAll();
     setLayout(new GridBagLayout());
 
     JPanel gridPanel = new JPanel(null);
     gridPanel.setPreferredSize(new Dimension(side * tileSize, side * tileSize));
 
-    Tile[][] map = gameEngine.getMap();
+    Tile[][] tilesMap = gameEngine.getMap();
 
     // Create map tiles
     for (int y = 0; y < side; y++) {
       for (int x = 0; x < side; x++) {
-        Tile tile = map[y][x];
+        Tile tile = tilesMap[y][x];
         JButton tileButton = new JButton();
 
         if (tile.isVisible()) {
-          // Set icon based on tile type
           switch (tile.getType()) {
             case HERO:
-              tileButton.setIcon(heroIcon);
+              tileButtonsMap.setHeroButton(tileButton);
               break;
             case ENEMY:
-              tileButton.setIcon(enemyIcon);
+              tileButtonsMap.setEnemyButton(tileButton);
               break;
-            // case GRASS:
-            // tileButton.setIcon(grassIcon);
-            // break;
-            // case BORDER:
-            // tileButton.setIcon(borderIcon);
-            // break;
+            case GRASS:
+              tileButtonsMap.setGrassButton(tileButton);
+              break;
+            case BORDER:
+              tileButtonsMap.setBorderButton(tileButton);
+              break;
             default:
-              tileButton.setText(".");
+              tileButtonsMap.setGrassButton(tileButton);
           }
         } else {
-          tileButton.setText(" ");
+          tileButtonsMap.setFogButton(tileButton);
         }
+
         tileButton.setEnabled(tile.isVisible());
         tileButton.setFont(new Font("Monospaced", Font.PLAIN, 16));
         tileButton.setFocusable(false);
         tileButton.setMargin(new Insets(0, 0, 0, 0));
         tileButton.setBounds(x * tileSize, y * tileSize, tileSize, tileSize);
 
-        tileButtons[y][x] = tileButton;
+        tileButtonsMap.setMapButton(x, y, tileButton);
         gridPanel.add(tileButton);
       }
     }
 
-    // Enable Hero tile
-    int heroX = gameEngine.getHero().getXCoord() + 1;
-    int heroY = gameEngine.getHero().getYCoord() + 1;
-    tileButtons[heroY][heroX].setEnabled(true);
-    tileButtons[heroY][heroX].setBackground(Color.pink);
-
     // Enable tiles around Hero if map is interactive
     if (isInteractive) {
-      if (heroX > 0)
-        enableTile(tileButtons[heroY][heroX - 1], "West");
-      if (heroX < side - 1)
-        enableTile(tileButtons[heroY][heroX + 1], "East");
-      if (heroY > 0)
-        enableTile(tileButtons[heroY - 1][heroX], "North");
-      if (heroY < side - 1)
-        enableTile(tileButtons[heroY + 1][heroX], "South");
+      int heroX = gameEngine.getHero().getXCoord() + 1;
+      int heroY = gameEngine.getHero().getYCoord() + 1;
+      tileButtonsMap.enableSurroundingTiles(heroX, heroY);
     }
 
     // Center the gridPanel
     add(gridPanel, new GridBagConstraints());
 
+    this.revalidate();
+    this.repaint();
+
   }
 
-  // Getters
-
-  protected int getTileSize() {
-    return tileSize;
-  }
-
-  // Methods
-
-  private void enableTile(JButton tileButton, String direction) {
-    // Enable the tile button and set its action
-    tileButton.setEnabled(true);
-    tileButton.setBackground(new Color(255, 230, 240)); // Light pink background
-    tileButton.addActionListener(e -> {
-      try {
-        controller.onMapInputContinue(direction);
-      } catch (Exception ex) {
-        GUIView.windowDispose(tileButton);
-        Main.errorAndExit(ex, ex.getMessage());
-      }
-    });
-  }
+  // Helper
 
   private int calculateTileSize() {
     // Calculate tile size based on screen resolution
@@ -161,12 +122,6 @@ public class MapDrawPanel extends JPanel {
     }
 
     return tileSize;
-  }
-
-  private ImageIcon loadAndScaleIcon(String path, int size) {
-    Image image = new ImageIcon(getClass().getResource(path)).getImage();
-
-    return new ImageIcon(image.getScaledInstance(size, size, Image.SCALE_SMOOTH));
   }
 
 }

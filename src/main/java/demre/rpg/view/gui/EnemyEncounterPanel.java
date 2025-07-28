@@ -70,7 +70,8 @@ public class EnemyEncounterPanel extends JPanel {
       GUIUtils.bindButtonToKey(
           actionPanel, button, KeyStroke.getKeyStroke("F"));
       button.addActionListener(
-          e -> controller.onEnemyEncounterContinue("Fight"));
+          e -> controller.onEnemyEncounterContinue(
+              "Fight", true));
       actionPanel.add(button);
     }
 
@@ -83,7 +84,8 @@ public class EnemyEncounterPanel extends JPanel {
       GUIUtils.bindButtonToKey(
           actionPanel, button, KeyStroke.getKeyStroke("R"));
       button.addActionListener(
-          e -> controller.onEnemyEncounterContinue("Run"));
+          e -> controller.onEnemyEncounterContinue(
+              "Run", false));
       actionPanel.add(button);
     }
 

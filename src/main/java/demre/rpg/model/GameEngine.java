@@ -56,6 +56,8 @@ public class GameEngine {
   private List<Villain> villains;
   private Tile[][] map;
   private Tile[] fightTiles; // Tiles involved in a fight, Hero at 0, Enemy at 1
+  private Tile[] moveTiles; // Tiles involved in a move, Hero at 0, Target at 1
+  private boolean isMoving; // True if last action is a move
   private int mapSize = 9; // Level 1 map size
   private Item itemFound;
 
@@ -69,7 +71,9 @@ public class GameEngine {
     this.heroes = null;
     this.villains = new ArrayList<>();
     this.fightTiles = new Tile[2]; // 0: Hero, 1: Enemy
+    this.moveTiles = new Tile[2]; // 0: Hero, 1: Target
     this.itemFound = null;
+    this.isMoving = false;
   }
 
   // Getters
@@ -119,12 +123,20 @@ public class GameEngine {
     return fightTiles;
   }
 
+  public Tile[] getMoveTiles() {
+    return moveTiles;
+  }
+
   public Item getItemFound() {
     return itemFound;
   }
 
   public GameController getGameController() {
     return gameController;
+  }
+
+  public boolean isMoving() {
+    return isMoving;
   }
 
   // Setters
@@ -178,6 +190,16 @@ public class GameEngine {
   public void setFightTiles(Tile heroTile, Tile enemyTile) {
     this.fightTiles[0] = heroTile;
     this.fightTiles[1] = enemyTile;
+  }
+
+  public void setMoveTiles(Tile fromTile, Tile targetTile, boolean isMoving) {
+    this.moveTiles[0] = fromTile;
+    this.moveTiles[1] = targetTile;
+    this.isMoving = isMoving;
+  }
+
+  public void setIsMoving(boolean isMoving) {
+    this.isMoving = isMoving;
   }
 
   public void setItemFound(Item item) {
@@ -387,6 +409,7 @@ public class GameEngine {
 
     villains.clear();
     fightTiles = new Tile[2];
+    moveTiles = new Tile[2];
     initialiseGameState();
   }
 
@@ -399,15 +422,15 @@ public class GameEngine {
 
     generateVillains();
 
-    // make copy of villains and sort villains by level
-    List<Villain> villainsCopy = new ArrayList<>(villains);
-    villainsCopy.sort(
-        (v1, v2) -> Integer.compare(v1.getLevel(), v2.getLevel()));
-    // list all villains
-    for (Villain villain : villainsCopy) {
-      System.out.println(villain.toString());
-    }
-    System.out.println(hero.toString());
+    // // make copy of villains and sort villains by level
+    // List<Villain> villainsCopy = new ArrayList<>(villains);
+    // villainsCopy.sort(
+    // (v1, v2) -> Integer.compare(v1.getLevel(), v2.getLevel()));
+    // // list all villains
+    // for (Villain villain : villainsCopy) {
+    // System.out.println(villain.toString());
+    // }
+    // System.out.println(hero.toString());
 
     generateMap();
   }
@@ -524,6 +547,7 @@ public class GameEngine {
       setCurrentStep(Step.VICTORY_MISSION);
 
     } else { // move
+      setMoveTiles(currentHeroTile, targetTile, true);
       currentHeroTile.assignGrass();
       hero.setXCoord(newX);
       hero.setYCoord(newY);

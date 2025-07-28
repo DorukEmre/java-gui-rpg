@@ -6,38 +6,45 @@ import javax.swing.JScrollPane;
 
 import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
+import demre.rpg.view.GUIView;
 
 /**
  * Creates a scrollable map view panel.
  */
 public class ScrollMapPanel extends JScrollPane {
   private final GameEngine gameEngine;
-  private final MapDrawPanel mapDrawPanel;
+  private final GUIView guiView;
 
-  public ScrollMapPanel(GameController controller, GameEngine gameEngine) {
+  public ScrollMapPanel(
+      GUIView guiView, GameController controller, GameEngine gameEngine) {
+
     this.gameEngine = gameEngine;
+    this.guiView = guiView;
 
     GameEngine.Step step = gameEngine.getStep();
+    MapDrawPanel mapDrawPanel;
+
     if (step == GameEngine.Step.PLAYING
         || step == GameEngine.Step.INVALID_ACTION
         || step == GameEngine.Step.ENEMY_FIGHT_SUCCESS
         || step == GameEngine.Step.LEVEL_UP
         || step == GameEngine.Step.ENEMY_RUN_SUCCESS) {
-      this.mapDrawPanel = new MapDrawPanel(
-          controller, gameEngine, true);
+      mapDrawPanel = new MapDrawPanel(
+          guiView, controller, gameEngine, true);
     } else {
-      this.mapDrawPanel = new MapDrawPanel(
-          controller, gameEngine, false);
+      mapDrawPanel = new MapDrawPanel(
+          guiView, controller, gameEngine, false);
     }
 
-    setViewportView(this.mapDrawPanel);
+    setViewportView(mapDrawPanel);
 
-    System.out.println(
-        "ScrollMapPanel > Initialised scrollable map view panel.");
   }
 
+  /**
+   * Centers the map on the hero's position within the scrollable panel.
+   */
   protected void centerMapOnHero() {
-    int tileSize = mapDrawPanel.getTileSize();
+    int tileSize = guiView.tileButtonsMap.getTileSize();
     int heroX = gameEngine.getHero().getXCoord() + 1;
     int heroY = gameEngine.getHero().getYCoord() + 1;
 

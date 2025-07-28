@@ -177,6 +177,7 @@ public class ConsoleView
 
       clearConsole();
       drawMap();
+      controller.onMapDisplayed();
 
       if (step == GameEngine.Step.PLAYING
           || step == GameEngine.Step.INVALID_ACTION
@@ -242,14 +243,14 @@ public class ConsoleView
         || step == GameEngine.Step.ENEMY_INVALID_ACTION) {
       System.out.println("You encounter an enemy!");
       System.out.println("(f)ight or (r)un");
-      String enemy_choice = scanner.nextLine();
-      controller.onEnemyEncounterContinue(enemy_choice);
+      String input = scanner.nextLine();
+      controller.onEnemyEncounterContinue(input, false);
 
     } else if (step == GameEngine.Step.ENEMY_RUN_FAILURE) {
       System.out.println("You failed to run away from the enemy!");
       System.out.println("You have to fight. Press Enter.");
-      scanner.nextLine();
-      controller.onEnemyEncounterContinue("fight");
+      String input = scanner.nextLine();
+      controller.onEnemyEncounterContinue(input, true);
     }
 
   }

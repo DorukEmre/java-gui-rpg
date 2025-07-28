@@ -98,13 +98,18 @@ public class GameController {
     }
   }
 
-  public void onEnemyEncounterContinue(String input) {
+  public void onMapDisplayed() {
+    gameEngine.setIsMoving(false);
+  }
+
+  public void onEnemyEncounterContinue(String input, boolean isForcedToFight) {
     System.out.println("GameController > Enemy encounter input: " + input);
 
     if (handleExitOrViewChange(input, false))
       return;
 
-    if (input.equalsIgnoreCase("fight") || input.equalsIgnoreCase("f")) {
+    if (isForcedToFight
+        || input.equalsIgnoreCase("fight") || input.equalsIgnoreCase("f")) {
       gameEngine.fightEnemy();
     } else if (input.equalsIgnoreCase("run") || input.equalsIgnoreCase("r")) {
       gameEngine.runFromEnemy();

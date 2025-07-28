@@ -17,6 +17,7 @@ import demre.rpg.Main;
 import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
 import demre.rpg.model.GameEngineListener;
+import demre.rpg.view.gui.ButtonsMap;
 import demre.rpg.view.gui.CreateHeroPanel;
 import demre.rpg.view.gui.GUIUtils;
 import demre.rpg.view.gui.GameOverPanel;
@@ -34,10 +35,16 @@ public class GUIView
   private final GameController controller;
   private JPanel contentPanel;
   private CardLayout cardLayout;
+  private JPanel mapViewPanel;
+
+  public ButtonsMap tileButtonsMap;
 
   public GUIView(GameEngine gameEngine, GameController controller) {
     this.gameEngine = gameEngine;
     this.controller = controller;
+    this.tileButtonsMap = new ButtonsMap(gameEngine, controller); // empty array
+    this.mapViewPanel = null;
+
     System.out.println("GUIView initialised with engine: " + gameEngine + " and controller: " + controller);
     initialiseGUIComponents();
   }
@@ -74,7 +81,7 @@ public class GUIView
     System.out.println("GUIView > Initialising GUI components...");
 
     // Create main window
-    setTitle("RPG Game");
+    setTitle("RPG Game with Swing GUI");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setLayout(new BorderLayout());
     setSize(800, 600);
@@ -82,7 +89,6 @@ public class GUIView
 
     // Make window full screen
     setExtendedState(JFrame.MAXIMIZED_BOTH);
-    // setUndecorated(true); // Removes title bar
 
     // Create content panel to display different views
     cardLayout = new CardLayout();
@@ -156,7 +162,14 @@ public class GUIView
   public void showMap() {
     System.out.println("GUIView > Showing game map...");
 
-    showStage("map", new MapViewPanel(controller, gameEngine));
+    if (gameEngine.isMoving()) {
+      // Use existing mapViewPanel if player is moving
+      ((MapViewPanel) mapViewPanel).updateHeroPosition();
+    } else {
+      mapViewPanel = new MapViewPanel(this, controller, gameEngine);
+    }
+
+    showStage("map", mapViewPanel);
   }
 
   @Override
