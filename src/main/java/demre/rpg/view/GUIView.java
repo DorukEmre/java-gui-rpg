@@ -81,7 +81,7 @@ public class GUIView
     System.out.println("GUIView > Initialising GUI components...");
 
     // Create main window
-    setTitle("RPG Game with Swing GUI");
+    setTitle("Java RPG with Swing GUI");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setLayout(new BorderLayout());
     setSize(800, 600);

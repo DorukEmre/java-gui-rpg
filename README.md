@@ -1,5 +1,7 @@
 Java role-playing game that can be played either through the terminal or via a graphical user interface built with Swing.
 
+![In-game screenshot of GUI and terminal](java-rpg.png)
+
 ## Structure
 
 #### MVC (Model-View-Controller) architecture
