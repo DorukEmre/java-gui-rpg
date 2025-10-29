@@ -39,8 +39,8 @@ public class Main {
 
     } catch (Exception e) {
       errorAndExit(e, e.getMessage());
-
     }
+
   }
 
   // Check command line arguments for game mode
@@ -64,5 +64,9 @@ public class Main {
     e.printStackTrace();
     logger.error("Error: " + message);
     System.exit(1);
+  }
+
+  public static void exit() {
+    System.exit(0);
   }
 }

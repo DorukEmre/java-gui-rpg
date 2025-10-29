@@ -111,9 +111,14 @@ public class GUIView
     switchButton.addActionListener(
         e -> controller.switchView("console"));
 
-    JButton exitButton = GUIUtils.createButton("Exit");
-    exitButton.addActionListener(
-        e -> controller.exitGame());
+    JButton exitButton = GUIUtils.createButton("Save and exit");
+    exitButton.addActionListener(e -> {
+      try {
+        controller.exitGame();
+      } catch (Exception ex) {
+        Main.errorAndExit(ex, ex.getMessage());
+      }
+    });
 
     bottomPanel.add(switchButton);
     bottomPanel.add(Box.createHorizontalStrut(10));

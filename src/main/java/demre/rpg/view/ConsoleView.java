@@ -77,9 +77,10 @@ public class ConsoleView
     String line = ConsoleHelper.readLine(scanner);
 
     if (line == null) {
-      logger.info("ConsoleView > EOF on input. Exiting.");
+      logger.warn("ConsoleView > EOF on input. Exiting.");
 
-      controller.exitGame();
+      cleanup();
+      Main.exit();
     }
     return line;
   }
@@ -92,11 +93,8 @@ public class ConsoleView
 
     ConsoleHelper.println(AsciiArt.SPLASH);
     String input = readLine();
-    if (input == null)
-      return;
 
     controller.onSplashScreenContinue(input);
-
   }
 
   @Override
@@ -127,8 +125,6 @@ public class ConsoleView
     }
 
     String heroSelection = readLine();
-    if (heroSelection == null)
-      return;
 
     try {
       controller.onSelectHeroContinue(heroSelection);
@@ -151,8 +147,6 @@ public class ConsoleView
     ConsoleHelper.println("Enter your hero's name:");
 
     String heroName = readLine();
-    if (heroName == null)
-      return;
 
     ConsoleHelper.println("\nPick a class for your hero:");
     ConsoleHelper.println(
@@ -163,8 +157,6 @@ public class ConsoleView
         "3. Mage - A master of magic, +10% chance to find items");
 
     String heroClass = readLine();
-    if (heroClass == null)
-      return;
 
     controller.onCreateHeroContinue(heroName, heroClass, false);
   }
@@ -192,8 +184,7 @@ public class ConsoleView
     ConsoleHelper.println("\nPress Enter to continue...");
 
     String input = readLine();
-    if (input == null)
-      return;
+
     controller.onShowHeroInfoContinue(input);
   }
 
@@ -247,8 +238,6 @@ public class ConsoleView
         "(N)orth, (S)outh, (E)ast, (W)est, (i)nfo or 'exit'.");
 
     String input = readLine();
-    if (input == null)
-      return;
 
     try {
       controller.onMapInputContinue(input);
@@ -323,8 +312,7 @@ public class ConsoleView
     ConsoleHelper.println("(k)eep or (l)eave");
 
     String item_choice = readLine();
-    if (item_choice == null)
-      return;
+
     controller.onItemFoundContinue(item_choice);
   }
 
@@ -340,8 +328,7 @@ public class ConsoleView
     ConsoleHelper.println("(n)ext mission or (e)xit game");
 
     String choice = readLine();
-    if (choice == null)
-      return;
+
     controller.onVictoryScreenContinue(choice);
   }
 
@@ -357,8 +344,7 @@ public class ConsoleView
     ConsoleHelper.println("(t)ry again or (e)xit game");
 
     String choice = readLine();
-    if (choice == null)
-      return;
+
     controller.onGameOverContinue(choice);
   }
 

@@ -296,7 +296,8 @@ public class GameEngine {
     logger.info("GameEngine > Saving hero to database...");
 
     if (hero == null) {
-      throw new IllegalStateException("No hero to save.");
+      logger.warn("No hero to save.");
+      return;
     }
 
     HeroStorage.saveToDatabase(this);
@@ -337,7 +338,13 @@ public class GameEngine {
   public void exitGame() {
     logger.info("GameEngine > Exiting game...");
     setCurrentStep(Step.EXIT_GAME);
-    // saveHeroToDatabase();
+
+    try {
+      saveHeroToDatabase();
+    } catch (IOException e) {
+      throw new RuntimeException(
+          "Error saving hero to database on exit.", e);
+    }
   }
 
   //
