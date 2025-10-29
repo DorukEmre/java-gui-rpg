@@ -55,22 +55,18 @@ Make sure you have [Maven](https://maven.apache.org/) and Java installed.
 
 ### Common commands
 
-- **Build and run GUI:**
+- **Build (create the JAR in target/):**
 
   ```
   make
   ```
 
-  or
+- **Start with gui or console version:**
 
   ```
   make gui
   ```
 
-- **Run console version:**
-
   ```
   make console
   ```
-
-  The Makefile wraps Maven commands and runs the application with the appropriate mode.
