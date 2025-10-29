@@ -50,8 +50,8 @@ Implemented at the Model level to ensures that the data is always valid, regardl
 
 ## Building and Running
 
-You can build and run the project using the provided Makefile.  
-Make sure you have [Maven](https://maven.apache.org/) and Java installed.
+Build and run the project using the provided Makefile.  
+Requires [Maven](https://maven.apache.org/) and Java installed.
 
 ### Common commands
 
