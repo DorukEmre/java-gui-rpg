@@ -1,12 +1,19 @@
 package demre.rpg;
 
 import demre.rpg.model.GameEngine;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import demre.rpg.controller.GameController;
 import demre.rpg.view.GameView;
 import demre.rpg.view.ConsoleView;
 import demre.rpg.view.GUIView;
 
 public class Main {
+
+  private static final Logger logger = LoggerFactory.getLogger(Main.class);
+
   public static String gameMode;
   public static final String databaseName = "heroes.db";
 
@@ -55,7 +62,7 @@ public class Main {
    */
   public static void errorAndExit(Exception e, String message) {
     e.printStackTrace();
-    System.err.println("\u001B[31mError:\u001B[0m " + message);
+    logger.error("Error: " + message);
     System.exit(1);
   }
 }
