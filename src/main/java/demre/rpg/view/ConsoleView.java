@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
+import demre.rpg.Main;
 import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
 import demre.rpg.model.GameEngineListener;
@@ -11,9 +12,15 @@ import demre.rpg.model.characters.Hero;
 import demre.rpg.model.items.Item;
 import demre.rpg.model.map.Tile;
 import demre.rpg.view.console.AsciiArt;
+import demre.rpg.view.console.ConsoleHelper;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ConsoleView
     implements GameView, GameEngineListener {
+
+  private static final Logger logger = LoggerFactory.getLogger(ConsoleView.class);
 
   private final GameEngine gameEngine;
   private final GameController controller;
@@ -23,29 +30,35 @@ public class ConsoleView
   public ConsoleView(GameEngine gameEngine, GameController controller) {
     this.gameEngine = gameEngine;
     this.controller = controller;
-    System.out.println("ConsoleView initialised with engine: " + gameEngine + " and controller: " + controller);
+    logger.info("ConsoleView initialised with engine: " + gameEngine + " and controller: " + controller);
     discardBufferedInput();
   }
 
   @Override
   public void onStepChanged(GameEngine.Step newStep) {
-    switch (newStep) {
-      case SPLASH_SCREEN -> splashScreen();
-      case SELECT_HERO, INVALID_HERO_SELECTION -> selectHero();
-      case CREATE_HERO, INVALID_HERO_CREATION -> createHero();
-      case INFO, NEW_MISSION -> showHeroInfo();
-      case PLAYING, INVALID_ACTION, ENEMY_FIGHT_SUCCESS, LEVEL_UP,
-          ENEMY_RUN_SUCCESS ->
-        showMap();
-      case ENEMY_ENCOUNTER, ENEMY_INVALID_ACTION, ENEMY_RUN_FAILURE ->
-        showMap();
-      case ITEM_FOUND, ITEM_FOUND_AND_LEVEL_UP, ITEM_INVALID_ACTION ->
-        showMap();
-      case VICTORY_MISSION, VICTORY_INVALID_ACTION -> showVictoryScreen();
-      case GAME_OVER, GAME_OVER_INVALID_ACTION -> showGameOver();
-      case EXIT_GAME -> cleanup();
-      default -> {
+
+    try {
+      switch (newStep) {
+        case SPLASH_SCREEN -> splashScreen();
+        case SELECT_HERO, INVALID_HERO_SELECTION -> selectHero();
+        case CREATE_HERO, INVALID_HERO_CREATION -> createHero();
+        case INFO, NEW_MISSION -> showHeroInfo();
+        case PLAYING, INVALID_ACTION, ENEMY_FIGHT_SUCCESS, LEVEL_UP,
+            ENEMY_RUN_SUCCESS ->
+          showMap();
+        case ENEMY_ENCOUNTER, ENEMY_INVALID_ACTION, ENEMY_RUN_FAILURE ->
+          showMap();
+        case ITEM_FOUND, ITEM_FOUND_AND_LEVEL_UP, ITEM_INVALID_ACTION ->
+          showMap();
+        case VICTORY_MISSION, VICTORY_INVALID_ACTION -> showVictoryScreen();
+        case GAME_OVER, GAME_OVER_INVALID_ACTION -> showGameOver();
+        case EXIT_GAME -> cleanup();
+        default -> {
+        }
       }
+
+    } catch (Exception e) {
+      Main.errorAndExit(e, e.getMessage());
     }
   }
 
@@ -58,150 +71,160 @@ public class ConsoleView
     }
   }
 
+  // Call helper and handle EOF
+  private String readLine() {
+
+    String line = ConsoleHelper.readLine(scanner);
+
+    if (line == null) {
+      logger.info("ConsoleView > EOF on input. Exiting.");
+
+      controller.exitGame();
+    }
+    return line;
+  }
+
   @Override
   public void splashScreen() {
-    System.out.println("ConsoleView > Displaying splash screen...");
-    try {
-      clearConsole();
-      System.out.println(AsciiArt.SPLASH);
-      String input = scanner.nextLine();
-      controller.onSplashScreenContinue(input);
-    } catch (Exception e) {
-      throw new RuntimeException(
-          "Error during splash screen: " + e.getMessage());
-    }
+    logger.info("ConsoleView > Displaying splash screen...");
+
+    clearConsole();
+
+    ConsoleHelper.println(AsciiArt.SPLASH);
+    String input = readLine();
+    if (input == null)
+      return;
+
+    controller.onSplashScreenContinue(input);
+
   }
 
   @Override
   public void selectHero() {
-    System.out.println("ConsoleView > Selecting hero...");
-    try {
-      clearConsole();
+    logger.info("ConsoleView > Selecting hero...");
 
-      // Display the list of heroes
-      List<Hero> heroes = gameEngine.getHeroes();
-      if (heroes == null || heroes.isEmpty()) {
-        if (gameEngine.getStep() == GameEngine.Step.INVALID_HERO_SELECTION) {
-          System.out.println("Invalid hero selection. Please try again.");
-        }
-        System.out.println(
-            "No heroes available. Type 'new' [n] to create a new hero:\n");
+    clearConsole();
 
-      } else {
-        for (int i = 0; i < heroes.size(); i++) {
-          Hero hero = heroes.get(i);
-          System.out.println((i + 1) + ". " + hero.description() + "\n");
-        }
-        if (gameEngine.getStep() == GameEngine.Step.INVALID_HERO_SELECTION) {
-          System.out.println("Invalid hero selection. Please try again.");
-        }
-        System.out
-            .println("Enter a number to select your hero from the list, or type 'new' [n] to create a new hero:\n");
+    // Display the list of heroes
+    List<Hero> heroes = gameEngine.getHeroes();
+    if (heroes == null || heroes.isEmpty()) {
+      if (gameEngine.getStep() == GameEngine.Step.INVALID_HERO_SELECTION) {
+        ConsoleHelper.println("Invalid hero selection. Please try again.");
       }
+      ConsoleHelper.println(
+          "No heroes available. Type 'new' [n] to create a new hero:\n");
 
-      String heroSelection = scanner.nextLine();
+    } else {
+      for (int i = 0; i < heroes.size(); i++) {
+        Hero hero = heroes.get(i);
+        ConsoleHelper.println((i + 1) + ". " + hero.description() + "\n");
+      }
+      if (gameEngine.getStep() == GameEngine.Step.INVALID_HERO_SELECTION) {
+        ConsoleHelper.println("Invalid hero selection. Please try again.");
+      }
+      System.out
+          .println("Enter a number to select your hero from the list, or type 'new' [n] to create a new hero:\n");
+    }
+
+    String heroSelection = readLine();
+    if (heroSelection == null)
+      return;
+
+    try {
       controller.onSelectHeroContinue(heroSelection);
-
-    } catch (Exception e) {
+    } catch (IOException e) {
       throw new RuntimeException(
-          "Error during select hero: " + e.getMessage(), e);
+          "IOException during select hero: " + e.getMessage(), e);
     }
   }
 
   @Override
   public void createHero() {
-    System.out.println("ConsoleView > Creating hero...");
-    try {
-      clearConsole();
-      if (gameEngine.getStep() == GameEngine.Step.INVALID_HERO_CREATION) {
-        System.out.println("Invalid hero creation. Please try again.");
-        System.out.println(
-            "Hero name must be 3-20 characters long and can only contain alphanumeric characters and spaces.\n");
-      }
-      System.out.println("Enter your hero's name:");
-      String heroName = scanner.nextLine();
+    logger.info("ConsoleView > Creating hero...");
 
-      System.out.println("\nPick a class for your hero:");
-      System.out.println(
-          "1. Warrior - A strong fighter, +10% experience gain");
-      System.out.println(
-          "2. Rogue - A stealthy assassin, +10% chance to dodge attacks");
-      System.out.println(
-          "3. Mage - A master of magic, +10% chance to find items");
-      String heroClass = scanner.nextLine();
-
-      controller.onCreateHeroContinue(heroName, heroClass, false);
-
-    } catch (Exception e) {
-      throw new RuntimeException(
-          "Error during create hero: " + e.getMessage());
+    clearConsole();
+    if (gameEngine.getStep() == GameEngine.Step.INVALID_HERO_CREATION) {
+      ConsoleHelper.println("Invalid hero creation. Please try again.");
+      ConsoleHelper.println(
+          "Hero name must be 3-20 characters long and can only contain alphanumeric characters and spaces.\n");
     }
+    ConsoleHelper.println("Enter your hero's name:");
+
+    String heroName = readLine();
+    if (heroName == null)
+      return;
+
+    ConsoleHelper.println("\nPick a class for your hero:");
+    ConsoleHelper.println(
+        "1. Warrior - A strong fighter, +10% experience gain");
+    ConsoleHelper.println(
+        "2. Rogue - A stealthy assassin, +10% chance to dodge attacks");
+    ConsoleHelper.println(
+        "3. Mage - A master of magic, +10% chance to find items");
+
+    String heroClass = readLine();
+    if (heroClass == null)
+      return;
+
+    controller.onCreateHeroContinue(heroName, heroClass, false);
   }
 
   @Override
   public void showHeroInfo() {
-    System.out.println("ConsoleView > Showing hero information...");
-    try {
-      clearConsole();
-      Hero hero = gameEngine.getHero();
+    logger.info("ConsoleView > Showing hero information...");
 
-      System.out.println("Hero Information:\n");
+    clearConsole();
+    Hero hero = gameEngine.getHero();
 
-      System.out.println("Name:\t\t" + hero.getName());
-      System.out.println("Class:\t\t" + hero.getClass().getSimpleName());
-      System.out.println("Level:\t\t" + hero.getLevel());
-      System.out.println("Experience:\t" + hero.getExperience());
-      System.out.println("Attack:\t\t" + hero.getAttack());
-      System.out.println("Defense:\t" + hero.getDefense());
-      System.out.println("Hit Points:\t" + hero.getHitPoints());
-      System.out.println("Weapon:\t\t" + hero.getWeapon().getFormattedName());
-      System.out.println("Armor:\t\t" + hero.getArmor().getFormattedName());
-      System.out.println("Helm:\t\t" + hero.getHelm().getFormattedName());
+    ConsoleHelper.println("Hero Information:\n");
 
-      System.out.println("\nPress Enter to continue...");
-      String input = scanner.nextLine();
-      controller.onShowHeroInfoContinue(input);
+    ConsoleHelper.println("Name:\t\t" + hero.getName());
+    ConsoleHelper.println("Class:\t\t" + hero.getClass().getSimpleName());
+    ConsoleHelper.println("Level:\t\t" + hero.getLevel());
+    ConsoleHelper.println("Experience:\t" + hero.getExperience());
+    ConsoleHelper.println("Attack:\t\t" + hero.getAttack());
+    ConsoleHelper.println("Defense:\t" + hero.getDefense());
+    ConsoleHelper.println("Hit Points:\t" + hero.getHitPoints());
+    ConsoleHelper.println("Weapon:\t\t" + hero.getWeapon().getFormattedName());
+    ConsoleHelper.println("Armor:\t\t" + hero.getArmor().getFormattedName());
+    ConsoleHelper.println("Helm:\t\t" + hero.getHelm().getFormattedName());
 
-    } catch (Exception e) {
-      throw new RuntimeException(
-          "Error during show hero: " + e.getMessage());
-    }
+    ConsoleHelper.println("\nPress Enter to continue...");
+
+    String input = readLine();
+    if (input == null)
+      return;
+    controller.onShowHeroInfoContinue(input);
   }
 
   @Override
   public void showMap() {
-    System.out.println("ConsoleView > Showing game map...");
+    logger.info("ConsoleView > Showing game map...");
 
-    try {
-      GameEngine.Step step = gameEngine.getStep();
+    GameEngine.Step step = gameEngine.getStep();
 
-      clearConsole();
-      drawMap();
-      controller.onMapDisplayed();
+    clearConsole();
+    drawMap();
+    controller.onMapDisplayed();
 
-      if (step == GameEngine.Step.PLAYING
-          || step == GameEngine.Step.INVALID_ACTION
-          || step == GameEngine.Step.ENEMY_FIGHT_SUCCESS
-          || step == GameEngine.Step.LEVEL_UP
-          || step == GameEngine.Step.ENEMY_RUN_SUCCESS) {
-        showPlayerControl();
+    if (step == GameEngine.Step.PLAYING
+        || step == GameEngine.Step.INVALID_ACTION
+        || step == GameEngine.Step.ENEMY_FIGHT_SUCCESS
+        || step == GameEngine.Step.LEVEL_UP
+        || step == GameEngine.Step.ENEMY_RUN_SUCCESS) {
+      showPlayerControl();
 
-      } else if (step == GameEngine.Step.ENEMY_ENCOUNTER
-          || step == GameEngine.Step.ENEMY_INVALID_ACTION
-          || step == GameEngine.Step.ENEMY_RUN_FAILURE) {
-        showEnemyEncounter();
+    } else if (step == GameEngine.Step.ENEMY_ENCOUNTER
+        || step == GameEngine.Step.ENEMY_INVALID_ACTION
+        || step == GameEngine.Step.ENEMY_RUN_FAILURE) {
+      showEnemyEncounter();
 
-      } else if (step == GameEngine.Step.ITEM_FOUND
-          || step == GameEngine.Step.ITEM_FOUND_AND_LEVEL_UP
-          || step == GameEngine.Step.ITEM_INVALID_ACTION) {
-        showItemFound();
-      }
-
-    } catch (Exception e) {
-      throw new RuntimeException(
-          "Error during console drawing: " + e.getMessage());
-
+    } else if (step == GameEngine.Step.ITEM_FOUND
+        || step == GameEngine.Step.ITEM_FOUND_AND_LEVEL_UP
+        || step == GameEngine.Step.ITEM_INVALID_ACTION) {
+      showItemFound();
     }
+
   }
 
   private void showPlayerControl() {
@@ -209,25 +232,29 @@ public class ConsoleView
     GameEngine.Step step = gameEngine.getStep();
 
     if (step == GameEngine.Step.INVALID_ACTION) {
-      System.out.println("Invalid action. Please try again.");
+      ConsoleHelper.println("Invalid action. Please try again.");
     } else if (step == GameEngine.Step.ENEMY_FIGHT_SUCCESS) {
-      System.out.println("You defeated the enemy!");
+      ConsoleHelper.println("You defeated the enemy!");
     } else if (step == GameEngine.Step.LEVEL_UP) {
-      System.out.println("You defeated the enemy and leveled up!");
-      System.out.println("You are now level "
+      ConsoleHelper.println("You defeated the enemy and leveled up!");
+      ConsoleHelper.println("You are now level "
           + gameEngine.getHero().getLevel() + " with "
           + gameEngine.getHero().getExperience() + " experience points.");
     } else if (step == GameEngine.Step.ENEMY_RUN_SUCCESS) {
-      System.out.println("You successfully ran away from the enemy!");
+      ConsoleHelper.println("You successfully ran away from the enemy!");
     }
-    System.out.println(
+    ConsoleHelper.println(
         "(N)orth, (S)outh, (E)ast, (W)est, (i)nfo or 'exit'.");
-    String input = scanner.nextLine();
+
+    String input = readLine();
+    if (input == null)
+      return;
 
     try {
       controller.onMapInputContinue(input);
     } catch (IOException e) {
-      throw new RuntimeException("Error during map input: " + e.getMessage(), e);
+      throw new RuntimeException(
+          "IOException during map input: " + e.getMessage(), e);
     }
 
   }
@@ -237,19 +264,26 @@ public class ConsoleView
     GameEngine.Step step = gameEngine.getStep();
 
     if (step == GameEngine.Step.ENEMY_INVALID_ACTION) {
-      System.out.println("Invalid action. Please try again.");
+      ConsoleHelper.println("Invalid action. Please try again.");
     }
+
     if (step == GameEngine.Step.ENEMY_ENCOUNTER
         || step == GameEngine.Step.ENEMY_INVALID_ACTION) {
-      System.out.println("You encounter an enemy!");
-      System.out.println("(f)ight or (r)un");
-      String input = scanner.nextLine();
+      ConsoleHelper.println("You encounter an enemy!");
+      ConsoleHelper.println("(f)ight or (r)un");
+
+      String input = readLine();
+      if (input == null)
+        return;
       controller.onEnemyEncounterContinue(input, false);
 
     } else if (step == GameEngine.Step.ENEMY_RUN_FAILURE) {
-      System.out.println("You failed to run away from the enemy!");
-      System.out.println("You have to fight. Press Enter.");
-      String input = scanner.nextLine();
+      ConsoleHelper.println("You failed to run away from the enemy!");
+      ConsoleHelper.println("You have to fight. Press Enter.");
+
+      String input = readLine();
+      if (input == null)
+        return;
       controller.onEnemyEncounterContinue(input, true);
     }
 
@@ -262,77 +296,77 @@ public class ConsoleView
     Item.Type foundItemType = gameEngine.getItemFound().getType();
 
     if (step == GameEngine.Step.ITEM_INVALID_ACTION) {
-      System.out.println("Invalid action. Please try again.");
+      ConsoleHelper.println("Invalid action. Please try again.");
 
     } else if (step == GameEngine.Step.ITEM_FOUND_AND_LEVEL_UP) {
-      System.out.println("You defeated the enemy and leveled up!");
-      System.out.println(
+      ConsoleHelper.println("You defeated the enemy and leveled up!");
+      ConsoleHelper.println(
           "You are now level " + hero.getLevel() + " with "
               + hero.getExperience() + " experience points.");
 
     } else if (step == GameEngine.Step.ITEM_FOUND) {
-      System.out.println("You defeated the enemy!");
+      ConsoleHelper.println("You defeated the enemy!");
     }
 
-    System.out.println("You found an item. " + gameEngine.getItemFound());
+    ConsoleHelper.println("You found an item. " + gameEngine.getItemFound());
 
     if (foundItemType == Item.Type.WEAPON) {
-      System.out.println("Your current weapon is: "
+      ConsoleHelper.println("Your current weapon is: "
           + hero.getWeapon().getFormattedName());
     } else if (foundItemType == Item.Type.ARMOR) {
-      System.out.println("Your current armor is: "
+      ConsoleHelper.println("Your current armor is: "
           + hero.getArmor().getFormattedName());
     } else if (foundItemType == Item.Type.HELM) {
-      System.out.println("Your current helm is: "
+      ConsoleHelper.println("Your current helm is: "
           + hero.getHelm().getFormattedName());
     }
-    System.out.println("(k)eep or (l)eave");
-    String item_choice = scanner.nextLine();
-    controller.onItemFoundContinue(item_choice);
+    ConsoleHelper.println("(k)eep or (l)eave");
 
+    String item_choice = readLine();
+    if (item_choice == null)
+      return;
+    controller.onItemFoundContinue(item_choice);
   }
 
   @Override
   public void showVictoryScreen() {
-    try {
-      clearConsole();
-      System.out.println(AsciiArt.VICTORY);
-      System.out.println();
-      if (gameEngine.getStep() == GameEngine.Step.VICTORY_INVALID_ACTION) {
-        System.out.println("Invalid action. Please try again.");
-      }
-      System.out.println("(n)ext mission or (e)xit game");
-      String choice = scanner.nextLine();
-      controller.onVictoryScreenContinue(choice);
-    } catch (Exception e) {
-      throw new RuntimeException(
-          "Error during victory screen: " + e.getMessage());
+
+    clearConsole();
+    ConsoleHelper.println(AsciiArt.VICTORY);
+    ConsoleHelper.println();
+    if (gameEngine.getStep() == GameEngine.Step.VICTORY_INVALID_ACTION) {
+      ConsoleHelper.println("Invalid action. Please try again.");
     }
+    ConsoleHelper.println("(n)ext mission or (e)xit game");
+
+    String choice = readLine();
+    if (choice == null)
+      return;
+    controller.onVictoryScreenContinue(choice);
   }
 
   @Override
   public void showGameOver() {
-    try {
-      clearConsole();
-      System.out.println(AsciiArt.DIED);
-      System.out.println();
-      if (gameEngine.getStep() == GameEngine.Step.GAME_OVER_INVALID_ACTION) {
-        System.out.println("Invalid action. Please try again.");
-      }
-      System.out.println("(t)ry again or (e)xit game");
-      String choice = scanner.nextLine();
-      controller.onGameOverContinue(choice);
-    } catch (Exception e) {
-      throw new RuntimeException(
-          "Error during game over screen: " + e.getMessage());
+
+    clearConsole();
+    ConsoleHelper.println(AsciiArt.DIED);
+    ConsoleHelper.println();
+    if (gameEngine.getStep() == GameEngine.Step.GAME_OVER_INVALID_ACTION) {
+      ConsoleHelper.println("Invalid action. Please try again.");
     }
+    ConsoleHelper.println("(t)ry again or (e)xit game");
+
+    String choice = readLine();
+    if (choice == null)
+      return;
+    controller.onGameOverContinue(choice);
   }
 
   //
 
   private static void clearConsole() {
-    System.out.print("\033[H\033[2J");
-    System.out.flush();
+    ConsoleHelper.print("\033[H\033[2J");
+    ConsoleHelper.flush();
   }
 
   private void drawMap() {
@@ -349,31 +383,26 @@ public class ConsoleView
     int side = gameEngine.getMapSize();
     Tile[][] map = gameEngine.getMap();
 
-    System.out.println("Map Size: " + side + "x" + side);
-    System.out.println(gameEngine.getHero().description());
+    ConsoleHelper.println(gameEngine.getHero().description());
 
     for (int i = 0; i < side + 2; i++) {
       for (int j = 0; j < side + 2; j++) {
         if (map[i][j].isVisible()) {
-          System.out.print(map[i][j].getSymbol() + " ");
+          ConsoleHelper.print(map[i][j].getSymbol() + " ");
         } else {
-          System.out.print(" " + " ");
+          ConsoleHelper.print(" " + " ");
         }
       }
-      System.out.println();
+      ConsoleHelper.println();
     }
-    System.out.println();
+    ConsoleHelper.println();
   }
 
   @Override
   public void cleanup() {
-    System.out.println("ConsoleView > Cleaning up resources...");
-    try {
-      scanner.close();
-    } catch (Exception e) {
-      throw new RuntimeException(
-          "Error during cleanup: " + e.getMessage());
-    }
+    logger.info("ConsoleView > Cleaning up resources...");
+
+    scanner.close();
   }
 
 }
