@@ -28,8 +28,6 @@ public class MapDrawPanel extends JPanel {
       GUIView guiView,
       GameController controller,
       GameEngine gameEngine, boolean isInteractive) {
-    System.out.println("MapDrawPanel > Initialising map panel...");
-
     this.tileButtonsMap = guiView.tileButtonsMap;
     this.gameEngine = gameEngine;
     this.side = gameEngine.getMapSize() + 2;

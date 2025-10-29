@@ -122,8 +122,8 @@ public class ConsoleView
       if (gameEngine.getStep() == GameEngine.Step.INVALID_HERO_SELECTION) {
         ConsoleHelper.println("Invalid hero selection. Please try again.");
       }
-      System.out
-          .println("Enter a number to select your hero from the list, or type 'new' [n] to create a new hero:\n");
+      ConsoleHelper.println(
+          "Enter a number to select your hero from the list, or type 'new' [n] to create a new hero:\n");
     }
 
     String heroSelection = readLine();

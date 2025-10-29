@@ -5,19 +5,26 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import demre.rpg.Main;
 import demre.rpg.model.GameEngine;
 import demre.rpg.model.characters.Hero;
 import demre.rpg.model.factories.CharacterFactory;
 
 public class HeroLoader {
+
+  private static final Logger logger = LoggerFactory.getLogger(HeroLoader.class);
+
   private static String url = "jdbc:sqlite:" + Main.databaseName;
 
   public static void loadHeroesFromDatabase(GameEngine gameEngine)
       throws IOException {
 
     try (Connection conn = DriverManager.getConnection(url)) {
-      System.out.println("loadHeroesFromDatabase > Connected to database.");
+      logger.info("loadHeroesFromDatabase > Connected to database.");
+
       if (conn == null) {
         throw new IOException("Failed to connect to the database.");
       }
@@ -27,6 +34,7 @@ public class HeroLoader {
         var rs = pstmt.executeQuery();
         while (rs.next()) {
           CharacterFactory factory = CharacterFactory.getInstance();
+
           Hero hero = factory.newHero(
               rs.getString("class"),
               rs.getString("name"),
@@ -41,8 +49,10 @@ public class HeroLoader {
               rs.getInt("armor_mod"),
               rs.getString("helm"),
               rs.getInt("helm_mod"));
+
           gameEngine.addHero(hero);
-          System.out.println("loadHeroesFromDatabase > Hero loaded: " + hero);
+
+          logger.info("loadHeroesFromDatabase > Hero loaded: " + hero);
         }
       }
     } catch (Exception e) {

@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 
 import demre.rpg.Main;
@@ -13,13 +16,15 @@ import demre.rpg.model.factories.CharacterFactory;
 
 public class HeroStorage {
 
+  private static final Logger logger = LoggerFactory.getLogger(HeroStorage.class);
+
   private static String url = "jdbc:sqlite:" + Main.databaseName;
 
   public static void saveToDatabase(GameEngine gameEngine)
       throws IOException {
 
     try (Connection conn = DriverManager.getConnection(url)) {
-      System.out.println("saveToDatabase > Connection to database: " + conn);
+      logger.info("saveToDatabase > Connection to database: " + conn);
       if (conn == null) {
         throw new IOException("Failed to connect to the database.");
       }
@@ -137,7 +142,7 @@ public class HeroStorage {
           pstmt.executeUpdate();
         }
 
-        System.out.println("generateHeroes > Generated hero: " + hero);
+        logger.info("generateHeroes > Generated hero: " + hero);
 
       }
 

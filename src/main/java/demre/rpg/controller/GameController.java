@@ -2,10 +2,16 @@ package demre.rpg.controller;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import demre.rpg.model.GameEngine;
 import demre.rpg.model.GameEngine.Step;
 
 public class GameController {
+
+  private static final Logger logger = LoggerFactory.getLogger(GameController.class);
+
   private final GameEngine gameEngine;
 
   // Constructor
@@ -17,7 +23,7 @@ public class GameController {
   // Methods
 
   public void onSplashScreenContinue(String input) {
-    System.out.println("GameController > Splash screen continue pressed.");
+    logger.info("GameController > Splash screen continue pressed.");
 
     if (handleExitOrViewChange(input, false))
       return;
@@ -26,7 +32,7 @@ public class GameController {
   }
 
   public void onSelectHeroContinue(String input) throws IOException {
-    System.out.println("GameController > Hero selection input: " + input);
+    logger.info("GameController > Hero selection input: " + input);
 
     if (handleExitOrViewChange(input, false))
       return;
@@ -50,7 +56,7 @@ public class GameController {
   }
 
   public void onCreateHeroContinue(String heroName, String heroClass, Boolean goBack) {
-    System.out.println("GameController > Hero creation input: " + heroName);
+    logger.info("GameController > Hero creation input: " + heroName);
 
     if (handleExitOrViewChange(heroClass, false))
       return;
@@ -71,7 +77,7 @@ public class GameController {
   }
 
   public void onShowHeroInfoContinue(String input) {
-    System.out.println("GameController > Info continue pressed.");
+    logger.info("GameController > Info continue pressed.");
 
     if (handleExitOrViewChange(input, false))
       return;
@@ -81,7 +87,7 @@ public class GameController {
 
   public void onMapInputContinue(String input)
       throws IOException {
-    System.out.println("GameController > Player input: " + input);
+    logger.info("GameController > Player input: " + input);
 
     if (handleExitOrViewChange(input, false))
       return;
@@ -103,7 +109,7 @@ public class GameController {
   }
 
   public void onEnemyEncounterContinue(String input, boolean isForcedToFight) {
-    System.out.println("GameController > Enemy encounter input: " + input);
+    logger.info("GameController > Enemy encounter input: " + input);
 
     if (handleExitOrViewChange(input, false))
       return;
@@ -119,7 +125,7 @@ public class GameController {
   }
 
   public void onItemFoundContinue(String input) {
-    System.out.println("GameController > Item found continue pressed.");
+    logger.info("GameController > Item found continue pressed.");
 
     if (handleExitOrViewChange(input, false))
       return;
@@ -136,7 +142,7 @@ public class GameController {
   }
 
   public void onVictoryScreenContinue(String input) {
-    System.out.println("GameController > Victory screen continue pressed.");
+    logger.info("GameController > Victory screen continue pressed.");
 
     if (handleExitOrViewChange(input, true))
       return;
@@ -151,7 +157,7 @@ public class GameController {
   }
 
   public void onGameOverContinue(String input) {
-    System.out.println("GameController > Game over continue pressed.");
+    logger.info("GameController > Game over continue pressed.");
 
     if (handleExitOrViewChange(input, true))
       return;
@@ -166,7 +172,7 @@ public class GameController {
   }
 
   public void onDatabaseAction(String input) throws IOException {
-    System.out.println("GameController > Database action input: " + input);
+    logger.info("GameController > Database action input: " + input);
 
     if (input.equalsIgnoreCase("deleteAll")) {
       gameEngine.deleteAllHeroes();
@@ -190,13 +196,13 @@ public class GameController {
   }
 
   public void switchView(String newGameView) {
-    System.out.println("GameController > Switching to view: " + newGameView);
+    logger.info("GameController > Switching to view: " + newGameView);
 
     gameEngine.setGameView(newGameView);
   }
 
   public void exitGame() {
-    System.out.println("GameController > Exiting game.");
+    logger.info("GameController > Exiting game.");
     gameEngine.exitGame();
   }
 }

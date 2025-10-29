@@ -2,6 +2,10 @@ package demre.rpg.view;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -31,6 +35,8 @@ public class GUIView
     extends javax.swing.JFrame
     implements GameView, GameEngineListener {
 
+  private static final Logger logger = LoggerFactory.getLogger(GUIView.class);
+
   private final GameEngine gameEngine;
   private final GameController controller;
   private JPanel contentPanel;
@@ -45,7 +51,7 @@ public class GUIView
     this.tileButtonsMap = new ButtonsMap(gameEngine, controller); // empty array
     this.mapViewPanel = null;
 
-    System.out.println("GUIView initialised with engine: " + gameEngine + " and controller: " + controller);
+    logger.info("GUIView initialised with engine: " + gameEngine + " and controller: " + controller);
     initialiseGUIComponents();
   }
 
@@ -78,7 +84,7 @@ public class GUIView
   }
 
   private void initialiseGUIComponents() {
-    System.out.println("GUIView > Initialising GUI components...");
+    logger.info("GUIView > Initialising GUI components...");
 
     // Create main window
     setTitle("Java RPG with Swing GUI");
@@ -117,7 +123,7 @@ public class GUIView
     add(bottomPanel, BorderLayout.SOUTH);
     setVisible(true);
 
-    System.out.println("GUIView > GUI components initialised.");
+    logger.info("GUIView > GUI components initialised.");
   }
 
   public void showStage(String stageName, JPanel stagePanel) {
@@ -129,14 +135,14 @@ public class GUIView
 
   @Override
   public void splashScreen() {
-    System.out.println("GUIView > Displaying splash screen...");
+    logger.info("GUIView > Displaying splash screen...");
 
     showStage("splash", new SplashScreenPanel(controller));
   }
 
   @Override
   public void selectHero() {
-    System.out.println("GUIView > Displaying hero selection screen...");
+    logger.info("GUIView > Displaying hero selection screen...");
 
     showStage(
         "selectHero", new SelectHeroPanel(controller, gameEngine));
@@ -144,7 +150,7 @@ public class GUIView
 
   @Override
   public void createHero() {
-    System.out.println("GUIView > Displaying hero creation screen...");
+    logger.info("GUIView > Displaying hero creation screen...");
 
     showStage(
         "createHero", new CreateHeroPanel(controller, gameEngine));
@@ -152,7 +158,7 @@ public class GUIView
 
   @Override
   public void showHeroInfo() {
-    System.out.println("GUIView > Displaying hero information...");
+    logger.info("GUIView > Displaying hero information...");
 
     showStage("heroInfo", new HeroInfoPanel(controller, gameEngine));
 
@@ -160,7 +166,7 @@ public class GUIView
 
   @Override
   public void showMap() {
-    System.out.println("GUIView > Showing game map...");
+    logger.info("GUIView > Showing game map...");
 
     if (gameEngine.isMoving()) {
       // Use existing mapViewPanel if player is moving
@@ -174,7 +180,7 @@ public class GUIView
 
   @Override
   public void showVictoryScreen() {
-    System.out.println("GUIView > Displaying victory screen...");
+    logger.info("GUIView > Displaying victory screen...");
 
     showStage(
         "victory", new VictoryScreenPanel(controller, gameEngine));
@@ -182,14 +188,14 @@ public class GUIView
 
   @Override
   public void showGameOver() {
-    System.out.println("GUIView > Displaying game over screen...");
+    logger.info("GUIView > Displaying game over screen...");
 
     showStage("gameOver", new GameOverPanel(controller, gameEngine));
   }
 
   @Override
   public void cleanup() {
-    System.out.println("GUIView > Cleaning up resources...");
+    logger.info("GUIView > Cleaning up resources...");
     dispose();
   }
 

@@ -8,12 +8,18 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import demre.rpg.controller.GameController;
 import demre.rpg.model.GameEngine;
 import demre.rpg.model.map.Tile;
 import demre.rpg.view.GUIView;
 
 public class MapViewPanel extends JPanel {
+
+  private static final Logger logger = LoggerFactory.getLogger(MapViewPanel.class);
+
   protected final GameController controller;
   protected final GameEngine gameEngine;
   protected final GUIView guiView;
@@ -25,7 +31,7 @@ public class MapViewPanel extends JPanel {
     this.guiView = guiView;
 
     GameEngine.Step step = gameEngine.getStep();
-    System.out.println("MapViewPanel > Game step: " + step);
+    logger.info("MapViewPanel > Game step: " + step);
 
     this.removeAll();
     setLayout(new BorderLayout(0, 20));
@@ -74,7 +80,7 @@ public class MapViewPanel extends JPanel {
    * without redrawing the entire map.
    */
   public void updateHeroPosition() {
-    System.out.println("MapViewPanel > updateHeroPosition() called");
+    logger.info("MapViewPanel > updateHeroPosition() called");
 
     ButtonsMap tileButtonsMap = guiView.tileButtonsMap;
 

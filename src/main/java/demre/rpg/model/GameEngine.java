@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.awt.Point;
 
 import demre.rpg.controller.GameController;
@@ -25,6 +29,9 @@ import demre.rpg.view.GUIView;
 import demre.rpg.view.GameView;
 
 public class GameEngine {
+
+  private static final Logger logger = LoggerFactory.getLogger(GameEngine.class);
+
   public enum Step {
     SPLASH_SCREEN,
     SELECT_HERO, INVALID_HERO_SELECTION,
@@ -269,7 +276,7 @@ public class GameEngine {
   // Database operations
 
   public void loadHeroes() throws IOException {
-    System.out.println("GameEngine > Loading heroes from database...");
+    logger.info("GameEngine > Loading heroes from database...");
 
     if (heroes != null) {
       heroes.clear();
@@ -281,12 +288,12 @@ public class GameEngine {
       heroes = new ArrayList<>();
     }
 
-    System.out.println("GameEngine > Heroes loaded: "
+    logger.info("GameEngine > Heroes loaded: "
         + (heroes != null ? heroes.size() : 0));
   }
 
   public void saveHeroToDatabase() throws IOException {
-    System.out.println("GameEngine > Saving hero to database...");
+    logger.info("GameEngine > Saving hero to database...");
 
     if (hero == null) {
       throw new IllegalStateException("No hero to save.");
@@ -296,7 +303,7 @@ public class GameEngine {
   }
 
   public void deleteAllHeroes() throws IOException {
-    System.out.println("GameEngine > Deleting all heroes from database...");
+    logger.info("GameEngine > Deleting all heroes from database...");
 
     HeroStorage.deleteAllHeroes();
     heroes.clear();
@@ -304,11 +311,11 @@ public class GameEngine {
     hero = null;
     initialHeroState = null;
 
-    System.out.println("GameEngine > All heroes deleted.");
+    logger.info("GameEngine > All heroes deleted.");
   }
 
   public void generateHeroes() throws IOException {
-    System.out.println("GameEngine > Generating heroes...");
+    logger.info("GameEngine > Generating heroes...");
 
     HeroStorage.generateHeroes(this, 10);
     loadHeroes();
@@ -317,7 +324,7 @@ public class GameEngine {
   //
 
   public void startGame() {
-    System.out.println("GameEngine > Starting game...");
+    logger.info("GameEngine > Starting game...");
 
     if (gameView == null || gameController == null) {
       throw new IllegalArgumentException(
@@ -328,7 +335,7 @@ public class GameEngine {
   }
 
   public void exitGame() {
-    System.out.println("GameEngine > Exiting game...");
+    logger.info("GameEngine > Exiting game...");
     setCurrentStep(Step.EXIT_GAME);
     // saveHeroToDatabase();
   }
@@ -346,7 +353,7 @@ public class GameEngine {
       if (index >= 0 && index < heroes.size()) {
         return true;
       }
-    } catch (NumberFormatException e) {
+    } catch (NumberFormatException ignored) {
       // Ignore, will return false below
     }
     return false;
@@ -374,7 +381,7 @@ public class GameEngine {
   }
 
   public void selectHero(String selection) {
-    System.out.println("GameEngine > Selecting hero: " + selection);
+    logger.info("GameEngine > Selecting hero: " + selection);
 
     int index = Integer.parseInt(selection) - 1;
 
@@ -384,7 +391,7 @@ public class GameEngine {
   }
 
   public void createHero(String name, String heroClass) {
-    System.out.println("GameEngine > Creating hero: " + name);
+    logger.info("GameEngine > Creating hero: " + name);
     Hero newHero;
     CharacterFactory factory = CharacterFactory.getInstance();
 
@@ -410,7 +417,7 @@ public class GameEngine {
   }
 
   public void newMission(String reason) {
-    System.out.println("GameEngine > Starting new mission...: " + reason);
+    logger.info("GameEngine > Starting new mission...: " + reason);
     if (reason.equals("reset")) {
       setHero(getInitialHeroState().copy());
     }
@@ -429,16 +436,6 @@ public class GameEngine {
     hero.setYCoord(side / 2);
 
     generateVillains();
-
-    // // make copy of villains and sort villains by level
-    // List<Villain> villainsCopy = new ArrayList<>(villains);
-    // villainsCopy.sort(
-    // (v1, v2) -> Integer.compare(v1.getLevel(), v2.getLevel()));
-    // // list all villains
-    // for (Villain villain : villainsCopy) {
-    // System.out.println(villain.toString());
-    // }
-    // System.out.println(hero.toString());
 
     generateMap();
   }
@@ -483,7 +480,7 @@ public class GameEngine {
     coords.add(new Point(hero.getXCoord(), hero.getYCoord()));
 
     int nVillains = (int) (getMapSize() * getMapSize() * 0.2);
-    System.out.println("GameEngine > Generating " + nVillains + " villains...");
+    logger.info("GameEngine > Generating " + nVillains + " villains...");
 
     for (int i = 0; i < nVillains; i++) {
       int x = (int) (Math.random() * getMapSize());
@@ -523,7 +520,7 @@ public class GameEngine {
       throws IOException {
 
     Direction direction = parseDirection(input);
-    System.out.println("GameEngine > Detected direction: " + direction);
+    logger.info("GameEngine > Detected direction: " + direction);
 
     int heroX = hero.getXCoord();
     int heroY = hero.getYCoord();
@@ -588,7 +585,7 @@ public class GameEngine {
   }
 
   public void fightEnemy() {
-    System.out.println("GameEngine > Fighting enemy...");
+    logger.info("GameEngine > Fighting enemy...");
 
     Hero hero = getHero();
     Tile heroTile = getFightTiles()[0];
@@ -658,8 +655,8 @@ public class GameEngine {
         + villain.getHelm().getModifier();
 
     int turn = heroHitPoints * 2;
-    System.out.println(hero.toString());
-    System.out.println(villain.toString());
+    logger.info(hero.toString());
+    logger.info(villain.toString());
 
     while (heroHitPoints > 0 && villainHitPoints > 0 && turn > 0) {
       // Hero attacks first
@@ -672,14 +669,14 @@ public class GameEngine {
       int heroDamage = Math.max(1, heroAttackRoll - villainDefense);
 
       villainHitPoints -= heroDamage;
-      System.out
-          .println("GameEngine > Hero attacks for: "
+      logger.info(
+          "GameEngine > Hero attacks for: "
               + heroAttackRoll + " - " + villainDefense + " = " + heroDamage
               + " damage. Villain HP: " + villainHitPoints);
 
       if (villainHitPoints <= 0) {
-        System.out.println("GameEngine > Villain defeated!");
-        System.out.println(
+        logger.info("GameEngine > Villain defeated!");
+        logger.info(
             "GameEngine > Hero hit points after fight: " + heroHitPoints);
         // hero.setHitPoints(heroHitPoints);
         return true;
@@ -697,13 +694,13 @@ public class GameEngine {
       int villainAttackRoll = villainAttack + (int) (Math.random() * 2);
       int villainDamage = Math.max(1, villainAttackRoll - heroDefenseThisTurn);
       heroHitPoints -= villainDamage;
-      System.out.println(
+      logger.info(
           "GameEngine > Villain attacks for: "
               + villainAttack + " - " + heroDefenseThisTurn + " = " + villainDamage
               + " damage. Hero HP: " + heroHitPoints);
 
       if (heroHitPoints <= 0) {
-        System.out.println("GameEngine > Hero defeated!");
+        logger.info("GameEngine > Hero defeated!");
         return false;
       }
 
@@ -714,19 +711,19 @@ public class GameEngine {
   }
 
   public void runFromEnemy() {
-    System.out.println("GameEngine > Running from enemy...");
+    logger.info("GameEngine > Running from enemy...");
     // 50% chance to run away
     if (Math.random() < 0.5) {
-      System.out.println("GameEngine > Hero run away - SUCCESS");
+      logger.info("GameEngine > Hero run away - SUCCESS");
       setCurrentStep(Step.ENEMY_RUN_SUCCESS);
       return;
     }
-    System.out.println("GameEngine > Hero run away - FAILURE");
+    logger.info("GameEngine > Hero run away - FAILURE");
     setCurrentStep(Step.ENEMY_RUN_FAILURE);
   }
 
   private Boolean checkForItemFound(Villain villain) {
-    System.out.println("GameEngine > Checking for item found...");
+    logger.info("GameEngine > Checking for item found...");
 
     // 20% chance to find an item. Mages +10%
     double dropChance = hero.getHeroClass().equals("Mage") ? 0.22 : 0.2;

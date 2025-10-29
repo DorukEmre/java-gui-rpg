@@ -8,10 +8,15 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import demre.rpg.model.GameEngine;
 import demre.rpg.model.characters.Hero;
 
 public class HeroStorageTextFile {
+
+  private static final Logger logger = LoggerFactory.getLogger(HeroStorageTextFile.class);
 
   public static void saveToTextFile(GameEngine gameEngine)
       throws FileNotFoundException, IOException {
@@ -44,7 +49,7 @@ public class HeroStorageTextFile {
           }
         }
       } catch (IOException e) {
-        System.err.println("Error writing to file: " + e.getMessage());
+        logger.error("Error writing to file: " + e.getMessage());
       }
     } else {
       throw new IllegalArgumentException(

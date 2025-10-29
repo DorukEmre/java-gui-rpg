@@ -8,21 +8,26 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import demre.rpg.model.characters.Hero;
 import demre.rpg.model.factories.CharacterFactory;
 
 public class HeroLoaderTextFile {
 
+  private static final Logger logger = LoggerFactory.getLogger(HeroLoaderTextFile.class);
+
   public static List<Hero> loadHeroesFromTextFile()
       throws FileNotFoundException, IOException {
-    System.out.println("Loading heroes from file...");
+    logger.info("Loading heroes from file...");
     List<Hero> heroes;
     String fileName = "heroes.txt";
     // open file heroes.txt
     checkFile(fileName);
     heroes = loadFileContent(fileName);
     // Read heroes from the file and populate the heroes array
-    System.out.println("Heroes loaded: " + heroes.size());
+    logger.info("Heroes loaded: " + heroes.size());
     return heroes;
   }
 
@@ -41,7 +46,7 @@ public class HeroLoaderTextFile {
     File file = new File(fileName);
 
     if (!file.exists() || file.length() == 0) {
-      System.out.println("File '" + fileName + "' does not exist or is empty.");
+      logger.info("File '" + fileName + "' does not exist or is empty.");
       return heroes;
     }
 
@@ -51,7 +56,7 @@ public class HeroLoaderTextFile {
 
       while ((line = br.readLine()) != null) {
 
-        System.out.println("Parsing line: " + line);
+        logger.info("Parsing line: " + line);
         // skip empty, whitespace only, or comment lines
         if (line.trim().isEmpty() || line.trim().startsWith("#")) {
           continue;
@@ -87,7 +92,7 @@ public class HeroLoaderTextFile {
         // Add the hero to the list
         heroes.add(hero);
 
-        System.out.println(
+        logger.info(
             "Hero loaded: " + hero.getName() + " (" + heroClass + ")");
       }
     } catch (Exception e) {

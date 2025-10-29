@@ -25,6 +25,7 @@ run			: gui
 
 
 clean		:
+	rm -rf logs
 	mvn clean
 
 re			: clean all

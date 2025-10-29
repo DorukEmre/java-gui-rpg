@@ -49,8 +49,6 @@ public class ButtonsMap {
   // Constructors
 
   public ButtonsMap(GameEngine gameEngine, GameController controller) {
-    System.out.println("ButtonsMap > Initialising buttons map...");
-
     this.gameEngine = gameEngine;
     this.controller = controller;
     this.buttonsMap = new JButton[][] {};
