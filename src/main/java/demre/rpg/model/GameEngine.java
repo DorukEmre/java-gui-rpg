@@ -28,6 +28,50 @@ import demre.rpg.view.ConsoleView;
 import demre.rpg.view.GUIView;
 import demre.rpg.view.GameView;
 
+// *** Public Methods Summary ***
+
+// Constructor
+// Getters
+// Setters
+
+// Game initialisation
+//    public void initialise(GameView gameView, GameController gameController)
+
+// Listener management
+//    public void addListener(GameEngineListener listener)
+//    public void removeListener(GameEngineListener listener)
+
+// Database operations
+//    public void loadHeroes() throws IOException
+//    public void saveHeroToDatabase() throws IOException
+//    public void deleteAllHeroes() throws IOException
+//    public void generateHeroes() throws IOException
+
+// Game lifecycle
+//    public void startGame()
+//    public void exitGame()
+
+// Hero selection, creation and validation
+//    public boolean isValidHeroSelection(String selection)
+//    public boolean isValidHeroName(String name)
+//    public boolean isValidHeroClass(String heroClass)
+//    public void selectHero(String selection)
+//    public void createHero(String name, String heroClass)
+
+// Mission initialisation
+//    public void newMission(String reason)
+
+// Player movement
+//    public boolean isValidDirection(String input)
+//    public void movePlayer(String input) throws IOException
+
+// Enemy encounter
+//    public void fightEnemy()
+//    public void runFromEnemy()
+
+// Item found
+//    public void keepItem()
+
 public class GameEngine {
 
   private static final Logger logger = LoggerFactory.getLogger(GameEngine.class);
@@ -69,7 +113,7 @@ public class GameEngine {
   private int mapSize = 9; // Level 1 map size
   private Item itemFound;
 
-  // Constructor
+  // *** Constructor ***
 
   public GameEngine()
       throws FileNotFoundException, IOException {
@@ -84,7 +128,7 @@ public class GameEngine {
     this.isMoving = false;
   }
 
-  // Getters
+  // *** Getters ***
 
   public Step getStep() {
     return step;
@@ -151,7 +195,7 @@ public class GameEngine {
     return isMoving;
   }
 
-  // Setters
+  // *** Setters ***
 
   public void setCurrentStep(Step newStep) {
     this.step = newStep;
@@ -247,7 +291,7 @@ public class GameEngine {
     }
   }
 
-  // Methods
+  // *** Game initialisation ***
 
   public void initialise(GameView gameView, GameController gameController)
       throws IOException {
@@ -263,7 +307,7 @@ public class GameEngine {
     loadHeroes();
   }
 
-  // Listeners
+  // *** Listener management ***
 
   public void addListener(GameEngineListener listener) {
     listeners.add(listener);
@@ -273,7 +317,7 @@ public class GameEngine {
     listeners.remove(listener);
   }
 
-  // Database operations
+  // *** Database operations ***
 
   public void loadHeroes() throws IOException {
     logger.info("GameEngine > Loading heroes from database...");
@@ -322,7 +366,7 @@ public class GameEngine {
     loadHeroes();
   }
 
-  //
+  // *** Game lifecycle ***
 
   public void startGame() {
     logger.info("GameEngine > Starting game...");
@@ -347,7 +391,7 @@ public class GameEngine {
     }
   }
 
-  //
+  // *** Hero selection, creation and validation ***
 
   public boolean isValidHeroSelection(String selection) {
     if (heroes == null || heroes.size() == 0) {
@@ -422,6 +466,8 @@ public class GameEngine {
     addHero(newHero);
     selectedHeroIndex = heroes.size() - 1;
   }
+
+  // *** Mission initialisation ***
 
   public void newMission(String reason) {
     logger.info("GameEngine > Starting new mission...: " + reason);
@@ -512,6 +558,8 @@ public class GameEngine {
 
   }
 
+  // *** Player movement ***
+
   public boolean isValidDirection(String input) {
     return (input.equalsIgnoreCase("N")
         || input.equalsIgnoreCase("S")
@@ -590,6 +638,8 @@ public class GameEngine {
         throw new IllegalArgumentException("Invalid direction: " + input);
     }
   }
+
+  // *** Enemy encounter ***
 
   public void fightEnemy() {
     logger.info("GameEngine > Fighting enemy...");
@@ -728,6 +778,8 @@ public class GameEngine {
     logger.info("GameEngine > Hero run away - FAILURE");
     setCurrentStep(Step.ENEMY_RUN_FAILURE);
   }
+
+  // *** Item found ***
 
   private Boolean checkForItemFound(Villain villain) {
     logger.info("GameEngine > Checking for item found...");
