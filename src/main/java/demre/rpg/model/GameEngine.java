@@ -220,6 +220,7 @@ public class GameEngine {
     this.heroes = heroes;
   }
 
+  // Update hero at specific index in heroes list
   public void setHeroInHeroesAtIndex(int index, Hero newHero) {
     if (heroes != null && index >= 0 && index < heroes.size()) {
       heroes.set(index, newHero);
@@ -339,12 +340,14 @@ public class GameEngine {
   public void saveHeroToDatabase() throws IOException {
     logger.info("GameEngine > Saving hero to database...");
 
-    if (hero == null) {
+    if (selectedHeroIndex == null || hero == null) {
       logger.warn("No hero to save.");
       return;
     }
 
-    HeroStorage.saveToDatabase(this);
+    setHeroInHeroesAtIndex(selectedHeroIndex, hero);
+
+    HeroStorage.saveToDatabase(selectedHeroIndex, hero);
   }
 
   public void deleteAllHeroes() throws IOException {

@@ -20,16 +20,17 @@ public class HeroStorage {
 
   private static String url = "jdbc:sqlite:" + Main.databaseName;
 
-  public static void saveToDatabase(GameEngine gameEngine)
+  public static void saveToDatabase(int selectedHeroIndex, Hero hero)
       throws IOException {
 
     try (Connection conn = DriverManager.getConnection(url)) {
       logger.info("saveToDatabase > Connection to database: " + conn);
+
       if (conn == null) {
         throw new IOException("Failed to connect to the database.");
       }
 
-      // Create table if it does not exist
+      // Create heroes table if it does not exist
       String createTableSQL = "CREATE TABLE IF NOT EXISTS heroes ("
           + "id INTEGER PRIMARY KEY,"
           + "name TEXT NOT NULL,"
@@ -50,11 +51,8 @@ public class HeroStorage {
         pstmt.executeUpdate();
       }
 
+      // Upsert hero data in database
       String sql = "INSERT OR REPLACE INTO heroes (id, name, class, level, exp, att, def, hp, weapon, weapon_mod, armor, armor_mod, helm, helm_mod) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-      Hero hero = gameEngine.getHero();
-      int selectedHeroIndex = gameEngine.getSelectedHeroIndex();
-      gameEngine.setHeroInHeroesAtIndex(selectedHeroIndex, hero);
 
       try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
         pstmt.setInt(1, selectedHeroIndex + 1);

@@ -29,9 +29,32 @@ public class HeroLoader {
         throw new IOException("Failed to connect to the database.");
       }
 
+      // Create heroes table if it does not exist
+      String createTableSQL = "CREATE TABLE IF NOT EXISTS heroes ("
+          + "id INTEGER PRIMARY KEY,"
+          + "name TEXT NOT NULL,"
+          + "class TEXT NOT NULL,"
+          + "level INTEGER NOT NULL,"
+          + "exp INTEGER NOT NULL,"
+          + "att INTEGER NOT NULL,"
+          + "def INTEGER NOT NULL,"
+          + "hp INTEGER NOT NULL,"
+          + "weapon TEXT NOT NULL,"
+          + "weapon_mod INTEGER NOT NULL,"
+          + "armor TEXT NOT NULL,"
+          + "armor_mod INTEGER NOT NULL,"
+          + "helm TEXT NOT NULL,"
+          + "helm_mod INTEGER NOT NULL"
+          + ")";
+      try (PreparedStatement pstmt = conn.prepareStatement(createTableSQL)) {
+        pstmt.executeUpdate();
+      }
+
+      // Select all heroes and load them into the game engine
       String sql = "SELECT * FROM heroes";
       try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
         var rs = pstmt.executeQuery();
+
         while (rs.next()) {
           CharacterFactory factory = CharacterFactory.getInstance();
 
@@ -55,6 +78,7 @@ public class HeroLoader {
           logger.info("loadHeroesFromDatabase > Hero loaded: " + hero);
         }
       }
+
     } catch (Exception e) {
       throw new IOException("Error loading from database: " + e.getMessage());
     }
