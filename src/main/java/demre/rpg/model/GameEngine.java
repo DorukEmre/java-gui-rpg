@@ -664,17 +664,19 @@ public class GameEngine {
       int experienceReward = villain.getExperienceReward();
 
       if (hero.getHeroClass().equals("Warrior")) {
-        experienceReward *= 1.1; // Warriors get 10% more XP
+        experienceReward += experienceReward / 10; // Warrior bonus, 10% more XP
       }
 
       // Adjust experience based on level difference
       if (villain.getLevel() == hero.getLevel() - 1) {
-        experienceReward = (int) (experienceReward * 0.5);
+        experienceReward /= 2;
       } else if (villain.getLevel() <= hero.getLevel() - 2) {
-        experienceReward = (int) (experienceReward * 0.25);
+        experienceReward /= 4;
       }
       hero.addExperience(experienceReward);
       levelUp = hero.checkAndApplyLevelUp(prevExperience);
+
+      logger.info("Exp gained: " + experienceReward + ", level up: " + levelUp);
 
       // Assign the hero to the enemy tile and grass to the hero
       enemyTile.assignHero();
@@ -744,7 +746,7 @@ public class GameEngine {
 
       // Villain attacks back
       if (hero.getHeroClass().equals("Rogue"))
-        heroCrit = Math.random() < 0.2; // Rogues +10% dodge attacks
+        heroCrit = Math.random() < 0.2; // Rogue bonus, +10% dodge attacks
       else
         heroCrit = Math.random() < 0.1;
       int heroDefenseThisTurn = heroDefense;
@@ -787,8 +789,8 @@ public class GameEngine {
   private Boolean checkForItemFound(Villain villain) {
     logger.info("GameEngine > Checking for item found...");
 
-    // 20% chance to find an item. Mages +10%
-    double dropChance = hero.getHeroClass().equals("Mage") ? 0.22 : 0.2;
+    // 20% chance to find an item. Mage bonus, +10% drop chance
+    double dropChance = hero.getHeroClass().equals("Mage") ? 0.3 : 0.2;
 
     if (Math.random() < dropChance) {
       // Randomly select an item from the villain's items
