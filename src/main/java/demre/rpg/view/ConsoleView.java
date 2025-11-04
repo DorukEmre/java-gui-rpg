@@ -92,6 +92,8 @@ public class ConsoleView
     clearConsole();
 
     ConsoleHelper.println(AsciiArt.SPLASH);
+    ConsoleHelper.println("Type 'gui' from any screen to switch to GUI mode.");
+
     String input = readLine();
 
     controller.onSplashScreenContinue(input);
@@ -235,7 +237,7 @@ public class ConsoleView
       ConsoleHelper.println("You successfully ran away from the enemy!");
     }
     ConsoleHelper.println(
-        "(N)orth, (S)outh, (E)ast, (W)est, (i)nfo or 'exit'.");
+        "(N)orth, (S)outh, (E)ast, (W)est, (i)nfo, 'gui', or 'exit'.");
 
     String input = readLine();
 
