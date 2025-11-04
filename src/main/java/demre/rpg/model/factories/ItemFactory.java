@@ -6,7 +6,7 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import jakarta.validation.ConstraintViolation;
-
+import jakarta.validation.ConstraintViolationException;
 import demre.rpg.model.items.Item;
 import demre.rpg.model.items.Weapon;
 import demre.rpg.model.items.Armor;
@@ -38,13 +38,7 @@ public class ItemFactory {
     Set<ConstraintViolation<Item>> violations = validator.validate(item);
 
     if (!violations.isEmpty()) {
-      StringBuilder sb = new StringBuilder();
-
-      for (ConstraintViolation<Item> violation : violations) {
-        sb.append(violation.getPropertyPath()).append(": ").append(violation.getMessage()).append("\n");
-      }
-      throw new IllegalArgumentException(
-          "Validation error. Item: " + sb.toString());
+      throw new ConstraintViolationException(violations);
     }
   }
 

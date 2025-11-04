@@ -6,7 +6,7 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import jakarta.validation.ConstraintViolation;
-
+import jakarta.validation.ConstraintViolationException;
 import demre.rpg.model.characters.AbstractCharacter;
 import demre.rpg.model.characters.Hero;
 import demre.rpg.model.characters.Mage;
@@ -200,13 +200,7 @@ public class CharacterFactory {
     Set<ConstraintViolation<AbstractCharacter>> violations = validator.validate(character);
 
     if (!violations.isEmpty()) {
-      StringBuilder sb = new StringBuilder();
-
-      for (ConstraintViolation<AbstractCharacter> violation : violations) {
-        sb.append(violation.getPropertyPath()).append(": ").append(violation.getMessage()).append("\n");
-      }
-      throw new IllegalArgumentException(
-          "Validation error. Character: " + sb.toString());
+      throw new ConstraintViolationException(violations);
     }
   }
 }

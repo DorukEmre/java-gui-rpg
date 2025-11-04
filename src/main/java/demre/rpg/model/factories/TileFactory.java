@@ -6,7 +6,7 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import jakarta.validation.ConstraintViolation;
-
+import jakarta.validation.ConstraintViolationException;
 import demre.rpg.model.map.Tile;
 
 public class TileFactory {
@@ -40,13 +40,7 @@ public class TileFactory {
     Set<ConstraintViolation<Tile>> violations = validator.validate(tile);
 
     if (!violations.isEmpty()) {
-      StringBuilder sb = new StringBuilder();
-
-      for (ConstraintViolation<Tile> violation : violations) {
-        sb.append(violation.getPropertyPath()).append(": ").append(violation.getMessage()).append("\n");
-      }
-      throw new IllegalArgumentException(
-          "Validation error. Tile: " + sb.toString());
+      throw new ConstraintViolationException(violations);
     }
   }
 }
