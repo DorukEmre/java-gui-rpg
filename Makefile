@@ -3,7 +3,7 @@ SHELL		= /bin/sh
 NAME		= Swingy
 
 # The target JAR file name
-TARGET	= swingy-1.0-SNAPSHOT.jar
+TARGET	= swingy-1.0.0.jar
 
 all			: package
 
